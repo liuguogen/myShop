@@ -4,7 +4,7 @@ var api = {
 
 var Shop = {
 	post : function(method,data,callback) {
-		$.post(api.url,{"method":method,"source":"admin","data":data},function(rs) {
+		$.post(api.url,{"method":method,"source":"admin","data":JSON.stringify(data)},function(rs) {
 			callback(rs);
 		})
 	}

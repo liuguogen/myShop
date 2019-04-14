@@ -20,7 +20,7 @@ use api\v1\admin\userMake;
 /**
  * 
  */
-class user
+class loginout
 {
 
 
@@ -33,71 +33,36 @@ class user
         //接口传入的参数
         
         $return =  [
-        	['field'=>'username','type'=>'string','valid'=>'require|max:25','desc'=>'用户名','example'=>''],
-        	['field'=>'password','type'=>'string','valid'=>'require','desc'=>'密码','example'=>''],
+        	['field'=>'accessToken','type'=>'string','valid'=>'require','desc'=>'accessToken','example'=>''],
         	
         ];
         return $return;
     }
-	/**
-	 * 用户登录
-	 * @param  [type] $data [description]
-	 * @return [type]       [description]
-	 */
-	public function login($params)
-	{
-
-
-		$validate = new Validate([
-		    'username'  => 'require|max:25',
-		    'password' => 'require'
-		]);
-		$data = [
-		    'username'  => $params['username'],
-		    'password' => $params['password'],
-		];
-
-		if (!$validate->check($data)) {
-		    throw new HttpException(404,$validate->getError());
-		}
-		
-		$PasswordHashs = new \think\PasswordHash(8, false);  
-		//$hashedPassword = $PasswordHashs->HashPassword($password); 
-		
-		
-		$adminData = db('admin')->field('id,username,password')->where('username',trim($params['username']))->find();
-		if(!$adminData) {
-			throw new HttpException(404,'没有该用户!');
-		}
-
-		if(!$PasswordHashs->CheckPassword($params['password'],$adminData['password'])) {
-				throw new HttpException(404,'密码错误!');
-		}
-		
-			
-		Db::execute('update admin set last_login_ip =:last_login_ip,last_login_at =:last_login_at where id =:id',['last_login_ip'=>$_SERVER['REMOTE_ADDR'],'last_login_at'=>time(),'id'=>$adminData['id']]);
-		$accessToken = userMake::make($adminData['id'],$adminData);
-
-		cookie('accessToken',$accessToken,time()+3600*24*7);
-		cookie('adminName',$adminData['username'],time()+3600*24*7);
-		return ['accessToken'=>$accessToken,'username'=>$adminData['username']];
-			
-		
-		
 	
-	}
 	/**
 	 * 退出登录
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
-	public function loginout($data) {
+	public function loginout($params) {
 		
-		if(!isset($data['admin_id'])) {
+		$validate = new Validate([
+		    
+		    'accessToken' => 'require'
+		]);
+		$data = [
+		   
+		    'accessToken' => $params['accessToken'],
+		];
 
-			throw new HttpException(404,'admin_id不能为空!');
+		if (!$validate->check($data)) {
+		    throw new HttpException(404,$validate->getError());
 		}
-		$adminData = db('admin')->where('admin_id',intval($data['admin_id']))->find();
+		$id = userMake::check(trim($params['accessToken']));
+		if(!$id) {
+			throw new HttpException(404,'解析用户ID错误！');
+		}
+		$adminData = db('admin')->field('id,username')->where('id',intval($id))->find();
 		if(!$adminData) {
 			throw new HttpException(404,'没有该用户'.$adminData['username']);
 		}

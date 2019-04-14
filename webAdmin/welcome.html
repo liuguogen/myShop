@@ -12,6 +12,7 @@
         <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
         <script src="./lib/layui/layui.js" charset="utf-8"></script>
         <script type="text/javascript" src="./js/xadmin.js"></script>
+        <script type="text/javascript" src="./js/cookie.js"></script>
         <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
         <!--[if lt IE 9]>
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -25,7 +26,7 @@
                     <div class="layui-card">
                         <div class="layui-card-body ">
                             <blockquote class="layui-elem-quote">欢迎管理员：
-                                <span class="x-red">test</span>！当前时间:2018-04-25 20:50:53
+                                <span class="x-red"><script type="text/javascript">document.write(getCookie('adminName'))</script></span>！当前时间:2018-04-25 20:50:53
                             </blockquote>
                         </div>
                     </div>
@@ -204,6 +205,6 @@
 
 <script type="text/javascript" src="./js/config.js"></script>
 <script type="text/javascript" src="./js/user.js"></script>
-<script type="text/javascript" src="./js/cookie.js"></script>
+
     </body>
 </html>

@@ -28,7 +28,7 @@
         <!-- 顶部开始 -->
         <div class="container">
             <div class="logo">
-                <a href="./index.html">X-admin v2.2</a></div>
+                <a href="./index.html">后台商城管理系统</a></div>
             <div class="left_open">
                 <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
             </div>
@@ -65,7 +65,7 @@
                         <dd>
                             <a onclick="xadmin.open('切换帐号','http://www.baidu.com')">切换帐号</a></dd>
                         <dd>
-                            <a href="./login.html">退出</a></dd>
+                            <a id="loginout">退出</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item to-index">
@@ -85,7 +85,7 @@
                             <i class="iconfont nav_right">&#xe697;</i></a>
                         <ul class="sub-menu">
                             <li>
-                                <a onclick="xadmin.add_tab('统计页面','welcome1.html')">
+                                <a _href='welcome1.html'>
                                     <i class="iconfont">&#xe6a7;</i>
                                     <cite>统计页面</cite></a>
                             </li>
@@ -365,11 +365,30 @@
 
 
 
-    Shop.post({"method":"menu.get","source":"admin","data": '{"admin_id":"1"}'},function(rs) {
-        console.log(111);
-        console.log(rs);
-    });
+$(function  () {
+    layui.use(['form','layer'], function(){
+    var form = layui.form;
+    var layer = parent.layer === undefined ? layui.layer : parent.layer;
 
+    $("body").on('click','#loginout',function(ev){
+        var params = new Object();
+        params.accessToken = getCookie('accessToken');
+        Shop.post('admin.loginout',params,function(rs){
+            if(rs.code==200) {
+                setCookie('accessToken','',-1,'/');
+                setCookie('adminName','',-1,'/');
+                location.href ='./page/admin/login.html';
+            }else {
+                layer.alert(rs.msg, {icon: 0,closeBtn:0},function (index) {
+                      layer.close(index);
+                      location.href ='./page/admin/login.html';
+                  });
+            }
+        })
+    })
+              
+    });
+})
    
 </script>
 </html>
