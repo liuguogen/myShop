@@ -3,7 +3,8 @@ namespace app\index\controller;
 use \think\Rpc;
 use \think\Request;
 use \think\ThinkApi;
-use think\exception\HttpException;
+use \think\exception\HttpException;
+use \think\Config;
 class Api extends ThinkApi
 {
     public function __construct()
@@ -15,7 +16,7 @@ class Api extends ThinkApi
        
         $request = $this->request->request();
         
-        $apis = config('routes');
+        $apis = Config::load(CONF_PATH . DS . 'api' . EXT)['routes']; //config('routes');
 
         if (!array_key_exists($request['method'], $apis))
         {
