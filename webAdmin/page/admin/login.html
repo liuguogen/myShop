@@ -50,8 +50,8 @@
                    layer.msg(rs.msg);
                  }else {
                    data = typeof(rs.data) == 'string' ? JSON.parse(rs.data) : rs.data;
-                   setCookie('accessToken',data.accessToken,3600*24*7*1000,'/');
-                   setCookie('adminName',data.username,3600*24*7*1000,'/');
+                   setCookie('accessToken',data.accessToken,api.expire,'/');
+                   setCookie('adminName',data.username,api.expire,'/');
                    location.href='../../index.html';
                  }
                  

@@ -85,7 +85,7 @@
             data.field.method = "role.save";
             Shop.post(data.field,function(rs){
                 if(rs.code == 0) {
-                    layer.alert("保存成功", {icon: 6},function () {
+                    layer.alert("保存成功", {icon: 6, closeBtn:0},function () {
                         // 获得frame索引
                         var index = parent.layer.getFrameIndex(window.name);
                         //关闭当前frame

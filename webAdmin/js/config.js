@@ -3,6 +3,7 @@ var api = {
 	"appKey":"iWtWFgNCXSFNkSGGFZ2lKN1xIeK7cRIK",
 	"version":"v1",
 	"source":"admin",
+	"expire":3600*24*7*1000,
 }
 
 var Shop = {
