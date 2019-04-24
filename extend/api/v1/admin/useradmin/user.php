@@ -170,6 +170,7 @@ class user
 			'avatar'=>isset($params['avatar']) ? $params['avatar'] :'',
 			'role_id'=>intval($params['role_id']),
 			'is_super'=>0,//非超管
+			'status'=>1,
 			'create_time'=>time(), 
 		];
 
