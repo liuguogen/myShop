@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="../../css/font.css">
     <link rel="stylesheet" href="../../css/login.css">
 	  <link rel="stylesheet" href="../../css/xadmin.css">
+    <link rel="stylesheet" href="../../css/theme4.css">
     <script type="text/javascript" src="../../js/jquery.min.js"></script>
+     <script type="text/javascript" src="../../js/md5.min.js"></script>
     <script src="../../lib/layui/layui.js" charset="utf-8"></script>
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -42,8 +44,9 @@
               
               //监听提交
               form.on('submit(login)', function(data){
-                Shop.post("admin.login",data.field,function(rs){
-                 if(rs.code == 400) {
+                data.field.method = "admin.login";
+                Shop.post(data.field,function(rs){
+                 if(rs.code > 0) {
                    layer.msg(rs.msg);
                  }else {
                    data = typeof(rs.data) == 'string' ? JSON.parse(rs.data) : rs.data;

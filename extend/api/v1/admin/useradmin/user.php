@@ -16,7 +16,8 @@ use \think\helper;
 use \think\Db;
 use \think\Validate;
 use \think\Cache;
-use api\v1\admin\userMake;
+use \api\v1\admin\userMake;
+use \model\Admin;
 /**
  * 
  */
@@ -47,7 +48,7 @@ class user
 	public function login($params)
 	{
 
-
+	
 		$validate = new Validate([
 		    'username'  => 'require|max:25',
 		    'password' => 'require'
@@ -65,26 +66,50 @@ class user
 		//$hashedPassword = $PasswordHashs->HashPassword($password); 
 		
 		
-		$adminData = db('admin')->field('id,username,password')->where('username',trim($params['username']))->find();
+		$adminData = model('admin')->field('id,username,password,is_disabled')->where('username',trim($params['username']))->find();
+
 		if(!$adminData) {
 			throw new HttpException(404,'没有该用户!');
 		}
 
+		$adminData = $adminData->toArray();
+		
+		if($adminData['is_disabled']==0) {
+			throw new HttpException(404,'该账号没有启用请联系管理员!');
+		}
 		if(!$PasswordHashs->CheckPassword($params['password'],$adminData['password'])) {
 				throw new HttpException(404,'密码错误!');
 		}
 		
-			
-		Db::execute('update admin set last_login_ip =:last_login_ip,last_login_at =:last_login_at where id =:id',['last_login_ip'=>$_SERVER['REMOTE_ADDR'],'last_login_at'=>time(),'id'=>$adminData['id']]);
+		
+		//Db::execute('update admin set last_login_ip =:last_login_ip,last_login_at =:last_login_at where id =:id',['last_login_ip'=>$_SERVER['REMOTE_ADDR'],'last_login_at'=>time(),'id'=>$adminData['id']]);
+		//
+		model('admin')->update(['last_login_ip'=>$_SERVER['REMOTE_ADDR'],'update_time'=>time()],['id'=>$adminData['id']]);
 		$accessToken = userMake::make($adminData['id'],$adminData);
-
+		
 		cookie('accessToken',$accessToken,time()+3600*24*7);
 		cookie('adminName',$adminData['username'],time()+3600*24*7);
-		return ['accessToken'=>$accessToken,'username'=>$adminData['username']];
+
+		return ['data'=>['accessToken'=>$accessToken,'username'=>$adminData['username']]];
 			
 		
 		
 	
+	}
+
+	/**
+	 * 获取用户
+	 * @param  [type] $params [description]
+	 * @return [type]         [description]
+	 */
+	public function get($params)
+	{
+		$adminMdl = model('admin');
+		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
+		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;
+		$adminList['count'] = $adminMdl->count();
+		$adminList['data'] = $adminMdl->limit(''.$offset.','.$limit.'')->select();
+		return $adminList;
 	}
 	/**
 	 * 退出登录
@@ -106,72 +131,57 @@ class user
 		return ['data'=>'succ'];
 	}
 
-	public function saveAdmin($params) {
-
-
-		if(!isset($params['username'])) {
-
-			throw new HttpException(404,'账号名不能为空!');
-		}
+	public function save($params) {
 
 		if(isset($params['file'])) {
 			unset($params['file']);
 		}
-		if(!isset($params['password'])) {
+		$validate = new Validate([
+		    'username'  => 'require',
+		    'role_id'=>'require|number',
+		    'password' => 'require',
+		    'password_confrim'=>'require',
 
-			throw new HttpException(404,'密码不能为空!');
-		}
-		if(!isset($params['group_id'])) {
-
-			throw new HttpException(404,'用户组不能为空!');
-		}
-		if(!isset($params['department_id'])) {
-
-			throw new HttpException(404,'部门不能为空!');
-		}
-		if(!isset($params['full_name'])) {
-
-			throw new HttpException(404,'姓名不能为空!');
-		}
-		$params['password'] = md5($params['password']);
-		$params['is_super'] = 0;//非超管
-
-		if($params['group_id']==2) {
-			if($params['group_type'] =='ordinary') {
-				$params['is_disabled'] = 0;//禁止登陆
-				$params['rule'] = json_encode(array('rule'=>[]));
-			}else {
-				$params['is_disabled'] = 1;
-				$params['is_dispatch'] = 1;
-				$params['rule'] = json_encode(array('rule'=>array('admin.article','admin.articlesource.list')));
-			}
-		}else {
-			$params['rule'] = json_encode(array('rule'=>[]));
-		}
-		$op_id = intval($params['op_id']);
-		unset($params['op_id']);
-		$params['status'] = 1;//正常
-		if(isset($params['admin_id']) && $params['admin_id']) {
-
-			$admin_id = intval($params['admin_id']);
-			unset($params['admin_id']);
+		],[
+			'username.require'=>'登录名必填',
+			'role_id.require'=>'角色必填',
+			'role_id.number'=>'角色必须为数字',
+			'password.require'=>'密码必填',
+			'password_confrim.require'=>'确认密码必填',
+		]);
+		
+		$data = [
+		    'username'  =>isset($params['username']) ?  $params['username'] :'',
+		    'role_id'=>isset($params['role_id']) ? $params['role_id'] :'',
+		    'password' =>isset($params['password']) ? $params['password'] :'',
+		    'password_confrim' =>isset($params['password_confrim']) ? $params['password_confrim'] :'',
+		   
+		];
+		
+		if (!$validate->check($data)) {
 			
-			$flag = Db::table('admin')->where('admin_id',$admin_id)->update($params);
-			logger::log($op_id,'管理员','edit',$admin_id);
-		}else {
-			$params['created_at'] = time();
-			$admin_id = intval($params['admin_id']);
-			unset($params['admin_id']);
-			//新增
-			$flag = Db::table('admin')->insert($params);
-			logger::log($op_id,'管理员','add',$flag);
+		    throw new HttpException(404,$validate->getError());
 		}
+		$PasswordHashs = new \think\PasswordHash(8, false);  
+		
+		$userData = [
+			'username'=>$params['username'],
+			'password'=>$PasswordHashs->HashPassword($params['password']),
+			'avatar'=>isset($params['avatar']) ? $params['avatar'] :'',
+			'role_id'=>intval($params['role_id']),
+			'is_super'=>0,//非超管
+			'create_time'=>time(), 
+		];
 
+		//校验用户是否已经使用
+		$check_user = model('admin')->field('id')->where('username',$params['username'])->find();
+		
+		if($check_user) {
 
-		if(!$flag){
-			throw new HttpException(404,'保存失败!');
+			throw new HttpException(404,'该登录名已被使用请换一个');
 		}
-			
+		$flag = model('admin')->save($userData);
+		
 		return ['data'=>$flag];
 	}
 

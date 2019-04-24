@@ -17,15 +17,16 @@ class Rpc
      * 接口调用类
      * @param  [type] $method     [description]
      * @param  [type] $source     [description]
+     * * @param  [type] $version     [description]
      * @param  array  $parameters [description]
      * @return [type]             [description]
      */
-    public static function call($method,$source, $parameters = array())
+    public static function call($method,$source, $version ,$parameters = array())
     {
         
         $apis = config('routes');
 
-        $version =  '\\'.$apis[$method]['version']; //版本
+        $version =  '\\'.$version; //版本
 
         //$source = '\\'.$apis[$method]['source']; //来源
         $source = '\\'.$source; //来源

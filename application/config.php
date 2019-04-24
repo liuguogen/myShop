@@ -240,4 +240,10 @@ return [
         'var_page'  => 'page',
         'list_rows' => 15,
     ],
+    'appKey'=>[
+        'token'=>'iWtWFgNCXSFNkSGGFZ2lKN1xIeK7cRIK',
+    ],
+    'imageUrl'=>[
+        'url'=>'http://myshop-api.com/',
+    ],
 ];

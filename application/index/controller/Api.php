@@ -23,14 +23,21 @@ class Api extends ThinkApi
         	
             $this->error("Api [".$request['method']."] not defined");
         }else {
+
+            //验证签名
+            
+            $method = $request['method'];
+            $source = $request['source'];
+            $version = $request['version'];
+            $sign  = $request['sign'];
+            unset($request['s'],$request['method'],$request['source'],$request['version'],$request['sign']);
+            /*if(trim($request['sign']) != $this->sign($request)) {
+                $this->error('sign error',[],400);
+            }*/
             try {
-                if(isset($request['data']) && $request['data']) {
-                    $response = Rpc::call($request['method'],$request['source'],json_decode($request['data'],true));
-                }else {
-                    $response = Rpc::call($request['method'],$request['source'],[]);
-                }
-                
-                $this->success('success',$response ,200);
+
+                $response = Rpc::call($method,$source,$version,$request);
+                $this->success('success',$response ,0);
                 
                 
             } catch (HttpException $e) {

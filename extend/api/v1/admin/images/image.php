@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 // | 修改者: liuguogen (本权限类在原3.2.3的基础上修改过来的)
 // +----------------------------------------------------------------------
-namespace api\v1\admin\menu;
+namespace api\v1\admin\images;
 use \think\exception\HttpException;
 use \think\helper;
 use \think\Db;
@@ -18,11 +18,10 @@ use \think\Validate;
 use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
-use \model\Admin;
 /**
  * 
  */
-class menulist
+class image
 {
 
 
@@ -42,32 +41,26 @@ class menulist
     }
 	
 	/**
-	 * 退出登录
+	 * 单个图片上传
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
-	public function get($params) {
+	public function singleUpload($params=null) {
 		
-		$validate = new Validate([
-		    
-		    'accessToken' => 'require'
-		]);
-		$data = [
-		   
-		    'accessToken' => $params['accessToken'],
-		];
+		$file = request()->file('file');
+		 if($file){
+		 	$info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
+		 	
+		 	if($info){
 
-		if (!$validate->check($data)) {
-		    throw new HttpException(404,$validate->getError());
-		}
-		$id = userMake::check(trim($params['accessToken']));
-		if(!$id) {
-			throw new HttpException(404,'解析用户ID错误！');
-		}
-		
-		$menuList = model('admin')->getMenu($id);
-		
-		return ['data'=>$menuList];
+		 		$imageData  = ['src'=>config('imageUrl')['url'].'uploads/'.$info->getSaveName()];
+		 		return ['data'=>$imageData];
+		 	}else {
+		 		throw new HttpException(404,$file->getError());
+		 	}
+		 }else {
+		 	throw new HttpException(404,'请上传图片!');
+		 }
 	}
 
 	

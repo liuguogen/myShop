@@ -88,12 +88,28 @@ class ThinkApi
             'code' => $code,
             'msg'  => $msg,
             'time' => Request::instance()->server('REQUEST_TIME'),
-            'data' => $data,
+            'data' => isset($data['data']) ? $data['data'] :[],
+            'count'=>isset($data['count']) ? $data['count']  : 0,
         ];
         $type = $type ?: $this->getResponseType();
         $response = Response::create($result, $type)->header($header);
 
         throw new HttpResponseException($response);
+    }
+
+
+    public function sign(array $params) {
+        unset($params['sign']);
+        unset($params['s']);
+        $token = config('appKey')['token'];        
+        
+        $sign = '';
+        foreach ($params as $k => $v) {
+            $sign.= $k.$v;
+        }
+
+        
+        return md5($sign.$token);
     }
 
    
