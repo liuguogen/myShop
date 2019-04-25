@@ -14,6 +14,8 @@ return [
 			'href'=>'',
 			'rule'=>'goods_rule',
 			'children'=>[
+
+				['label'=>'商品列表','rule'=>'goods.list','parent'=>'goods_rule','href'=>'page/goods/list.html'],
 				['label'=>'商品分类','rule'=>'goods.cate','parent'=>'goods_rule','href'=>'page/goods/cate.html'],
 				['label'=>'商品品牌','rule'=>'goods.brand','parent'=>'goods_rule','href'=>'page/goods/brand.html'],
 			],

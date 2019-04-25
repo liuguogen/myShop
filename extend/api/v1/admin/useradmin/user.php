@@ -107,8 +107,11 @@ class user
 		$adminMdl = model('admin');
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
 		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;
-		$adminList['count'] = $adminMdl->count();
-		$adminList['data'] = $adminMdl->limit(''.$offset.','.$limit.'')->select();
+		unset($params['limit'],$params['page']);
+		
+		
+		$adminList['count'] = $adminMdl->where(array_filter($params))->count();
+		$adminList['data'] = $adminMdl->where('is_super',0)->where(array_filter($params))->order('update_time desc')->limit(''.$offset.','.$limit.'')->select();
 		return $adminList;
 	}
 	/**

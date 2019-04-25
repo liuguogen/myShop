@@ -26,7 +26,21 @@
                     <div class="layui-card">
                         <div class="layui-card-body ">
                             <blockquote class="layui-elem-quote">欢迎管理员：
-                                <span class="x-red"><script type="text/javascript">document.write(getCookie('adminName'))</script></span>！当前时间:2018-04-25 20:50:53
+                                <span class="x-red"><script type="text/javascript">document.write(getCookie('adminName'))</script></span>！当前时间:<script type="text/javascript">
+                                    
+
+                                    var date = new Date();
+
+                                    var year = date.getFullYear();
+
+                                    var month = date.getMonth()+1;
+                                    var day = date.getDate();
+                                    var hour = date.getHours();
+                                    var minute = date.getMinutes();
+                                    var second = date.getSeconds();
+
+                                    document.write(year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second)
+                                </script>
                             </blockquote>
                         </div>
                     </div>
