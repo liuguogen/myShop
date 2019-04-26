@@ -147,7 +147,7 @@ layui.use(['form', 'layer','upload'],function() {
                 });
                 //监听提交
                 form.on('submit(add)',function(data) {
-                    console.log(data.field);
+                    
 
                     data.field.method = 'admin.user.save'
                     Shop.post(data.field,function(rs){

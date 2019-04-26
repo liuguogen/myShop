@@ -39,18 +39,15 @@
                 <div class="layui-col-md12">
                     <div class="layui-card">
                         <div class="layui-card-body ">
-                            <form class="layui-form layui-col-space5">
+                            <div class="layui-form layui-col-space5">
+                                
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input class="layui-input" autocomplete="off" placeholder="开始日" name="start" id="start"></div>
-                                <div class="layui-inline layui-show-xs-block">
-                                    <input class="layui-input" autocomplete="off" placeholder="截止日" name="end" id="end"></div>
-                                <div class="layui-inline layui-show-xs-block">
-                                    <input type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input"></div>
+                                    <input type="text" name="brand_name" placeholder="品牌名称" autocomplete="off" class="layui-input"></div>
                                 <div class="layui-inline layui-show-xs-block">
                                     <button class="layui-btn" lay-submit="" lay-filter="sreach">
                                         <i class="layui-icon">&#xe615;</i></button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         <div class="layui-card-body ">
                             <table class="layui-hide" id="table-data" lay-filter="table-data"></table>
@@ -76,7 +73,7 @@
     </script>
     <script type="text/html" id="switchTpl">
         <!-- 这里的checked的状态只是演示 -->
-        <input type = "checkbox" name = "disabled" value = "{{d.disabled}}" lay-skin = "switch" lay-text = "是|否" lay-filter = "sexDemo" {{ d.disabled == 1 ? 'checked': ''}} >
+        <input type = "checkbox" name = "disabled" value = "{{d.disabled}}" lay-skin = "switch" lay-text = "是|否" lay-filter = "disabled" {{ d.disabled == 1 ? 'checked': ''}} >
     </script>
 
 
@@ -98,8 +95,9 @@
 
         });</script>
     <script>
-        layui.use(['table','layer'],function() {
+        layui.use(['form','table','layer'],function() {
             var table = layui.table;
+            var form = layui.form;
             var layer = parent.layer === undefined ? layui.layer : parent.layer;
             var params = {"method":"brand.get","source":api.source,"version":api.version};
             params.sign = signs.gen_sign(params);
@@ -125,6 +123,14 @@
               ,{fixed: 'right', title:'操作', wdith:200,align:'center', toolbar: '#barDemo'}
             ]]
           });
+
+            form.on('switch(disabled)',function(data) {
+                if(this.checked){
+                    
+                }else {
+                    
+                }
+            });
             //监听单元格编辑
             table.on('edit(test)',
             function(obj) {

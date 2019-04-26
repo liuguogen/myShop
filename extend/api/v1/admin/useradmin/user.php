@@ -186,10 +186,12 @@ class user
 		
 		if($check_user) {
 
-			throw new HttpException(404,'该登录名已被使用请换一个');
+			throw new HttpException(404,'该登录名已被使用请换一个！');
 		}
 		$flag = model('admin')->save($userData);
-		
+		if(!$flag) {
+			throw new HttpException(404,'保存失败！');
+		}
 		return ['data'=>$flag];
 	}
 

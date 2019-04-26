@@ -19,6 +19,7 @@ use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
 use \model\Brands;
+use \think\cache\driver\Redis;
 /**
  * 
  */
@@ -26,6 +27,12 @@ class brand
 {
 
 
+
+
+	public function __construct()
+	{
+		$this->brandMdl = model('brands');
+	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
      * 用于在调用接口前，根据定义的参数，过滤必填参数是否已经参入
@@ -52,6 +59,46 @@ class brand
     	];
 
     	return $return;
+    }
+
+    /**
+     * 保存品牌
+     * @param  [type] $params [description]
+     * @return [type]         [description]
+     */
+    public function save($params)
+    {
+    	$validate = new Validate([
+		    
+		    'brand_name' => 'require'
+		],[
+			'brand_name.require'=>'品牌名称必填'
+		]);
+		$check_data = [
+		   
+		    'brand_name' => $params['brand_name'],
+		];
+
+		if (!$validate->check($check_data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+
+		$data = [
+			'brand_name'=>trim($params['brand_name']),
+			'brand_logo'=>trim($params['brand_logo']),
+			'brand_url'=>trim($params['brand_url']),
+			'brand_keywords'=>serialize(explode('|',trim($params['brand_keywords']))),
+			'brand_desc'=>trim($params['brand_desc']),
+			'disabled'=>intval($params['disabled']),
+			'create_time'=>time(),
+		];
+
+		$flag = $this->brandMdl->save($data);
+		if(!$flag) {
+			throw new HttpException(404,'保存失败！');
+		}
+		return ['data'=>$flag];
+		
     }
 	
 	/**

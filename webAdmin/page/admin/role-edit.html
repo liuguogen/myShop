@@ -69,19 +69,11 @@
           //自定义验证规则
            
           
-          Shop.post({"method":"menu.get","accessToken":getCookie('accessToken')},function(rs){
-            if(rs.code == 0) {
-                data = typeof(rs.data) == 'string' ? JSON.parse(rs.data) : rs.data;
-                $("#role").html(getList(data));
-                form.render();
-            }else {
-                layer.msg(rs.msg);
-            }
-          });
+          
 
           //监听提交
           form.on('submit(add)', function(data){
-            console.log(data);
+            
             data.field.method = "role.save";
             Shop.post(data.field,function(rs){
                 if(rs.code == 0) {
@@ -102,39 +94,8 @@
           });
 
 
-        form.on('checkbox(father)', function(data){
-
-            if(data.elem.checked){
-                $(data.elem).parent().siblings('td').find('input').prop("checked", true);
-                form.render(); 
-            }else{
-               $(data.elem).parent().siblings('td').find('input').prop("checked", false);
-                form.render();  
-            }
-        });
+        
           
-        function getList(data) {
-            var dataHtml = '';
-            for(var i=0;i<data.length;i++) {
-                dataHtml+='<tr>'
-                +'<td>'
-                +'<input type="checkbox" name="'+data[i].rule+'[parent][]" lay-skin="primary" lay-filter="father"   title="'+data[i].label+'">'
-                +'</td>';
-                if(data[i].children != undefined && data[i].children.length > 0){
-                    dataHtml+='<td>';
-                    dataHtml+='<div class="layui-input-block">';
-                    for (var j=0;j<data[i].children.length;j++) {
-                        dataHtml+='<input name="'+data[i].rule+'[children][]" lay-skin="primary" type="checkbox"   value="'+data[i].children[j].rule+'" title="'+data[i].children[j].label+'">'
-                    }
-
-                    dataHtml+'</td></div>';
-                }
-                dataHtml+='</tr>';
-            }
-
-            
-            return dataHtml;
-         } 
         });
     </script>
    
