@@ -92,8 +92,12 @@ class brand
 			'disabled'=>intval($params['disabled']),
 			'create_time'=>time(),
 		];
-
-		$flag = $this->brandMdl->save($data);
+		if(isset($params['id']) && $params['id']) {
+			$flag = $this->brandMdl->where(['id'=>intval($params['id'])])->update($data);
+		}else {
+			$flag = $this->brandMdl->save($data);
+		}
+		
 		if(!$flag) {
 			throw new HttpException(404,'保存失败！');
 		}
@@ -129,10 +133,72 @@ class brand
 
 		$brandMdl = model('brands');
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
-		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;
-		$brandList['count'] = $brandMdl->count();
-		$brandList['data'] = $brandMdl->limit(''.$offset.','.$limit.'')->select();
+		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:1;
+		unset($params['limit'],$params['page']);
+		$brandList['count'] = $brandMdl->where(array_filter($params))->count();
+		$brandList['data'] = $brandMdl->where(array_filter($params))->limit(''.$offset.','.$limit.'')->select();
 		return $brandList;
+	}
+
+	/**
+	 * 更新数据
+	 * @param  array  $params [description]
+	 * @return [type]         [description]
+	 */
+	public function update(array $params)
+	{
+
+
+		$validate = new Validate([
+		    
+		    'id' => 'require'
+		],[
+			'id.require'=>'ID必填'
+		]);
+		$check_data = [
+		   
+		    'id' => intval($params['id']),
+		];
+
+		if (!$validate->check($check_data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+		$id = intval($params['id']);
+		unset($params['id']);
+		
+		$flag = $this->brandMdl->where(['id'=>$id])->update($params);
+		
+		if(!$flag) throw new HttpException(404,'修改失败！');
+		return ['data'=>$flag];
+	}
+
+	/**
+	 * 获取单条数据
+	 * @param  array  $params [description]
+	 * @return [type]         [description]
+	 */
+	public function getRow(array $params)
+	{
+		$validate = new Validate([
+		    
+		    'id' => 'require'
+		],[
+			'id.require'=>'ID必填'
+		]);
+		$check_data = [
+		   
+		    'id' => intval($params['id']),
+		];
+
+		if (!$validate->check($check_data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+
+		$id = intval($params['id']);
+		unset($params['id']);
+		$data['data'] = $this->brandMdl->where(['id'=>$id])->find();
+		$data['data']['brand_keywords'] = $data['data']['brand_keywords']? implode('|',unserialize($data['data']['brand_keywords'])) : '';
+		return $data;
 	}
 
 	

@@ -99,14 +99,13 @@
         layui.use(['table','layer'],function() {
             var table = layui.table;
             var layer = parent.layer === undefined ? layui.layer : parent.layer;
-            var params = {"method":"role.get","source":api.source,"version":api.version};
-            params.sign = signs.gen_sign(params);
-              table.render({
-            elem: '#table-data'
+            
+            table.render({
+             elem: '#table-data'
             ,height: 420
             ,url: api.url //数据接口
             ,method:"post"
-            ,where:params
+            ,where:tableParams.getParams("role.get")
             ,title: '角色管理列表'
             ,page: true //开启分页
             ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档

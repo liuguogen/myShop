@@ -94,34 +94,18 @@
     </script>
 <script type="text/javascript" src="../../js/config.js"></script>
 
-    <script>layui.use('laydate',
-        function() {
-            var laydate = layui.laydate;
-
-            //执行一个laydate实例
-            laydate.render({
-                elem: '#start' //指定元素
-            });
-
-            //执行一个laydate实例
-            laydate.render({
-                elem: '#end' //指定元素
-            });
-
-        });</script>
     <script>
         layui.use(['table','layer'],function() {
             var table = layui.table;
             var layer = parent.layer === undefined ? layui.layer : parent.layer;
-            var params = {"method":"admin.get","source":api.source,"version":api.version};
-            params.sign = signs.gen_sign(params);
-              table.render({
-            elem: '#table-data'
+            
+            table.render({
+             elem: '#table-data'
             ,height: 550
             ,loading:true
             ,url: api.url //数据接口
             ,method:"post"
-            ,where:params
+            ,where:tableParams.getParams("admin.get")
             ,title: '商品品牌列表'
             ,page: true //开启分页
             ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
@@ -130,7 +114,7 @@
                     {type: 'checkbox', fixed: 'left'}
                     ,{field:'id', title:'编号', width:80, fixed: 'left',  sort: true}
                     ,{field:'username', title:'登录名', width:120, }
-                    ,{field:'is_super', title:'是否超级管理员', width:150, templet: '#superTpl'}
+                    ,{field:'is_super', title:'是否超级用户', width:120, templet: '#superTpl'}
                     ,{field:'avatar', title:'图像', width:80, templet:'#avatarTpl'}
                     ,{field:'is_disabled', title:'是否启用', width:100,templet:'#switchTpl'}
                     ,{field:'create_time', title:'创建时间',width:150,sort:true}

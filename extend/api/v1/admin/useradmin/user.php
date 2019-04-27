@@ -106,7 +106,7 @@ class user
 	{
 		$adminMdl = model('admin');
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
-		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;
+		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:1;
 		unset($params['limit'],$params['page']);
 		
 		
