@@ -24,12 +24,12 @@ class Rpc
     public static function call($method,$source, $version ,$parameters = array())
     {
         
-        $apis = config('routes');
+        $apis = Config::load(CONF_PATH . DS . 'api' . EXT)['routes'][$version][$source]; //config('routes');
 
         $version =  '\\'.$version; //版本
 
-        //$source = '\\'.$apis[$method]['source']; //来源
         $source = '\\'.$source; //来源
+        
         if (array_key_exists($method, $apis))
         {
             list($class, $method) = explode('@', $apis[$method]['uses']);

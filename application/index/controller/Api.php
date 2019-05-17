@@ -16,8 +16,8 @@ class Api extends ThinkApi
        
         $request = $this->request->request();
         
-        $apis = Config::load(CONF_PATH . DS . 'api' . EXT)['routes']; //config('routes');
-
+        $apis = Config::load(CONF_PATH . DS . 'api' . EXT)['routes'][$request['version']][$request['source']]; //config('routes');
+       
         if (!array_key_exists($request['method'], $apis))
         {
         	
