@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>后台商城管理系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="../../css/font.css">
+    <link rel="stylesheet" href="../../css/xadmin.css">
+    <link rel="stylesheet" href="../../css/theme4.css">
+    <script type="text/javascript" src="../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../js/xadmin.js"></script>
+    <script type="text/javascript" src="../../js/md5.min.js"></script>
+    <script type="text/javascript" src="../../js/cookie.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <form action="" method="post" class="layui-form layui-form-pane">
+              <input type="hidden" name="id" />
+                <div class="layui-form-item">
+                    <label for="brand_name" class="layui-form-label">
+                        <span class="x-red">*</span>品牌名称
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="brand_name" name="brand_name" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="brand_url" class="layui-form-label">
+                        <span class="x-red"></span>品牌地址
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="brand_url" name="brand_url" 
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="brand_logo" class="layui-form-label">
+                        <span class="x-red"></span>品牌LOGO
+                    </label>
+                    <div class="layui-input-inline layui-upload">
+                          <button type="button" class="layui-btn" id="brand_logo">
+                            <i class="layui-icon">&#xe67c;</i>上传图片
+                          </button>
+                          <input class="layui-upload-file" type="file" accept="*" name="file">
+                          <input type="hidden" name="brand_logo" />
+                          <div class="layui-upload-list">
+                            <img class="layui-upload-img" height="80" id="upload_img">
+                          <!-- <p id="demoText"></p> -->
+                          </div>
+                      </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <label for="brand_keywords" class="layui-form-label">
+                        <span class="x-red"></span>品牌别名
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="brand_keywords" name="brand_keywords"
+                        autocomplete="off" class="layui-input">
+                    </div>
+
+                    <div class="layui-form-mid layui-word-aux">
+                          <span class="x-red">*</span>（多个别名以|分隔）
+                      </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label for="disabled" class="layui-form-label">
+                        <span class="x-red">*</span>是否启用
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="radio" class="layui-input" name="disabled" checked="checked" value="1" title="是"> 
+                    <input type="radio" class="layui-input" name="disabled" value="0" title="否"> 
+                    </div>
+
+                   
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label for="desc" class="layui-form-label">
+                        品牌描述
+                    </label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入品牌描述" id="brand_desc" name="brand_desc" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: center;">
+                <button class="layui-btn" lay-submit="" lay-filter="add">保存</button>
+              </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript" src="../../js/config.js"></script>
+    <script>
+        layui.use(['form','layer','upload'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer
+          ,upload = layui.upload;
+        
+          //自定义验证规则
+           
+          
+          
+          //图片上传
+          upload.render({
+                  elem:"#brand_logo",
+                  url:api.url+'?method=image.upload.signle&source='+api.source+'&version='+api.version+'&sign='+signs.gen_sign({"method":"image.upload.signle","version":api.version,"source":api.source}),
+                  accept:'images',
+                  exts:'jpg|png|gif|bmp|jpeg',
+                  before:function(obj){
+                    layer.load();
+                  },
+                  done:function(rs){
+                    if(rs.code == 0){
+                      data = typeof(rs.data) == 'string' ? JSON.parse(rs.data) : rs.data;
+                      
+                      $("#upload_img").attr('src', data.src);
+                      $("input[name='brand_logo']").val(data.src);
+                      layer.closeAll('loading');
+                    }else {
+                      //layer.msg(rs.msg);
+                      layer.closeAll('loading');
+                    }
+                    
+                  },
+                  error:function(index, upload){
+                    layer.closeAll('loading');
+                  }
+
+                });
+
+
+          //监听提交
+          form.on('submit(add)', function(data){
+            
+            data.field.method = "brand.save";
+            Shop.post(data.field,function(rs){
+                if(rs.code == 0) {
+                    layer.alert("保存成功", {icon: 6, closeBtn:0},function () {
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                        x_admin_father_reload();
+                    });
+                }else {
+                    layer.msg(rs.msg);
+                }
+            })
+            //发异步，把数据提交给php
+            
+            return false;
+          });
+
+
+        
+
+        
+        });
+
+
+         function editData(data) {
+          layui.use('form', function(){
+              $("input[name='id']").val(data.id);
+              $("#brand_name").val(data.brand_name);
+              $("#brand_url").val(data.brand_url);
+              $("input[name='brand_logo']").val(data.brand_logo);
+              $("#upload_img").attr('src',data.brand_logo);
+              $("#brand_keywords").val(data.brand_keywords);
+              $("input[name='disabled'][value=1]").attr('checked',data.disabled == 1 ?true:false);
+              $("input[name='disabled'][value=0]").attr('checked',data.disabled == 0 ?true:false);
+              $("#brand_desc").val(data.brand_desc);
+              layui.form.render();
+            });
+          }
+
+
+    </script>
+   
+  </body>
+
+</html>

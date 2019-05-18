@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // |  liuguogen <liuguogen_vip@163.com>
 // +----------------------------------------------------------------------
-namespace api\v1\admin\brands;
+namespace api\v1\admin\specification;
 use \think\exception\HttpException;
 use \think\helper;
 use \think\Db;
@@ -17,10 +17,11 @@ use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
 use \model\Brands;
+# use \think\cache\driver\Redis;
 /**
  * 
  */
-class brand
+class spec
 {
 
 
@@ -48,18 +49,10 @@ class brand
     }
 
 
-    private function getField() {
-    	 $return['field'] =   [
-    		['field'=>'id','title'=>'编号','width'=>'80','sort'=>true,'fixed'=>'left'],
-    		['field'=>'brand_name','title'=>'品牌名称','width'=>'80','sort'=>false,'fixed'=>''],
-    		['field'=>'brand_url','title'=>'品牌地址','width'=>'80','sort'=>false,'fixed'=>''],
-    	];
-
-    	return $return;
-    }
+    
 
     /**
-     * 保存品牌
+     * 保存规格
      * @param  [type] $params [description]
      * @return [type]         [description]
      */
@@ -67,16 +60,16 @@ class brand
     {
     	$validate = new Validate([
 		    
-		    'brand_name' => 'require'
+		    'spec_name' => 'require'
 		],[
-			'brand_name.require'=>'品牌名称必填'
+			'spec_name.require'=>'规格名称必填'
 		]);
-		$check_data = [
+		$checkData = [
 		   
-		    'brand_name' => $params['brand_name'],
+		    'spec_name' => $params['spec_name'],
 		];
 
-		if (!$validate->check($check_data)) {
+		if (!$validate->check($checkData)) {
 		    throw new HttpException(404,$validate->getError());
 		}
 
@@ -109,31 +102,12 @@ class brand
 	 */
 	public function get(array $params) {
 
-
-		
-		/*$validate = new Validate([
-		    
-		    'accessToken' => 'require'
-		]);
-		$data = [
-		   
-		    'accessToken' => $params['accessToken'],
-		];
-
-		if (!$validate->check($data)) {
-		    throw new HttpException(404,$validate->getError());
-		}
-		$id = userMake::check(trim($params['accessToken']));
-		if(!$id) {
-			throw new HttpException(404,'解析用户ID错误！');
-		}*/
-
-		
+		$brandMdl = model('brands');
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
 		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:1;
 		unset($params['limit'],$params['page']);
-		$brandList['count'] = $this->brandMdl->where(array_filter($params))->count();
-		$brandList['data'] = $this->brandMdl->where(array_filter($params))->limit(''.$offset.','.$limit.'')->select();
+		$brandList['count'] = $brandMdl->where(array_filter($params))->count();
+		$brandList['data'] = $brandMdl->where(array_filter($params))->limit(''.$offset.','.$limit.'')->select();
 		return $brandList;
 	}
 

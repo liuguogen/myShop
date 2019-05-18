@@ -44,7 +44,7 @@ class role
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
-	public function save($params)
+	public function save(array $params)
 	{
 		$menuList = Config::load(CONF_PATH . DS . 'menu' . EXT)['menulist'];
 		$role_name = $params['role_name'];
@@ -102,7 +102,7 @@ class role
 	 * @param  [type] $params [description]
 	 * @return [type]         [description]
 	 */
-	public function get($params) {
+	public function get(array $params) {
 		$roleMdl = model('roles');
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
 		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;

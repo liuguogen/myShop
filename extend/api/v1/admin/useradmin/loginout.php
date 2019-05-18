@@ -42,7 +42,7 @@ class loginout
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
-	public function loginout($params) {
+	public function loginout(array $params) {
 		
 		$validate = new Validate([
 		    
@@ -69,7 +69,7 @@ class loginout
 		return ['data'=>'succ'];
 	}
 
-	public function saveAdmin($params) {
+	public function saveAdmin(array $params) {
 
 
 		if(!isset($params['username'])) {

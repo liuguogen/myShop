@@ -40,11 +40,11 @@ class menulist
     }
 	
 	/**
-	 * 退出登录
+	 * 获取菜单
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
-	public function get($params) {
+	public function get(array  $params) {
 		
 		$validate = new Validate([
 		    

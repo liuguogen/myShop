@@ -43,7 +43,7 @@ class user
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
-	public function login($params)
+	public function login(array $params)
 	{
 
 	
@@ -64,7 +64,7 @@ class user
 		//$hashedPassword = $PasswordHashs->HashPassword($password); 
 		
 		
-		$adminData = model('admin')->field('id,username,password,is_disabled')->where('username',trim($params['username']))->find();
+		$adminData = model('admin')->field('id,username,password,avatar,is_disabled')->where('username',trim($params['username']))->find();
 
 		if(!$adminData) {
 			throw new HttpException(404,'没有该用户!');
@@ -88,7 +88,7 @@ class user
 		cookie('accessToken',$accessToken,time()+3600*24*7);
 		cookie('adminName',$adminData['username'],time()+3600*24*7);
 
-		return ['data'=>['accessToken'=>$accessToken,'username'=>$adminData['username']]];
+		return ['data'=>['accessToken'=>$accessToken,'username'=>$adminData['username'],'avatar'=>$adminData['avatar']]];
 			
 		
 		
@@ -100,7 +100,7 @@ class user
 	 * @param  [type] $params [description]
 	 * @return [type]         [description]
 	 */
-	public function get($params)
+	public function get(array $params)
 	{
 		$adminMdl = model('admin');
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
@@ -116,27 +116,9 @@ class user
 		}
 		return $adminList;
 	}
-	/**
-	 * 退出登录
-	 * @param  [type] $data [description]
-	 * @return [type]       [description]
-	 */
-	public function loginout($data) {
-		
-		if(!isset($data['admin_id'])) {
+	
 
-			throw new HttpException(404,'admin_id不能为空!');
-		}
-		$adminData = db('admin')->where('admin_id',intval($data['admin_id']))->find();
-		if(!$adminData) {
-			throw new HttpException(404,'没有该用户'.$adminData['username']);
-		}
-		cookie('adminId',null);
-		cookie('adminName',null);
-		return ['data'=>'succ'];
-	}
-
-	public function save($params) {
+	public function save(array $params) {
 
 		if(isset($params['file'])) {
 			unset($params['file']);
@@ -193,68 +175,7 @@ class user
 		return ['data'=>$flag];
 	}
 
-	public function getAdmin($params)
-	{
-		
-		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
-		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;
-		if(isset($params['username']) && $params['username']) {
-			$count = Db::table('admin')->where('username','like','%'.trim($params['username']).'%')->count();
-		}else {
-			$count = Db::table('admin')->count();
-		}
-		
-
-		if(isset($params['admin_id']) && $params['admin_id']) {
-			
-			$data = Db::table('admin')->where('admin_id',intval($params['admin_id']))->find();
-			
-		}elseif (isset($params['username']) && $params['username']) {
-			$data = Db::table('admin')->where('username','like','%'.trim($params['username']).'%')->limit(''.$offset.','.$limit.'')->select(); 
-			foreach ($data as $key => &$value) {
-				$department_name = Db::table('department')->where('department_id',$value['department_id'])->value('department_name');
-				
-				$group_name = Db::table('user_group')->where('group_id',$value['group_id'])->value('group_name');
-				
-				$value['department_name'] = $department_name ?:'';
-				$value['group_name'] = $group_name ?:'';
-
-
-			}
-		}else {
-			$data = Db::table('admin')->order('admin_id desc')->limit(''.$offset.','.$limit.'')->select(); 
-
-			foreach ($data as $key => &$value) {
-				$department_name = Db::table('department')->where('department_id',$value['department_id'])->value('department_name');
-				
-				$group_name = Db::table('user_group')->where('group_id',$value['group_id'])->value('group_name');
-				
-				$value['department_name'] = $department_name ?:'';
-				$value['group_name'] = $group_name ?:'';
-
-
-			}
-		}
-		
-		if(!$data) {
-			throw new HttpException(404,'暂无数据!');
-		}
-		return ['data'=>$data,'count'=>$count?:0];
-	}
-
-	public function delAdmin($params)
-	{
-		if(!isset($params['admin_id'])) {
-
-			throw new HttpException(404,'admin_id不能为空!');
-		}
-
-		$flag = Db::table('admin')->where('admin_id',intval($params['admin_id']))->delete();
-		if(!$flag){
-			throw new HttpException(404,'删除失败!');
-		}
-		return ['data'=>$flag];
-	}
+	
 }
 
 ?>
