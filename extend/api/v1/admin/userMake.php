@@ -12,6 +12,7 @@
 namespace api\v1\admin;
 
 use \think\Cache;
+use \think\exception\HttpResponseException;
 class userMake  {
 
     public static $expire = '2592000';//60*60*24*30
@@ -74,7 +75,7 @@ class userMake  {
      * @param  int  $length
      * @return string
      *
-     * @throws \RuntimeException
+     * @throws HttpResponseException
      */
    static private  function str_random($length = 16)
     {
@@ -84,7 +85,7 @@ class userMake  {
 
             if ($bytes === false)
             {
-                throw new \RuntimeException('Unable to generate random string.');
+                throw new HttpResponseException('Unable to generate random string.');
             }
 
             return substr(str_replace(array('/', '+', '='), '', base64_encode($bytes)), 0, $length);
