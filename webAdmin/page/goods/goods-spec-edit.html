@@ -28,47 +28,24 @@
             <form action="" method="post" class="layui-form layui-form-pane">
               <input type="hidden" name="id" />
                 <div class="layui-form-item">
-                    <label for="brand_name" class="layui-form-label">
-                        <span class="x-red">*</span>品牌名称
+                    <label for="spec_name" class="layui-form-label">
+                        <span class="x-red">*</span>规格名称
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="brand_name" name="brand_name" required="" lay-verify="required"
+                        <input type="text" id="spec_name" name="spec_name" required="" lay-verify="required"
                         autocomplete="off" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <label for="brand_url" class="layui-form-label">
-                        <span class="x-red"></span>品牌地址
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="text" id="brand_url" name="brand_url" 
-                        autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="brand_logo" class="layui-form-label">
-                        <span class="x-red"></span>品牌LOGO
-                    </label>
-                    <div class="layui-input-inline layui-upload">
-                          <button type="button" class="layui-btn" id="brand_logo">
-                            <i class="layui-icon">&#xe67c;</i>上传图片
-                          </button>
-                          <input class="layui-upload-file" type="file" accept="*" name="file">
-                          <input type="hidden" name="brand_logo" />
-                          <div class="layui-upload-list">
-                            <img class="layui-upload-img" height="80" id="upload_img">
-                          <!-- <p id="demoText"></p> -->
-                          </div>
-                      </div>
-                </div>
+                
+                
 
 
                 <div class="layui-form-item">
-                    <label for="brand_keywords" class="layui-form-label">
-                        <span class="x-red"></span>品牌别名
+                    <label for="spec_alias" class="layui-form-label">
+                        <span class="x-red"></span>规格别名
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="brand_keywords" name="brand_keywords"
+                        <input type="text" id="spec_alias" name="spec_alias"
                         autocomplete="off" class="layui-input">
                     </div>
 
@@ -76,25 +53,50 @@
                           <span class="x-red">*</span>（多个别名以|分隔）
                       </div>
                 </div>
+                 <div class="layui-form-item">
+                    <label for="spec_memo" class="layui-form-label">
+                        <span class="x-red"></span>规格备注
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="spec_memo" name="spec_memo"
+                        autocomplete="off" class="layui-input">
+                    </div>
 
+                    <!-- <div class="layui-form-mid layui-word-aux">
+                          <span class="x-red">*</span>（多个别名以|分隔）
+                      </div> -->
+                </div>
                 <div class="layui-form-item">
                     <label for="disabled" class="layui-form-label">
                         <span class="x-red">*</span>是否启用
                     </label>
                     <div class="layui-input-inline">
-                        <input type="radio" class="layui-input" name="disabled" checked="checked" value="1" title="是"> 
-                    <input type="radio" class="layui-input" name="disabled" value="0" title="否"> 
+                        <!-- <input type = "checkbox" name = "disabled"  lay-skin = "switch" lay-text = "是|否" lay-filter = "sexDemo" > -->
+
+                        <input type="checkbox" name="disabled" lay-filter = "disabled" lay-text="是|否"  checked="" lay-skin="switch">
                     </div>
 
                    
                 </div>
                 <div class="layui-form-item layui-form-text">
-                    <label for="desc" class="layui-form-label">
-                        品牌描述
-                    </label>
-                    <div class="layui-input-block">
-                        <textarea placeholder="请输入品牌描述" id="brand_desc" name="brand_desc" class="layui-textarea"></textarea>
-                    </div>
+                    
+                    <div class="layui-btn add-spec-values">添加规格值</div>
+                    
+                    <table class="layui-table">
+
+                      <thead>
+                        <tr>
+                          <th>规格值名称</th>
+                          <th>规格值别名</th>
+                          <th>操作</th>
+                        </tr> 
+                      </thead>
+
+                      <tbody id="spec_values">
+                        
+                        
+                      </tbody>
+                    </table>
                 </div>
                 <div class="layui-form-item" style="text-align: center;">
                 <button class="layui-btn" lay-submit="" lay-filter="add">保存</button>
@@ -105,7 +107,6 @@
     <script type="text/javascript" src="../../js/config.js"></script>
     <script>
         layui.use(['form','layer','upload'], function(){
-            $ = layui.jquery;
           var form = layui.form
           ,layer = layui.layer
           ,upload = layui.upload;
@@ -187,7 +188,17 @@
             });
           }
 
+        $('.add-spec-values').on('click',function(ev){
+          var spec_values_html = '';
+          var i=new Date().getTime();
+          spec_values_html+='<tr>'
+          +'<td><input type="text" id="spec_values['+i+'][spec_value]" name="spec_values['+i+'][spec_value]" required="" lay-verify="required" autocomplete="off" class="layui-input"></td>'
+          +'<td><input type="text" id="spec_values['+i+'][spec_alias]" name="spec_values['+i+'][spec_alias]"  autocomplete="off" class="layui-input"></td>'
+          +'<td><i style="cursor: pointer;" onclick="$(this).parent().parent().remove()" class="layui-icon">&#xe640;</i></td>'
+          +'<tr>';
 
+          $("#spec_values").append(spec_values_html);
+        })
     </script>
    
   </body>

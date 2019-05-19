@@ -21,4 +21,4 @@
 ];*/
 use think\Route;
 
-Route::any('Api','api/index');
+Route::any('Api','api/process');
