@@ -33,7 +33,11 @@ return  [
                 'role.get'=>['uses'=>'\roles\role@get','text'=>'获取角色列表'],
                 'image.upload.signle'=>['uses'=>'\images\image@singleUpload','text'=>'单个图片上传'],
                 'image.upload.multiple'=>['uses'=>'\images\image@multipleUpload','text'=>'多个图片上传'],
+                'spec.get'=>['uses'=>'\specification\spec@get','text'=>'规格获取'],
                 'spec.save'=>['uses'=>'\specification\spec@save','text'=>'规格保存'],
+                'spec.update'=>['uses'=>'\specification\spec@update','text'=>'更新规格数据'],
+                'spec.getrow'=>['uses'=>'\specification\spec@getRow','text'=>'获取规格单条数据'],
+                'spec.del'=>['uses'=>'\specification\spec@del','text'=>'删除规格'],
             ],
         ],
 

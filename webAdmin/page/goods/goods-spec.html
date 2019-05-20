@@ -91,7 +91,7 @@
             ,height: 420
             ,url: api.url //数据接口
             ,method:"post"
-            ,where:tableParams.getParams("brand.get")
+            ,where:tableParams.getParams("spec.get")
             ,title: '商品规格列表'
             ,page: true //开启分页
             ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
@@ -99,9 +99,8 @@
             ,cols: [[ //表头
               {type: 'checkbox', fixed: 'left'}
               ,{field: 'id', title: '编号',  sort: true, fixed: 'left',width:80}
-              ,{field: 'spec_name', title: '规格名称', }
-              ,{field: 'brand_url', title: '品牌地址',width:100 }
-              ,{field: 'brand_desc', title: '品牌介绍',width:100 }
+              ,{field: 'spec_name', title: '规格名称', width:180 }
+              ,{field: 'spec_alias', title: '规格别名',width:250 }
               ,{field: 'disabled', title: '是否启用',templet: '#switchTpl',width:80}
               ,{field: 'create_time', title: '创建时间', sort:true,width:160}
               ,{field: 'update_time', title: '最后更新时间', sort:true,width:160}
@@ -113,7 +112,7 @@
 
                 var id = data.elem.getAttribute('data-id');
                 var params  = {
-                    "method":"brand.update",
+                    "method":"spec.update",
                     "id":id,
                 }
 

@@ -16,7 +16,8 @@ use \think\Validate;
 use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
-use \model\Brands;
+use \model\Specs;
+use \model\SpecValues;
 # use \think\cache\driver\Redis;
 /**
  * 
@@ -29,7 +30,11 @@ class spec
 
 	public function __construct()
 	{
-		$this->brandMdl = model('brands');
+
+		$this->specMdl = model('specs');
+
+		$this->specValuesMdl = model('SpecValues');
+		
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
@@ -60,59 +65,98 @@ class spec
     {
     	$validate = new Validate([
 		    
-		    'spec_name' => 'require'
+		    'spec_name' => 'require',
+		    'spec_values'=>'require',
 		],[
-			'spec_name.require'=>'规格名称必填'
+			'spec_name.require'=>'规格名称必填',
+			'spec_values.require'=>'规格值必填',
 		]);
 		$checkData = [
 		   
 		    'spec_name' => $params['spec_name'],
+		    'spec_values' => $params['spec_values'],
 		];
 
 		if (!$validate->check($checkData)) {
 		    throw new HttpException(404,$validate->getError());
 		}
 
-		$data = [
-			'brand_name'=>trim($params['brand_name']),
-			'brand_logo'=>trim($params['brand_logo']),
-			'brand_url'=>trim($params['brand_url']),
-			'brand_keywords'=>serialize(explode('|',trim($params['brand_keywords']))),
-			'brand_desc'=>trim($params['brand_desc']),
-			'disabled'=>intval($params['disabled']),
-			'create_time'=>time(),
-		];
-		if(isset($params['id']) && $params['id']) {
-			$flag = $this->brandMdl->where(['id'=>intval($params['id'])])->update($data);
-		}else {
-			$flag = $this->brandMdl->save($data);
+		Db::startTrans();
+		
+		try {
+
+			$spec_value_data = $params['spec_values'];
+
+			unset($params['spec_values']);
+			if(isset($params['id']) && $params['id']) {
+			 	//update
+				
+				 $this->specMdl->where(['id'=>intval($params['id'])])->update($params);
+				 $spec_id = '';
+
+				 foreach ($spec_value_data as $key => &$value) {
+
+				 	$spec_id  = intval($value['spec_id']);
+				 	unset($value['spec_id']);
+
+				 	$this->specValuesMdl->where(['id'=>$spec_id])->update($value);
+				 	
+				 }
+
+				 
+			}else {
+				
+				//insert
+				$params['create_time'] = time();
+				$params['update_time'] = time();
+				$this->specMdl->insert($params);
+				$last_id = Db::table('spec')->getLastInsID();
+				foreach ($spec_value_data as $key => &$value) {
+					$value['spec_id'] = $last_id;
+				}
+
+				foreach ($spec_value_data as $k => $v) {
+					$this->specValuesMdl->insert($v);
+				}
+				
+			}
+
+
+			Db::commit();
+		} catch (\Exception $e) {
+			Db::rollback();
+			throw new HttpException(404,$e->getMessage());
 		}
 		
-		if(!$flag) {
-			throw new HttpException(404,'保存失败！');
-		}
-		return ['data'=>$flag];
+		
+		
+		return ['data'=>'true'];
 		
     }
 	
 	/**
-	 * 品牌获取
+	 * 规格获取
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
 	public function get(array $params) {
-
-		$brandMdl = model('brands');
+		
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
 		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:1;
 		unset($params['limit'],$params['page']);
-		$brandList['count'] = $brandMdl->where(array_filter($params))->count();
-		$brandList['data'] = $brandMdl->where(array_filter($params))->limit(''.$offset.','.$limit.'')->select();
-		return $brandList;
+		$specList['count'] = $this->specMdl->where(array_filter($params))->count();
+		
+		$specList['data'] = $this->specMdl->where(array_filter($params))->limit(''.$offset.','.$limit.'')->select();
+		// foreach ($specList['data'] as $key => &$value) {
+		// 	$value['item'] = $this->specMdl->spec_values()->where(['spec_id'=>$value['id']])->select();
+		// }
+		
+		
+		return $specList;
 	}
 
 	/**
-	 * 更新数据
+	 * 更新主数据
 	 * @param  array  $params [description]
 	 * @return [type]         [description]
 	 */
@@ -126,18 +170,18 @@ class spec
 		],[
 			'id.require'=>'ID必填'
 		]);
-		$check_data = [
+		$checkData = [
 		   
 		    'id' => intval($params['id']),
 		];
 
-		if (!$validate->check($check_data)) {
+		if (!$validate->check($checkData)) {
 		    throw new HttpException(404,$validate->getError());
 		}
 		$id = intval($params['id']);
 		unset($params['id']);
 		
-		$flag = $this->brandMdl->where(['id'=>$id])->update($params);
+		$flag = $this->specMdl->where(['id'=>$id])->update($params);
 		
 		if(!$flag) throw new HttpException(404,'修改失败！');
 		return ['data'=>$flag];
@@ -167,9 +211,45 @@ class spec
 
 		$id = intval($params['id']);
 		unset($params['id']);
-		$data['data'] = $this->brandMdl->where(['id'=>$id])->find();
-		$data['data']['brand_keywords'] = $data['data']['brand_keywords']? implode('|',unserialize($data['data']['brand_keywords'])) : '';
+		$data['data'] = $this->specMdl->where(['id'=>$id])->find();
+		$data['data']['item'] = $this->specValuesMdl->where(['spec_id'=>$id])->select();
 		return $data;
+	}
+	/**
+	 * 删除规格
+	 * @param  array
+	 * @return [type]
+	 */
+	public function del(array $params)
+	{
+		$validate = new Validate([
+		    
+		    'id' => 'require'
+		],[
+			'id.require'=>'ID必填'
+		]);
+		$checkData = [
+		   
+		    'id' => intval($params['id']),
+		];
+
+		if (!$validate->check($checkData)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+
+		Db::startTrans();
+
+		try {
+			
+			$this->specMdl->where(['id'=>intval($params['id'])])->delete();
+			$this->specValuesMdl->where(['spec_id'=>intval($params['id'])])->delete();
+			Db::commit();
+		} catch (\Exception $e) {
+			Db::rollback();
+			throw new HttpException(404,$e->getMessage());
+		}
+
+		return ['data'=>'true'];
 	}
 
 	
