@@ -8,7 +8,6 @@
 // +----------------------------------------------------------------------
 // | Author: liuguogen <liuguogen_vip@163.com>
 // +----------------------------------------------------------------------
-
 namespace think;
 use \think\exception\HttpResponseException;
 class Rpc
@@ -25,13 +24,10 @@ class Rpc
     {
         
         $apis = Config::load(CONF_PATH . DS . 'api' . EXT)['routes'][$version][$source]; 
-
         $version =  '\\'.$version; //版本
-
         $source = '\\'.$source; //来源
         
         if (!array_key_exists($method, $apis)){
-
             throw new HttpResponseException("Api [$method] not defined");        
         }
         list($class, $method) = explode('@', $apis[$method]['uses']);
@@ -41,7 +37,6 @@ class Rpc
         
         return call_user_func(array($instance, $method), $parameters);
         
-
         
     }
 }
