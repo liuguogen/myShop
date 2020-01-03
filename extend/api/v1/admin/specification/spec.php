@@ -123,6 +123,8 @@ class spec
 
 
 			Db::commit();
+
+			return ['spec_id'=>$last_id];
 		} catch (\Exception $e) {
 			Db::rollback();
 			throw new HttpException(404,$e->getMessage());
@@ -130,7 +132,7 @@ class spec
 		
 		
 		
-		return ['data'=>'true'];
+		
 		
     }
 	
@@ -244,12 +246,13 @@ class spec
 			$this->specMdl->where(['id'=>intval($params['id'])])->delete();
 			$this->specValuesMdl->where(['spec_id'=>intval($params['id'])])->delete();
 			Db::commit();
+			return ['id'=>intval($params['id'])];
 		} catch (\Exception $e) {
 			Db::rollback();
 			throw new HttpException(404,$e->getMessage());
 		}
 
-		return ['data'=>'true'];
+		
 	}
 
 	
