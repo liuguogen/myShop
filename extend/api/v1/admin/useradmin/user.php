@@ -100,7 +100,7 @@ class user
 	 * @param  [type] $params [description]
 	 * @return [type]         [description]
 	 */
-	public function get(array $params)
+	public function gets(array $params)
 	{
 		$adminMdl = model('admin');
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
@@ -116,8 +116,34 @@ class user
 		}
 		return $adminList;
 	}
-	
+	/**
+	 * 获取单条数据
+	 * @param  [type] $params [description]
+	 * @return [type]         [description]
+	 */
+	public function getRow($params)
+	{
+		$validate = new Validate([
+		    
+		    'id' => 'require'
+		],[
+			'id.require'=>'ID必填'
+		]);
+		$check_data = [
+		   
+		    'id' => intval($params['id']),
+		];
 
+		if (!$validate->check($check_data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+
+		$id = intval($params['id']);
+		unset($params['id']);
+		$data['data'] = model('admin')->field('id,username,avatar,role_id')->where(['id'=>$id])->find();
+		if(!$data) throw new HttpException(404,'暂无数据');
+		return $data ;
+	}
 	public function save(array $params) {
 
 		if(isset($params['file'])) {
@@ -163,16 +189,23 @@ class user
 
 		//校验用户是否已经使用
 		$check_user = model('admin')->field('id')->where('username',$params['username'])->find();
-		
-		if($check_user) {
+		if(!isset($params['id']) && !$params['id']) {
+			if($check_user) {
 
-			throw new HttpException(404,'该登录名已被使用请换一个！');
+				throw new HttpException(404,'该登录名已被使用请换一个！');
+			}
+		}	
+		
+		if(isset($params['id']) && $params['id']) {
+			$flag = model('admin')->where(['id'=>intval($params['id'])])->update($userData);
+		}else {
+			$flag = model('admin')->save($userData);
 		}
-		$flag = model('admin')->save($userData);
+		
 		if(!$flag) {
 			throw new HttpException(404,'保存失败！');
 		}
-		return ['data'=>$flag];
+		return ['id'=>isset($params['id']) ? $params['id'] : $flag];
 	}
 
 	

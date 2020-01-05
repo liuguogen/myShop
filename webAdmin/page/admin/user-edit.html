@@ -27,6 +27,8 @@
             <div class="layui-row">
                 <form class="layui-form">
                   <div class="layui-form-item">
+
+                    <input type="hidden" name="id" />
                       <label for="username" class="layui-form-label">
                           <span class="x-red">*</span>登录名
                       </label>
@@ -179,8 +181,8 @@ layui.use(['form', 'layer','upload'],function() {
 
 
       $('.dialog').on('click',function(e) {
-        dialog.radio({"method":"role.get","source":api.source,"version":api.version},'选择数据','../../page/select-radio-data.html','checkbox',[[ //表头
-              {type: 'radio', title: '选择', fixed: 'left'}
+        dialog.checkbox({"method":"role.get","source":api.source,"version":api.version},'选择数据','../../page/select-radio-data.html','checkbox',[[ //表头
+              {type: 'checkbox', title: '选择', fixed: 'left'}
               ,{field: 'id', title: '编号',  sort: true, fixed: 'left'}
               ,{field: 'role_name', title: '角色名', }
               ,{field: 'role_desc', title: '描述', }
@@ -188,11 +190,23 @@ layui.use(['form', 'layer','upload'],function() {
               ,{field: 'update_time', title: '最后更新时间', sort:true}
               
             ]]);
-      })
+      });
+
 
 });
 
+function editData(data) {
 
+  layui.use('form', function(){
+    $("input[name='id']").val(data.id);
+    $("#username").val(data.username);
+    $("#upload_img").attr('src', data.avatar);
+    $("input[name='avatar']").val(data.avatar);
+    layui.form.render();
+  });
+  
+          
+}
 </script>
        
 </body>

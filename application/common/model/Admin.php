@@ -48,15 +48,9 @@ class Admin extends Model {
 	{
 		
 		if($this->is_super($id)) {
-
 			$menuList = $this->__getMenu();
-			
-			
-			
 		}else {
-
 			$userData = $this->getUser($id);
-
 			$menuData = model('roles')->field('menu_data')->where('id',$userData['role_id'])->find()->toArray();
 			$menuList = unserialize($menuData['menu_data']);
 		}
@@ -67,30 +61,6 @@ class Admin extends Model {
 
 	private function __getMenu()
 	{
-		/*$menu = array(		
-				[
-					'title'=>'文章管理',
-					"icon" => "&#xe699;",
-					"href" => "",
-					"spread" => 'false',
-					'rule'=>'admin.article',
-					"children"=>[
-						
-						[
-							'title'=>'文章资源库',
-							"icon" => "&#xe6a7;",
-							"href" => "page/article/sourcelist.html",
-							"spread" => 'false',
-							'rule'=>'admin.articlesource.list',
-						]
-					],
-				],
-				
-				
-				
-			);
-
-		return $menu;*/
 		$menuList = Config::load(CONF_PATH . DS . 'menu' . EXT)['menulist']; //config('routes');
 		return $menuList;
 	}

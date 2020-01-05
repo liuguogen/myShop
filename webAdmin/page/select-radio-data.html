@@ -140,6 +140,10 @@
 	                    break;
 	                case 'save':
 	                	var data = checkStatus.data;
+                        console.log(checkStatus);
+                        if(data.length < 1){
+                            layer.msg('请选择数据!');return;
+                        }
 	                	$(window.parent.document).find(".dialog").empty();
 	                	$(window.parent.document).find(".dialog").append('<input type="hidden" value="'+data[0].id+'" name="role_id" />')
 

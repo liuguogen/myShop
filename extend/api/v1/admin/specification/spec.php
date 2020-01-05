@@ -90,7 +90,7 @@ class spec
 			unset($params['spec_values']);
 			if(isset($params['id']) && $params['id']) {
 			 	//update
-				
+				 $params['update_time'] = time();
 				 $this->specMdl->where(['id'=>intval($params['id'])])->update($params);
 				 $spec_id = '';
 
@@ -124,7 +124,7 @@ class spec
 
 			Db::commit();
 
-			return ['spec_id'=>$last_id];
+			return ['spec_id'=>isset($last_id) ? $last_id : intval($params['id'])];
 		} catch (\Exception $e) {
 			Db::rollback();
 			throw new HttpException(404,$e->getMessage());

@@ -89,6 +89,9 @@
             table.render({
              elem: '#table-data'
             ,height: 420
+            ,skin: 'line' //行边框风格
+            ,even: true //开启隔行背景
+            ,size: 'sm'
             ,url: api.url //数据接口
             ,method:"post"
             ,where:tableParams.getParams("brand.get")

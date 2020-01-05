@@ -22,7 +22,8 @@ return  [
 
                 'menu.get'=>['uses'=>'\menu\menulist@get','text'=>'获取菜单列表'],
                 'admin.login'=>['uses'=>'\useradmin\user@login','text'=>'后台用户登录'],
-                'admin.get'=>['uses'=>'\useradmin\user@get','text'=>'获取后台用户'],
+                'admin.user.get'=>['uses'=>'\useradmin\user@gets','text'=>'获取后台用户'],
+                'admin.user.getrow'=>['uses'=>'\useradmin\user@getRow','text'=>'获取后台用户单条数据'],
                 'admin.user.save'=>['uses'=>'\useradmin\user@save','text'=>'保存后台用户'],
                 'admin.loginout'=>['uses'=>'\useradmin\loginout@loginout','text'=>'后台用户退出'],
                 'brand.get'=>['uses'=>'\brands\brand@get','text'=>'获取品牌列表'],
