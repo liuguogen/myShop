@@ -33,6 +33,16 @@ return [
 				['label'=>'商品品牌','rule'=>'goods.brand','parent'=>'goods_rule','href'=>'page/goods/brand.html'],
 			],
 		],
+		'order_rule'=>[
+			'label'=>'订单管理',
+			'icon'=>'&#xe6a2;',
+			'href'=>'',
+			'rule'=>'order_rule',
+			'children'=>[
+				['label'=>'订单列表','rule'=>'order.list','parent'=>'order_rule','href'=>'page/order/order-list.html'],
+				
+			],
+		],
 		'member_rule'=>[
 			'label'=>'会员管理',
 			'icon'=>'&#xe6b8;',
