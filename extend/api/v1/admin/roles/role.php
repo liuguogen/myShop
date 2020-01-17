@@ -102,7 +102,7 @@ class role
 	 * @param  [type] $params [description]
 	 * @return [type]         [description]
 	 */
-	public function get(array $params) {
+	public function gets(array $params) {
 		$roleMdl = model('roles');
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
 		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;
@@ -112,7 +112,30 @@ class role
 	}
 	
 
-	
+	public function getRow(array $params)
+	{
+
+		$validate = new Validate([
+		    
+		    'id' => 'require'
+		],[
+			'id.require'=>'ID必填'
+		]);
+		$check_data = [
+		   
+		    'id' => intval($params['id']),
+		];
+
+		if (!$validate->check($check_data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+
+		$data = model('roles')->field('id,role_name,role_params,role_desc')->where(['id'=>intval($params['id'])])->find();
+		
+		if(!$data) throw new HttpException(404,'获取失败');
+		$data['role_params'] = unserialize($data['role_params']);
+		return ['data'=>$data] ;
+	}
 
 	
 }

@@ -121,7 +121,7 @@ class user
 	 * @param  [type] $params [description]
 	 * @return [type]         [description]
 	 */
-	public function getRow($params)
+	public function getRow(array $params)
 	{
 		$validate = new Validate([
 		    
@@ -140,9 +140,9 @@ class user
 
 		$id = intval($params['id']);
 		unset($params['id']);
-		$data['data'] = model('admin')->field('id,username,avatar,role_id')->where(['id'=>$id])->find();
+		$data = model('admin')->field('id,username,avatar,role_id')->where(['id'=>$id])->find();
 		if(!$data) throw new HttpException(404,'暂无数据');
-		return $data ;
+		return ['data'=>$data] ;
 	}
 	public function save(array $params) {
 
@@ -207,7 +207,31 @@ class user
 		}
 		return ['id'=>isset($params['id']) ? $params['id'] : $flag];
 	}
+	/**
+	 * 删除用户
+	 * @param  [type] $params [description]
+	 * @return [type]         [description]
+	 */
+	public function delUser(array $params)
+	{
+		$validate = new Validate([
+		    
+		    'id' => 'require'
+		],[
+			'id.require'=>'ID必填'
+		]);
+		$check_data = [
+		   
+		    'id' => intval($params['id']),
+		];
 
+		if (!$validate->check($check_data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+		$flag = model('admin')->where(['id'=>intval($params['id'])])->delete();
+		if(!$flag) throw new HttpException(404,'删除失败');
+		return ['id'=>intval($params['id'])];
+	}
 	
 }
 

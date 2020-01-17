@@ -26,12 +26,13 @@
     <div class="layui-fluid">
         <div class="layui-row">
             <form action="" method="post" class="layui-form layui-form-pane">
+                 <input type="hidden" name="id" />
                 <div class="layui-form-item">
-                    <label for="name" class="layui-form-label">
+                    <label for="role_name" class="layui-form-label">
                         <span class="x-red">*</span>角色名
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="name" name="role_name" required="" lay-verify="required"
+                        <input type="text" id="role_name" name="role_name" required="" lay-verify="required"
                         autocomplete="off" class="layui-input">
                     </div>
                 </div>
@@ -138,6 +139,14 @@
 
           
         });
+
+        function editData(data) {
+            layui.use(['form'],function(){
+                $("input[name='id']").val(data.id);
+                $("#role_name").val(data.role_name);
+                $("#role_desc").val(data.role_desc);
+            })
+        }
     </script>
    
   </body>

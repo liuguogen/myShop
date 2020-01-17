@@ -89,9 +89,6 @@
             table.render({
              elem: '#table-data'
             ,height: 420
-            ,skin: 'line' //行边框风格
-            ,even: true //开启隔行背景
-            ,size: 'sm'
             ,url: api.url //数据接口
             ,method:"post"
             ,where:tableParams.getParams("brand.get")
@@ -102,8 +99,8 @@
             ,cols: [[ //表头
               {type: 'checkbox', fixed: 'left'}
               ,{field: 'id', title: '编号',  sort: true, fixed: 'left',width:80}
-              ,{field: 'brand_name', title: '品牌名称', width:180}
-              ,{field: 'brand_url', title: '品牌地址',width:250 }
+              ,{field: 'brand_name', title: '品牌名称', width:100}
+              ,{field: 'brand_url', title: '品牌地址',width:180 }
               ,{field: 'brand_desc', title: '品牌介绍',width:150 }
               ,{field: 'disabled', title: '是否启用',templet: '#switchTpl',width:80}
               ,{field: 'create_time', title: '创建时间', sort:true,width:160}
@@ -127,6 +124,7 @@
                 Shop.post(params,function(rs) {
                     if(rs.code ==0) {
                         layer.msg('修改成功');
+                        form.render();
                     }else {
                         layer.msg(rs.msg);
                     }
@@ -169,8 +167,15 @@
                   layer.msg('查看操作');
                 } else if(layEvent === 'del'){
                   layer.confirm('确认删除吗？', function(index){
-                    obj.del(); //删除对应行（tr）的DOM结构
-                    layer.close(index);
+                    
+                    Shop.post({method:"brand.del",id:data.id},function(rs){
+                        if(rs.code ==0) {
+                            obj.del(); //删除对应行（tr）的DOM结构
+                            layer.close(index);
+                        }else {
+                            layer.msg(rs.msg);
+                        }
+                    })
                     //向服务端发送删除指令
                   });
                 } else if(layEvent === 'edit'){

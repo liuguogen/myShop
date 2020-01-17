@@ -1,5 +1,5 @@
 var api = {
-	"url":"http://localhost:8000/api",
+	"url":"http://myshop-server.com:8000/index.php/api",
 	"appKey":"iWtWFgNCXSFNkSGGFZ2lKN1xIeK7cRIK",
 	"version":"v1",
 	"source":"admin",

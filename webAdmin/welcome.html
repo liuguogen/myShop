@@ -33,11 +33,11 @@
 
                                     var year = date.getFullYear();
 
-                                    var month = date.getMonth()+1;
-                                    var day = date.getDate();
-                                    var hour = date.getHours();
+                                    var month = (date.getMonth()+1) < 10 ? '0' + (date.getMonth()+1) : (date.getMonth()+1);
+                                    var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                                    var hour = date.getHours() ;
                                     var minute = date.getMinutes();
-                                    var second = date.getSeconds();
+                                    var second = date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds();
 
                                     document.write(year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second)
                                 </script>
@@ -192,25 +192,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="layui-col-md12">
-                    <div class="layui-card">
-                        <div class="layui-card-header">开发团队</div>
-                        <div class="layui-card-body ">
-                            <table class="layui-table">
-                                <tbody>
-                                    <tr>
-                                        <th>版权所有</th>
-                                        <td>xuebingsi(xuebingsi)
-                                            <a href="http://x.xuebingsi.com/" target="_blank">访问官网</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th>开发者</th>
-                                        <td>马志斌(113664000@qq.com)</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                
                 <style id="welcome_style"></style>
                 
             </div>

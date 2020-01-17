@@ -162,7 +162,7 @@ class brand
 		}
 		$id = intval($params['id']);
 		unset($params['id']);
-		
+		$params['update_time'] = time();
 		$flag = $this->brandMdl->where(['id'=>$id])->update($params);
 		
 		if(!$flag) throw new HttpException(404,'修改失败！');
@@ -193,12 +193,33 @@ class brand
 
 		$id = intval($params['id']);
 		unset($params['id']);
-		$data['data'] = $this->brandMdl->where(['id'=>$id])->find();
+		$rs = $this->brandMdl->where(['id'=>$id])->find();
+		
+		if(!$rs) throw new HttpException(404,'获取失败');
+		$data['data'] = $rs;
 		$data['data']['brand_keywords'] = $data['data']['brand_keywords']? implode('|',unserialize($data['data']['brand_keywords'])) : '';
 		return $data;
 	}
 
-	
+	public  function delBrand($params)
+	{
+		$validate = new Validate([
+		    
+		    'id' => 'require'
+		],[
+			'id.require'=>'ID必填'
+		]);
+		$check_data = [
+		   
+		    'id' => intval($params['id']),
+		];
+		if (!$validate->check($check_data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+		$flag = $this->brandMdl->where(['id'=>intval($params['id'])])->delete();
+		if(!$flag) throw new HttpException(404,'删除失败');
+		return ['id'=>intval($params['id'])];
+	}
 }
 
 ?>

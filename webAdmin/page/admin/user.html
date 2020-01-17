@@ -155,9 +155,16 @@
             if(layEvent === 'detail'){
               tableParams.editData('admin.user.getrow',data.id,'查看管理员','/page/admin/user-edit.html')
             } else if(layEvent === 'del'){
-              layer.confirm('真的删除行么', function(index){
-                obj.del(); //删除对应行（tr）的DOM结构
-                layer.close(index);
+              layer.confirm('确认删除吗？', function(index){
+                
+                Shop.post({method:"admin.user.del",id:data.id},function(rs){
+                    if(rs.code==0) {
+                        obj.del(); //删除对应行（tr）的DOM结构
+                        layer.close(index);
+                    }else {
+                        layer.msg(rs.msg);
+                    }
+                })
                 //向服务端发送删除指令
               });
             } else if(layEvent === 'edit'){
