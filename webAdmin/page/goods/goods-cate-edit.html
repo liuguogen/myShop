@@ -1,48 +1,47 @@
 <!DOCTYPE html>
 <html class="x-admin-sm">
-    
-    <head>
-        <meta charset="UTF-8">
-        <title>后台商城管理系统</title>
-        <meta name="renderer" content="webkit">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
-         <link rel="stylesheet" href="../../css/font.css">
-        <link rel="stylesheet" href="../../css/xadmin.css">
-        <link rel="stylesheet" href="../../css/theme4.css">
-        <script type="text/javascript" src="../../js/jquery.min.js"></script>
-        <script type="text/javascript" src="../../lib/layui/layui.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../../js/xadmin.js"></script>
-        <script type="text/javascript" src="../../js/md5.min.js"></script>
-        <script type="text/javascript" src="../../js/cookie.js"></script>
-        <script type="text/javascript" src="../../js/config.js"></script>
-        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
-        <!--[if lt IE 9]>
-            <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-            <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
-    </head>
-    <body>
-        <div class="layui-fluid">
-            <div class="layui-row">
-                <form class="layui-form">
-                  <div class="layui-form-item">
-
-                    <input type="hidden" name="id" />
-                      <label for="cate_name" class="layui-form-label">
-                          <span class="x-red">*</span>分类名称
-                      </label>
-                      <div class="layui-input-inline">
-                          <input type="text" id="cate_name" name="cate_name" required="" lay-verify="required"
-                          autocomplete="off" class="layui-input">
-                      </div>
-                      
-                  </div>
-                  <div class="layui-form-item">
-                      <label for="cate_img" class="layui-form-label">
-                          <span class="x-red">*</span>分类图标
-                      </label>
-                      <div class="layui-input-inline layui-upload">
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>后台商城管理系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="../../css/font.css">
+    <link rel="stylesheet" href="../../css/xadmin.css">
+    <link rel="stylesheet" href="../../css/theme4.css">
+    <script type="text/javascript" src="../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../js/xadmin.js"></script>
+    <script type="text/javascript" src="../../js/md5.min.js"></script>
+    <script type="text/javascript" src="../../js/cookie.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <form action="" method="post" class="layui-form layui-form-pane">
+              <input type="hidden" name="id" />
+                <div class="layui-form-item">
+                    <label for="cate_name" class="layui-form-label">
+                        <span class="x-red">*</span>分类名称
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="cate_name" name="cate_name" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <label for="cate_img" class="layui-form-label">
+                        <span class="x-red"></span>分类图片
+                    </label>
+                    <div class="layui-input-inline layui-upload">
                           <button type="button" class="layui-btn" id="cate_img">
                             <i class="layui-icon">&#xe67c;</i>上传图片
                           </button>
@@ -53,60 +52,41 @@
                           <!-- <p id="demoText"></p> -->
                           </div>
                       </div>
-
-                      <div class="layui-form-mid layui-word-aux">
-                          <span class="x-red">*</span>图片尺寸80*80
-                      </div>
-                      
-                  </div>
-                  <div class="layui-form-item">
-                      <label class="layui-form-label"><span class="x-red">*</span>角色</label>
-                      <div class="layui-input-block">
-                      <input type="button" class="layui-btn dialog" value="请选择">
+                </div>
 
 
-                      </div>
-                  </div>
-                  <div class="layui-form-item">
-                      <label for="L_password" class="layui-form-label">
-                          <span class="x-red">*</span>密码
-                      </label>
-                      <div class="layui-input-inline">
-                          <input type="password" id="L_password" name="password" required="" lay-verify="password"
-                          autocomplete="off" class="layui-input">
-                      </div>
-                      <div class="layui-form-mid layui-word-aux">
-                          6到16个字符
-                      </div>
-                  </div>
-                  <div class="layui-form-item">
-                      <label for="L_repass" class="layui-form-label">
-                          <span class="x-red">*</span>确认密码
-                      </label>
-                      <div class="layui-input-inline">
-                          <input type="password" id="L_repass" name="password_confrim" required="" lay-verify="repass"
-                          autocomplete="off" class="layui-input">
-                      </div>
-                  </div>
-                  <div class="layui-form-item">
-                      <label for="" class="layui-form-label">
-                      </label>
-                      <button  class="layui-btn" lay-filter="add" lay-submit="">
-                          保存
-                      </button>
-                  </div>
-              </form>
-            </div>
-        </div>
-<script type="text/javascript" src="../../js/user.js"></script>
-<script>
-layui.use(['form', 'layer','upload'],function() {
-                var form = layui.form,
-                upload = layui.upload,
-                layer = layui.layer;
                 
-                upload.render({
-                  elem:"#avatar",
+                <div class="layui-form-item">
+                    <label for="disabled" class="layui-form-label">
+                        <span class="x-red">*</span>是否启用
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="disabled" lay-filter = "disabled" lay-text="是|否"  checked="" lay-skin="switch">
+                    </div>
+
+                   
+                </div>
+                
+                <div class="layui-form-item" style="text-align: center;">
+                  <button class="layui-btn" lay-submit="" lay-filter="add">保存</button>
+              </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript" src="../../js/config.js"></script>
+    <script>
+        layui.use(['form','layer','upload'], function(){
+          var form = layui.form
+          ,layer = layui.layer
+          ,upload = layui.upload;
+        
+          //自定义验证规则
+           
+          
+          
+          //图片上传
+          upload.render({
+                  elem:"#cate_img",
                   url:api.url+'?method=image.upload.signle&source='+api.source+'&version='+api.version+'&sign='+signs.gen_sign({"method":"image.upload.signle","version":api.version,"source":api.source}),
                   accept:'images',
                   exts:'jpg|png|gif|bmp|jpeg',
@@ -121,7 +101,7 @@ layui.use(['form', 'layer','upload'],function() {
                       $("input[name='cate_img']").val(data.src);
                       layer.closeAll('loading');
                     }else {
-                      //layer.msg(rs.msg);
+                      
                       layer.closeAll('loading');
                     }
                     
@@ -131,69 +111,55 @@ layui.use(['form', 'layer','upload'],function() {
                   }
 
                 });
-                //监听提交
-                form.on('submit(add)',function(data) {
-                    
-
-                    data.field.method = 'admin.user.save'
-                    Shop.post(data.field,function(rs){
-                      if(rs.code==0) {
-                          layer.alert("保存成功", {
-                              icon: 6,
-                              closeBtn:0
-                          },
-                          function() {
-                              // 获得frame索引
-                            var index = parent.layer.getFrameIndex(window.name);
-                            //关闭当前frame
-                            parent.layer.close(index);
-                            // 可以对父窗口进行刷新 
-                            x_admin_father_reload();
-                          });
-                      }else {
-                        layer.msg(rs.msg);
-                      }
-                    })
-                    //发异步，把数据提交给php
-                    
-                    return false;
-                });
 
 
+          //监听提交
+          form.on('submit(add)', function(data){
+            
+            data.field.method = "cate.save";
+            data.field.disabled = data.field.disabled =='on' ? 1 :0;
+            Shop.post(data.field,function(rs){
+                if(rs.code == 0) {
+                    layer.alert("保存成功", {icon: 6, closeBtn:0},function () {
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                        x_admin_father_reload();
+                    });
+                }else {
+                    layer.msg(rs.msg);
+                }
+            })
+            return false;
+          });
 
-     
+
+        
+
+        
+        });
 
 
+         function editData(data) {
+          layui.use('form', function(){
+              $("input[name='id']").val(data.id);
+              $("#brand_name").val(data.brand_name);
+              $("#brand_url").val(data.brand_url);
+              $("input[name='brand_logo']").val(data.brand_logo);
+              $("#upload_img").attr('src',data.brand_logo);
+              $("#brand_keywords").val(data.brand_keywords);
+              //$("input[name='disabled'][value=1]").attr('checked',data.disabled == 1 ?true:false);
+              //$("input[name='disabled'][value=0]").attr('checked',data.disabled == 0 ?true:false);
+              $("input[name='disabled']").attr('checked',data.disabled == 1 ?true:false);
+              $("#brand_desc").val(data.brand_desc);
+              layui.form.render();
+            });
+          }
 
-      $('.dialog').on('click',function(e) {
-        dialog.checkbox({"method":"role.get","source":api.source,"version":api.version},'选择数据','../../page/select-radio-data.html','checkbox',[[ //表头
-              {type: 'checkbox', title: '选择', fixed: 'left'}
-              ,{field: 'id', title: '编号',  sort: true, fixed: 'left'}
-              ,{field: 'role_name', title: '角色名', }
-              ,{field: 'role_desc', title: '描述', }
-              ,{field: 'create_time', title: '创建时间', sort:true}
-              ,{field: 'update_time', title: '最后更新时间', sort:true}
-              
-            ]]);
-      });
 
-
-});
-
-function editData(data) {
-
-  layui.use('form', function(){
-    $("input[name='id']").val(data.id);
-    $("#username").val(data.username);
-    $("#upload_img").attr('src', data.avatar);
-    $("input[name='avatar']").val(data.avatar);
-    layui.form.render();
-  });
-  
-          
-}
-</script>
-       
-</body>
+    </script>
+   
+  </body>
 
 </html>
