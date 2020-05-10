@@ -2,6 +2,7 @@
 
 namespace app\common\model;
 use \think\Model;
+
 class GoodsCate extends Model {
 
 	protected $pk = 'id';
