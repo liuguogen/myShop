@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 namespace think;
 use \think\exception\HttpResponseException;
+
 class Rpc
 {
     /**
