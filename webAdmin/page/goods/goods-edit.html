@@ -15,6 +15,13 @@
     <script type="text/javascript" src="../../js/xadmin.js"></script>
     <script type="text/javascript" src="../../js/md5.min.js"></script>
     <script type="text/javascript" src="../../js/cookie.js"></script>
+
+    <script type="text/javascript" src="../../js/UEditor/ueditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" src="../../js/UEditor/ueditor.all.js"></script>
+
+    <script type="text/javascript" src="../../js/xiumi-ue-dialog-v5.js"></script>
+    <link rel="stylesheet" href="../../css/xiumi-ue-v5.css">
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -57,86 +64,322 @@
     <div class="layui-fluid">
         <div class="layui-row">
             <form action="" method="post" class="layui-form layui-form-pane">
+              <input type="hidden" name="id" />
               <div class="layui-form-item">
-                <label class="layui-form-label">选择分类</label>
-                <div class="layui-input-inline">
-                    <div class="layui-unselect layui-form-select downpanel">
-                        <div class="layui-select-title">
-                            <span class="layui-input layui-unselect" id="treeclass">选择分类</span>
-                            <input type="hidden" name="selectID" value="0">
-                            <i class="layui-edge"></i>
-                        </div>
-                        <dl class="layui-anim layui-anim-upbit">
-                            <dd>
-                                <ul id="classtree"></ul>
-                            </dd>
-                        </dl>
-                    </div>
+                <div class="layui-inline">
+                  <label class="layui-form-label"> <span class="x-red">*</span>商品分类</label>
+                  <div class="layui-input-inline">
+                    <select name="cate_id" id="select_cate" lay-verify="required">
+                      
+                    </select>
+                  </div>
                 </div>
             </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label"> <span class="x-red">*</span>品牌</label>
+              <div class="layui-input-inline layui-show-xs-block">
+                  <select id="select_brand" name="brand_id" lay-verify="required">
+                    
+                  </select>                  
+              </div>
+            </div>
+              <div class="layui-form-item">
+              <label class="layui-form-label"> <span class="x-red">*</span>类型</label>
+              <div class="layui-input-inline layui-show-xs-block">
+                    <select name="type_id" id="select_type" lay-verify="required">
+                    </select>
+              </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">商品规格</label>
+                <div class="layui-input-block">
+                  <input type="radio" name="goods_spec_type" value="signle" lay-filter="goods_spec" title="单规格" checked="">
+                  <input type="radio" name="goods_spec_type" value="many" lay-filter="goods_spec" title="多规格">
+                  
+                </div>
+              </div>
+              <div class="layui-form-item layui-form-text show-spec">
+                    
+                    <div class="layui-form-item layui-form-text">
+                      <span>颜色:</span>
+                      <div class="layui-input-block color-spec">
+                        <input type="checkbox" name="color[]"  lay-skin="primary" lay-filter="color" title="红色" >
+                        <input type="checkbox" name="color[]" lay-skin="primary" lay-filter="color" title="蓝色">
+                        <input type="checkbox" name="color[]" lay-skin="primary" lay-filter="color" title="紫色" >
+                      </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                      <span>重量:</span>
+                      <div class="layui-input-block weight-spec">
+                        <input type="checkbox" name="weight[]" lay-skin="primary" lay-filter="weight" value="120g" title="120g" >
+                        <input type="checkbox" name="weight[]" lay-skin="primary" lay-filter="weight" value="240g" title="240g">
+                        <input type="checkbox" name="weight[]" lay-skin="primary" lay-filter="weight" value="500g" title="500g" >
+                      </div>
+                    </div>
+                    <table class="layui-table">
+
+                      <thead>
+                        <tr>
+                          <th>规格值</th>
+                          <th>商品名称</th>
+                          <th>货号</th>
+                          <th>商品价格</th>
+                          <th>商品参考价</th>
+                          <th>商品库存</th>
+                          <th>操作</th>
+                        </tr> 
+                      </thead>
+
+                      <tbody id="spec_values">
+                        
+                        
+                      </tbody>
+                    </table>
+                </div>
+            <div class="layui-form-item">
+                    <label for="name" class="layui-form-label">
+                        <span class="x-red">*</span>商品名称
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="name" name="name" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+            </div>
+
+            <div class="layui-form-item">
+                    <label for="bn" class="layui-form-label">
+                        <span class="x-red">*</span>商品货号
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="bn" name="bn" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+            </div>
+
+            <div class="layui-form-item">
+                    <label for="price" class="layui-form-label">
+                        <span class="x-red">*</span>商品价格
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="price" name="price" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+            </div>
+            <div class="layui-form-item">
+                    <label for="mkt_price" class="layui-form-label">
+                        <span class="x-red">*</span>参考价
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="mkt_price" name="mkt_price" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+            </div>
+            <div class="layui-form-item">
+                    <label for="weight" class="layui-form-label">
+                        <span class="x-red">*</span>重量 克(g)
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="weight" name="weight" value="0" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+
+                    </div>
+            </div>
+
+            <div class="layui-form-item">
+                    <label for="store" class="layui-form-label">
+                        <span class="x-red">*</span>库存
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="number" id="store" name="store" value="0" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+
+                    </div>
+            </div>
+            
+            <div class="layui-form-item">
+                    <label for="goods_img" class="layui-form-label">
+                        <span class="x-red"></span>商品主图
+                    </label>
+                    <div class="layui-input-inline layui-upload">
+                          <button type="button" class="layui-btn" id="goods_img">
+                            <i class="layui-icon">&#xe67c;</i>上传图片
+                          </button>
+                          <input class="layui-upload-file" type="file" accept="*" name="file">
+                          <input type="hidden" name="goods_img" />
+                          <div class="layui-upload-list">
+                            <img class="layui-upload-img" height="80" id="goods_img_src">
+                          
+                          </div>
+                      </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                    <label for="thumb" class="layui-form-label">
+                        <span class="x-red"></span>商品缩略图
+                    </label>
+                    <div class="layui-input-block layui-upload" >
+                          <button type="button" class="layui-btn" id="thumb">
+                            <i class="layui-icon">&#xe67c;</i>上传图片
+                          </button>
+                          <input class="layui-upload-file" type="file" accept="*" name="file">
+                          
+                          <div class="layui-upload-list thumb-imglist" style="margin: 10px 0;">
+                           
+                          
+                          </div>
+                      </div>
+            </div>
+
+            <div class="layui-form-item">
+                    <label for="sales_status" class="layui-form-label">
+                        <span class="x-red">*</span>立即上架
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="sales_status" lay-filter = "sales_status" lay-text="是|否"  checked="" lay-skin="switch">
+                    </div>
+
+                   
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                <span class="x-red">*</span>库存计算方式
+              </label>
+                <div class="layui-input-block">
+                  <input type="radio" name="store_type" value="1" title="下单减" checked="">
+                  <input type="radio" name="store_type" value="2" title="付款减">
+                  
+                </div>
+              </div>
+            <div class="layui-form-item">
+              <label for="tools_url" class="layui-form-label">
+                  <span class="x-red">*</span>详情
+              </label>
+              <div class="layui-input-inline" style="width: 900px;">
+                  <textarea class="form-control" id="goods_desc"  name="goods_desc" cols="60" rows="5"></textarea>
+
+
+                  
+                
+              </div>
+              
+          </div>
+              <div class="layui-form-item" style="text-align: center;">
+                <button class="layui-btn" lay-submit="" lay-filter="add">保存</button>
+              </div>
+            </div>
+
+            
             </form>
         </div>
     </div>
     <script type="text/javascript" src="../../js/config.js"></script>
+    <script type="text/javascript" src="../../js/user.js"></script>
     <script>
+      var ue = UE.getEditor('goods_desc',{
+        initialFrameWidth:'100%',
+        initialFrameHeight:300,
+        autoHeightEnabled: true,
+      });
         layui.use(['form','layer','upload','tree'], function(){
+          $(".show-spec").hide();
           var form = layui.form
           ,layer = layui.layer
           ,tree = layui.tree
           ,upload = layui.upload;
-          tree({
-            elem: "#classtree"
-            ,
-            nodes: [{
-                name: '常用文件夹',
-                id: 1,
-                alias: 'changyong',
-                children: [{name: '所有未读', id: 11, href: 'http://www.layui.com/', alias: 'weidu'}, {
-                    name: '置顶邮件',
-                    id: 12
-                }, {name: '标签邮件', id: 13}]
-            }, {
-                name: '我的邮箱',
-                id: 2,
-                spread: true,
-                children: [{
-                    name: 'QQ邮箱',
-                    id: 21,
-                    spread: true,
-                    children: [{
-                        name: '收件箱',
-                        id: 211,
-                        children: [{name: '所有未读', id: 2111}, {name: '置顶邮件', id: 2112}, {name: '标签邮件', id: 2113}]
-                    }, {name: '已发出的邮件', id: 212}, {name: '垃圾邮件', id: 213}]
-                }, {
-                    name: '阿里云邮',
-                    id: 22,
-                    children: [{name: '收件箱', id: 221}, {name: '已发出的邮件', id: 222}, {name: '垃圾邮件', id: 223}]
-                }]
-            }]
-            ,
-            click: function (node) {
-                var $select = $($(this)[0].elem).parents(".layui-form-select");
-                $select.removeClass("layui-form-selected").find(".layui-select-title span").html(node.name).end().find("input:hidden[name='selectID']").val(node.id);
+          
+          //获取分类
+          var cate_params = new Object();
+          cate_params.method = 'cate.get';
+          cate_params.page= 1;
+          cate_params.limit = 99999999;
+
+
+                      
+                        
+                     
+                      
+                        
+                        
+                      
+          Shop.post(cate_params,function(rs){
+            if(rs.code ==0) {
+                if(rs.data.length>0) {
+                  var cate_html = '<option value="">选择分类</option>';
+                  for (var i = 0; i < rs.data.length; i++) {
+                      cate_html+='<optgroup label="">'
+                               +'<option value="'+rs.data[i].id+'">'+rs.data[i].cate_name+'</option>';
+
+                      if(rs.data[i].childer!=undefined && rs.data[i].childer.length > 0) {
+                        for(var j=0;j < rs.data[i].childer.length;j++) {
+                          cate_html+='<option value="'+rs.data[i].childer[j].id+'">&nbsp;&nbsp;&nbsp;&nbsp;'+rs.data[i].childer[j].cate_name+'</option>'
+
+
+                          if(rs.data[i].childer[j].childer!=undefined && rs.data[i].childer[j].childer.length > 0) {
+                            for(var k = 0;k<rs.data[i].childer[j].childer.length;k++) {
+                              cate_html+='<option value="'+rs.data[i].childer[j].childer[k].id+'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+rs.data[i].childer[j].childer[k].cate_name+'</option>'
+                            }
+                          }
+                        }
+
+                        
+                        
+                      }
+
+                      cate_html+='</optgroup>';
+                  }
+
+                  $("#select_cate").append(cate_html);
+                }
+            }else {
+              layer.msg(rs.msg);
             }
-        });
-        $(".downpanel").on("click", ".layui-select-title", function (e) {
-            $(".layui-form-select").not($(this).parents(".layui-form-select")).removeClass("layui-form-selected");
-            $(this).parents(".downpanel").toggleClass("layui-form-selected");
-            layui.stope(e);
-        }).on("click", "dl i", function (e) {
-            layui.stope(e);
-        });
-        $(document).on("click", function (e) {
-            $(".layui-form-select").removeClass("layui-form-selected");
-        });
-          //自定义验证规则
+            form.render();
+          })
+          //获取品牌
+          var brand_params = new Object();
+          brand_params.method= 'brand.get';
+          brand_params.page = 1;
+          brand_params.limit = 10000;
+          brand_params.disabled = 1;
+          Shop.post(brand_params,function(rs){
+            if(rs.code==0) {
+              var brand_html = '<option value="">请选择</option>';
+              for(var i=0;i<rs.data.length;i++) {
+                brand_html+='<option value="'+rs.data[i].id+'">'+rs.data[i].brand_name+'</option>';
+              }
+
+              $("#select_brand").append(brand_html);
+            }else {
+              layer.msg(rs.msg);
+            }
+            form.render();
+          })
            
+         //获取商品类型
+         var type_params = new Object();
+         type_params.method = 'goods.type.get';
+         type_params.page= 1;
+         type_params.limit  = 10000;
+         type_params.disabled = 1;
+         Shop.post(type_params,function(rs){
+          if(rs.code==0) {
+            var type_html = '<option value="">请选择</option>';
+
+            for(var i=0;i<rs.data.length;i++){
+              type_html+='<option value="'+rs.data[i].id+'">'+rs.data[i].type_name+'</option>';
+            }
+            $("#select_type").append(type_html);
+          }else {
+            layer.msg(rs.msg);
+          }
+          form.render();
+         })
           
-          
-          //图片上传
+          //商品主图上传
           upload.render({
-                  elem:"#brand_logo",
+                  elem:"#goods_img",
                   url:api.url+'?method=image.upload.signle&source='+api.source+'&version='+api.version+'&sign='+signs.gen_sign({"method":"image.upload.signle","version":api.version,"source":api.source}),
                   accept:'images',
                   exts:'jpg|png|gif|bmp|jpeg',
@@ -147,8 +390,8 @@
                     if(rs.code == 0){
                       data = typeof(rs.data) == 'string' ? JSON.parse(rs.data) : rs.data;
                       
-                      $("#upload_img").attr('src', data.src);
-                      $("input[name='brand_logo']").val(data.src);
+                      $("#goods_img_src").attr('src', data.src);
+                      $("input[name='goods_img']").val(data.src);
                       layer.closeAll('loading');
                     }else {
                       
@@ -160,14 +403,53 @@
                     layer.closeAll('loading');
                   }
 
-                });
+          });
 
+          //商品缩略图上传
+          upload.render({
+                  elem:"#thumb",
+                  url:api.url+'?method=image.upload.signle&source='+api.source+'&version='+api.version+'&sign='+signs.gen_sign({"method":"image.upload.signle","version":api.version,"source":api.source}),
+                  multiple: true,
+                  accept:'images',
+                  exts:'jpg|png|gif|bmp|jpeg',
+                  before:function(obj){
+                    layer.load();
+                  },
+                  done:function(rs){
+                    if(rs.code == 0){
+                      data = typeof(rs.data) == 'string' ? JSON.parse(rs.data) : rs.data;
+                      
+                      $(".thumb-imglist").append('<span><img class="layui-upload-img" height="80" src="'+data.src+'">&nbsp;&nbsp;&nbsp;&nbsp;<i style="cursor: pointer;" onclick="$(this).parent().remove()" class="layui-icon">&#xe640;</i>&nbsp;&nbsp;&nbsp;&nbsp;<input type="hidden" name="thumb[]" value="'+data.src+'"></span>')
+                      
+                      layer.closeAll('loading');
+                    }else {
+                      
+                      layer.closeAll('loading');
+                    }
+                    
+                  },
+                  error:function(index, upload){
+                    layer.closeAll('loading');
+                  }
 
+          });
+
+          form.on('checkbox(weight)',function(data){
+            alert(data.value);
+          });
+          form.on('radio(goods_spec)',function(data){
+            if(data.value=='many') {
+              $(".show-spec").show();
+            }else {
+              $(".show-spec").hide();
+            }
+            form.render();
+          });
           //监听提交
           form.on('submit(add)', function(data){
-            
-            data.field.method = "brand.save";
-            data.field.disabled = data.field.disabled =='on' ? 1 :0;
+            console.log(data);
+            data.field.method = "goods.save";
+            data.field.sales_status = data.field.sales_status =='on' ? 1 :0;
             Shop.post(data.field,function(rs){
                 if(rs.code == 0) {
                     layer.alert("保存成功", {icon: 6, closeBtn:0},function () {
@@ -186,11 +468,59 @@
 
 
         
+          tree.render({
+            elem: "#classtree"
+            ,
+            data: [{
+                title: '常用文件夹',
+                id: 1,
+                alias: 'changyong',
+                children: [{title: '所有未读', id: 11, href: 'http://www.layui.com/', alias: 'weidu'}, {
+                    title: '置顶邮件',
+                    id: 12
+                }, {title: '标签邮件', id: 13}]
+            }, {
+                title: '我的邮箱',
+                id: 2,
+                checked:true,
+                children: [{
+                    title: 'QQ邮箱',
+                    id: 21,
+                    
+                    checked:true,
+                    children: [{
+                        title: '收件箱',
+                        id: 211,
+                        children: [{title: '所有未读', id: 2111}, {title: '置顶邮件', id: 2112}, {title: '标签邮件', id: 2113}]
+                    }, {title: '已发出的邮件', id: 212}, {title: '垃圾邮件', id: 213}]
+                }, {
+                    title: '阿里云邮',
+                    id: 22,
+                    children: [{title: '收件箱', id: 221}, {title: '已发出的邮件', id: 222}, {title: '垃圾邮件', id: 223}]
+                }]
+            }]
+            ,
+            click: function (node) {
+                var $select = $($(this)[0].elem).parents(".layui-form-select");
+                
+                $select.removeClass("layui-form-selected").find(".layui-select-title span").html(node.data.title).end().find("input:hidden[name='selectID']").val(node.data.id);
+            }
+        });
+        $(".downpanel").on("click", ".layui-select-title", function (e) {
+            $(".layui-form-select").not($(this).parents(".layui-form-select")).removeClass("layui-form-selected");
+            $(this).parents(".downpanel").toggleClass("layui-form-selected");
+            layui.stope(e);
+        }).on("click", "dl i", function (e) {
+            layui.stope(e);
+        });
+        // $(document).on("click", function (e) {
+        //     $(".layui-form-select").removeClass("layui-form-selected");
+        // });
 
-        
+       
         });
 
-
+         
          function editData(data) {
           layui.use('form', function(){
               $("input[name='id']").val(data.id);

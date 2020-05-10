@@ -16,7 +16,7 @@ use \think\Validate;
 use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
-use \model\Classification;
+use \model\GoodsCate;
 /**
  * 
  */
@@ -28,7 +28,7 @@ class cate
 
 	public function __construct()
 	{
-		$this->classificationMdl = model('classification');
+		$this->goodsCateMdl = model('goodscate');
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
@@ -90,10 +90,13 @@ class cate
 		if(isset($params['pid'])) {
 			$data['pid'] = intval($params['pid']);
 		}
+		if(isset($params['path'])) {
+			$data['path'] = intval($params['path']);
+		}
 		if(isset($params['id']) && $params['id']) {
-			$flag = $this->classificationMdl->where(['id'=>intval($params['id'])])->update($data);
+			$flag = $this->goodsCateMdl->where(['id'=>intval($params['id'])])->update($data);
 		}else {
-			$flag = $this->classificationMdl->save($data);
+			$flag = $this->goodsCateMdl->save($data);
 		}
 		
 		if(!$flag) {
@@ -110,11 +113,11 @@ class cate
 
 	    foreach ($data as $k=>$v){
 
-	        if ($v['p_id'] == $parentId){
+	        if ($v['pid'] == $parentId){
 	            unset($data[$k]);
 	            if ($l < 2){
 	            //小于三级
-	                $v['childer'] = $this->_treeNode($data,$v['cate_id'],$l+1);
+	                $v['childer'] = $this->_treeNode($data,$v['id'],$l+1);
 	            }
 
 	            $list[] = $v;
@@ -127,18 +130,21 @@ class cate
 	    
 	} 
 	/**
-	 * 品牌获取
+	 * 分类获取
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
 	public function get(array $params) {
 
-		//$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
-		//$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:1;
-		//unset($params['limit'],$params['page']);
-		//$brandList['count'] = $this->brandMdl->where(array_filter($params))->count();
-		$data = $this->classificationMdl->select();
-		return $data;
+		if(isset($params['id']) && $params['id']) {
+			$data = $this->goodsCateMdl->where(['id'=>intval($params['id'])])->find();
+		}else {
+			$data = $this->goodsCateMdl->select();
+			
+			$data = $this->_treeNode(collection($data)->toArray(),0);
+		}
+		
+		return ['data'=>$data ? : []];
 	}
 
 	/**
@@ -167,62 +173,65 @@ class cate
 		$id = intval($params['id']);
 		unset($params['id']);
 		$params['update_time'] = time();
-		$flag = $this->brandMdl->where(['id'=>$id])->update($params);
+		$flag = $this->goodsCateMdl->where(['id'=>$id])->update($params);
 		
 		if(!$flag) throw new HttpException(404,'修改失败！');
 		return ['data'=>$flag];
 	}
 
+	
 	/**
-	 * 获取单条数据
-	 * @param  array  $params [description]
+	 * 删除分类
+	 * @param  [type] $params [description]
 	 * @return [type]         [description]
 	 */
-	public function getRow(array $params)
+	public  function del($params)
 	{
 		$validate = new Validate([
 		    
-		    'id' => 'require'
+		    'id' => 'require',
+		    'pid'=>'require',
 		],[
-			'id.require'=>'ID必填'
+			'id.require'=>'ID必填',
+			'pid.require'=>'pid必填'
 		]);
 		$check_data = [
 		   
 		    'id' => intval($params['id']),
+		    'pid'=>intval($params['pid'])
 		];
-
 		if (!$validate->check($check_data)) {
 		    throw new HttpException(404,$validate->getError());
 		}
 
-		$id = intval($params['id']);
-		unset($params['id']);
-		$rs = $this->brandMdl->where(['id'=>$id])->find();
+		if($params['pid'] ==0) {
+			//查询二级分类
+			$ids = $this->_delCate(intval($params['id']));
+			$flag = $this->goodsCateMdl->where(['id'=>['in',$ids]])->delete();
+		}else {
+			$flag = $this->goodsCateMdl->where(['id'=>intval($params['id'])])->delete();
+		}
 		
-		if(!$rs) throw new HttpException(404,'获取失败');
-		$data['data'] = $rs;
-		$data['data']['brand_keywords'] = $data['data']['brand_keywords']? implode('|',unserialize($data['data']['brand_keywords'])) : '';
-		return $data;
-	}
-
-	public  function delBrand($params)
-	{
-		$validate = new Validate([
-		    
-		    'id' => 'require'
-		],[
-			'id.require'=>'ID必填'
-		]);
-		$check_data = [
-		   
-		    'id' => intval($params['id']),
-		];
-		if (!$validate->check($check_data)) {
-		    throw new HttpException(404,$validate->getError());
-		}
-		$flag = $this->brandMdl->where(['id'=>intval($params['id'])])->delete();
 		if(!$flag) throw new HttpException(404,'删除失败');
 		return ['id'=>intval($params['id'])];
+	}
+
+	private function _delCate($id) {
+		$two_cate_obj = $this->goodsCateMdl->where(['pid'=>$id])->select();
+		$two_cate = collection($two_cate_obj)->toArray();
+		$three_cate = [];
+		$del_ids_arr = [];
+		if($two_cate) {
+			$three_cate = array_column($two_cate, 'id');
+			$ids = $this->goodsCateMdl->where(['pid'=>['in',$three_cate]])->select();
+
+			$del_ids = collection($ids)->toArray();
+			if($del_ids) {
+				$del_ids_arr =  array_column($del_ids, 'id');
+			}
+		}
+
+		return array_merge([$id],$three_cate,$del_ids_arr);
 	}
 }
 

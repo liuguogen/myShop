@@ -73,10 +73,19 @@
     </script>
     <script type="text/html" id="switchTpl">
         <!-- 这里的checked的状态只是演示 -->
-        <input type = "checkbox" data-id="{{d.id}}" name = "disabled" value = "{{d.disabled}}" lay-skin = "switch" lay-text = "是|否" lay-filter = "disabled" {{ d.disabled == 1 ? 'checked': ''}} >
+        <input type = "checkbox" data-id="{{d.id}}" name = "disabled" value = "{{d.sales_status}}" lay-skin = "switch" lay-text = "是|否" lay-filter = "disabled" {{ d.sales_status == 1 ? 'checked': ''}} >
     </script>
 
+    <script type="text/html" id="goodsImgTpl">
+        
+        {{#  if(d.goods_img){ }}
+            <img src="{{d.goods_img}}" class="layui-nav-img">
+        {{#  } else { }}
+           暂无图像
+        {{#  } }}
 
+
+    </script>
 <script type="text/javascript" src="../../js/config.js"></script>
 <script type="text/javascript" src="../../js/user.js"></script>
     <script>
@@ -93,19 +102,24 @@
             ,loading:true
             ,url: api.url //数据接口
             ,method:"post"
-            ,where:tableParams.getParams("spec.get")
-            ,title: '商品规格列表'
+            ,where:tableParams.getParams("goods.get")
+            ,title: '商品列表'
             ,page: true //开启分页
             ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
             ,totalRow: false //开启合计行
             ,cols: [[ //表头
               {type: 'checkbox', fixed: 'left'}
-              ,{field: 'id', title: '编号',  sort: true, fixed: 'left',width:80}
-              ,{field: 'spec_name', title: '规格名称', width:180 }
-              ,{field: 'spec_alias', title: '规格别名',width:250 }
-              ,{field: 'disabled', title: '是否启用',templet: '#switchTpl',width:80}
-              ,{field: 'create_time', title: '创建时间', sort:true,width:160}
-              ,{field: 'update_time', title: '最后更新时间', sort:true,width:160}
+              ,{field: 'id', title: '编号',  sort: true, fixed: 'true',width:80}
+              ,{field:'goods_img', title:'商品图片', width:80, templet:'#goodsImgTpl'}
+              ,{field: 'name', title: '商品名称', width:100 }
+              ,{field: 'cate_name', title: '商品分类', width:80 }
+              ,{field: 'brand_name', title: '商品品牌', width:100 }
+              ,{field: 'type_name', title: '商品类型', width:100 }
+              ,{field: 'bn', title: '商品货号',width:100 }
+              ,{field: 'sales_status', title: '上下架',templet: '#switchTpl',width:80}
+              ,{field: 'create_time', title: '创建时间', sort:true,width:80}
+              ,{field: 'update_time', title: '最后更新时间', sort:true,width:80}
+
               ,{fixed: 'right', title:'操作', wdith:200,align:'center', toolbar: '#barData'}
             ]]
           });
@@ -136,7 +150,7 @@
 
             var $ = layui.$, active = {
                   reload: function(){
-                    var spec_name = $("input[name='spec_name']");
+                    var goods_name = $("input[name='goods_name']");
                     
                     //执行重载
                     table.reload('table-data', {
@@ -144,7 +158,7 @@
                         curr: 1 //重新从第 1 页开始
                       }
                       ,where: {
-                        spec_name: spec_name.val()
+                        name: goods_name.val()
                       }
                     });
                   }

@@ -29,24 +29,21 @@
 		<view class="cate-section">
 			<view class="cate-item">
 				<image src="/static/temp/c3.png"></image>
-				<text>环球美食</text>
+				<text>信阳毛尖</text>
 			</view>
 			<view class="cate-item">
 				<image src="/static/temp/c5.png"></image>
-				<text>个护美妆</text>
+				<text>信阳红茶</text>
 			</view>
 			<view class="cate-item">
 				<image src="/static/temp/c6.png"></image>
-				<text>营养保健</text>
+				<text>信阳板栗</text>
 			</view>
 			<view class="cate-item">
 				<image src="/static/temp/c7.png"></image>
-				<text>家居厨卫</text>
+				<text>固始鹅块</text>
 			</view>
-			<view class="cate-item">
-				<image src="/static/temp/c8.png"></image>
-				<text>速食生鲜</text>
-			</view>
+			
 		</view>
 		
 		<view class="ad-1">
@@ -106,7 +103,7 @@
 							
 							<view class="pro-box">
 							  	<view class="progress-box">
-							  		<progress percent="72" activeColor="#fa436a" active stroke-width="6" />
+							  		<progress percent="72" activeColor="#fa436a" active stroke-width="10" />
 							  	</view>
 								<text>6人成团</text>
 							</view>
@@ -123,7 +120,7 @@
 							</view>
 							<view class="pro-box">
 							  	<view class="progress-box">
-							  		<progress percent="72" activeColor="#fa436a" active stroke-width="6" />
+							  		<progress percent="72" activeColor="#fa436a" active stroke-width="10" />
 							  	</view>
 								<text>10人成团</text>
 							</view>

@@ -46,15 +46,17 @@ class role
 	 */
 	public function save(array $params)
 	{
+
 		$menuList = Config::load(CONF_PATH . DS . 'menu' . EXT)['menulist'];
 		$role_name = $params['role_name'];
 		$role_desc = $params['role_desc'];
 		unset($params['role_name'],$params['role_desc']);
 
-		foreach ($params as $key => $value) {
-			foreach ($value['children'] as $k => $v) {
-				$menu_data[] = $v;
-			}
+		foreach ($params['member_rule']['children'] as $key => $value) {
+
+			
+				$menu_data[] = $value;
+			
 		}
 
 

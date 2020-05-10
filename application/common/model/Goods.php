@@ -2,10 +2,10 @@
 
 namespace app\common\model;
 use \think\Model;
-class Classification extends Model {
+class Goods extends Model {
 
 	protected $pk = 'id';
-	protected $table = 'goods_cate';
+	protected $table = 'goods';
 	protected $autoWriteTimestamp = true;
 
 

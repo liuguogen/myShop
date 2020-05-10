@@ -3,7 +3,7 @@ layui.use('layer', function(){
 
   var userToken = getCookie('accessToken');
   if(!userToken) {
-    location.href='../page/admin/login.html';
+    top.location.href='../../page/admin/login.html';
   }
   
 });

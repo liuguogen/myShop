@@ -11,10 +11,9 @@
         <link rel="stylesheet" href="../../css/xadmin.css">
         <script type="text/javascript" src="../../js/jquery.min.js"></script>
         <script src="../../lib/layui/layui.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../../js/cookie.js"></script>
         <script type="text/javascript" src="../../js/xadmin.js"></script>
-         <script type="text/javascript" src="../../js/md5.min.js"></script>
-
+        <script type="text/javascript" src="../../js/cookie.js"></script>
+        <script type="text/javascript" src="../../js/md5.min.js"></script>
         <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
         <!--[if lt IE 9]>
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -25,10 +24,9 @@
     <body>
         <div class="x-nav">
             <span class="layui-breadcrumb">
-                <a href="">首页</a>
-                <a href="">演示</a>
+                 <a href="">商品管理</a>
                 <a>
-                    <cite>导航元素</cite></a>
+                    <cite>商品分类</cite></a>
             </span>
             <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
                 <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
@@ -39,40 +37,37 @@
                 <div class="layui-col-md12">
                     <div class="layui-card">
                         <div class="layui-card-body ">
-                            <form class="layui-form layui-col-space5">
+                           
                                 <div class="layui-input-inline layui-show-xs-block">
-                                    <input class="layui-input" placeholder="分类名" name="cate_name"></div>
+                                    <input type="hidden" class="layui-input" placeholder="分类名" name="cate_name"></div>
                                 <div class="layui-input-inline layui-show-xs-block">
-                                    <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon"></i>增加</button>
+                                    <button class="layui-btn" onclick="x_admin_show('添加分类','./goods-cate-edit.html')"  ><i class="layui-icon"></i>添加分类</button>
                                 </div>
-                            </form>
+                            
                             <hr>
-                            <blockquote class="layui-elem-quote">每个tr 上有两个属性 cate-id='1' 当前分类id fid='0' 父级id ,顶级分类为 0，有子分类的前面加收缩图标<i class="layui-icon x-show" status='true'>&#xe623;</i></blockquote>
-                            <xblock>
-                                <button class="layui-btn" onclick="x_admin_show('添加分类','./goods-cate-edit.html')"><i class="layui-icon"></i>添加分类</button>
-                                <!-- <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button> -->
-                                
-                              </xblock>
+                            <blockquote class="layui-elem-quote">每个tr 上有两个属性 cate-id='1' 当前分类id fid='0' 父级id ,顶级分类为 0，有子分类的前面加收缩图标<i class="layui-icon x-show" Onstatus='true'>&#xe623;</i></blockquote>
                         </div>
-                        
+                        <div class="layui-card-header">
+                            <button class="layui-btn layui-btn-danger" onclick="delAll()">
+                                <i class="layui-icon"></i>批量删除</button>
+                        </div>
                         <div class="layui-card-body ">
                             <table class="layui-table layui-form">
-                                  <thead>
-                                    <tr>
-                                      <!-- <th width="20">
-                                        <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
-                                      </th> -->
-                                      <th width="70">编号</th>
-                                      <th>新闻分类</th>
-                                      <th width="300">链接</th>
-                                     <!--  <th width="50">排序</th>
-                                      <th width="80">状态</th> -->
-                                      <th width="250">操作</th>
-                                  </thead>
-                                  <tbody class="x-cate">
-                                    
-                                  </tbody>
-                                </table>
+                              <thead>
+                                <tr>
+                                  <th width="20">
+                                    <input type="checkbox" name="" lay-skin="primary">
+                                  </th>
+                                  <th width="70">ID</th>
+                                  <th>分类名称</th>
+                                  
+                                  
+                                  <th width="250">操作</th>
+                              </thead>
+                              <tbody class="x-cate">
+                                
+                              </tbody>
+                            </table>
                         </div>
                         <!-- <div class="layui-card-body ">
                             <div class="page">
@@ -89,126 +84,218 @@
                 </div>
             </div>
         </div>
-<script type="text/javascript" src="../../js/config.js"></script>
-<script type="text/javascript" src="../../js/user.js"></script>
+  <script type="text/javascript" src="../../js/config.js"></script>
+   <script type="text/javascript" src="../../js/user.js"></script>
         <script>
-          layui.use(['form','layer','laypage','jquery'],function(){
-           
+          layui.use(['form','layer'], function(){
             var form = layui.form;
             var layer = parent.layer === undefined ? layui.layer : parent.layer;
-            var laypage = layui.laypage;
-            
+
             initLayPage();
+            function initLayPage(params) {
 
-            function initLayPage(pageConf) {
-              if(!pageConf) {
-                pageConf = new Object();
-                pageConf.page = 1;
-                pageConf.limit = api.page;
+              if(!params) {
+                params = new Object();
+                params.page = 1;
+                params.limit = 99999999;
 
+                params.method="cate.get";
               }
-              Shop.post(api.url,{"method":"cate.get","source":api.source,"version":api.version},function(rs){
-                if(rs.code == 200) {
-                  data = typeof(rs.data) == 'string' ? JSON.parse(rs.data) : rs.data;
-                  $('.total').html(data.count ? data.count : 0);
-                  
-                  apiList(data.data);
+              
+              Shop.post(params,function(rs){
+                
+                if(rs.code == 0) {
+                  apiListData(rs.data);
                 }else {
                   layer.msg(rs.msg);
                 }
-              });
-
-
+              })
             }
 
-            function apiList(pageData){
-  
-                var dataHtml = '';
-                if(pageData.length > 0){
-                  for(var i=0;i<pageData.length;i++){
-                      dataHtml += '<tr cate-id="'+pageData[i].cate_id+'" fid="'+pageData[i].p_id+'">'
-                      +'<td>'+pageData[i].cate_id+'</td>'
-                      +'<td><i class="layui-icon x-show" status="true">&#xe623;</i>'+pageData[i].cate_name+'</td>';
-                      if(pageData[i].path==1) {
-                        dataHtml+='<td>'+api.webUrl+'tabs?cate_id='+pageData[i].cate_id+'</td>'
-                            +'<td class="td-manage">'
-                            +'<button class="layui-btn layui-btn layui-btn-xs cate-edit" data-id="'+pageData[i].cate_id+'"><i class="layui-icon">&#xe642;</i>编辑</button>'
-                            +'<button class="layui-btn layui-btn-warm layui-btn-xs add-cate" data-id="'+pageData[i].cate_id+'"  ><i class="layui-icon">&#xe642;</i>添加子分类</button>'
+
+            function apiListData(data) {
+              var dataHtml = '';
+              if(data.length > 0){
+                for(var i=0;i<data.length;i++){
+
+                  var checked = "";
+                  if(data[i].disabled==1) {
+                    checked  = 'checked=""';
+                  }
+                  dataHtml += '<tr cate-id="'+data[i].id+'" fid="'+data[i].pid+'">'
+                  +'<td><input type="checkbox" name="" lay-skin="primary"></td>'
+                  +'<td>'+data[i].id+'</td>'
+                  +'<td><i class="layui-icon x-show" Onstatus="true">&#xe623;</i>'+data[i].cate_name+'</td>'
+                  //+'<td><input type="checkbox" name="switch"  lay-text="开启|停用" '+checked+'  lay-skin="switch"></td>'
+                  if(data[i].path==1) {
+                    dataHtml+='<td class="td-manage">'
+                        +'<button class="layui-btn layui-btn layui-btn-xs cate-edit" data-id="'+data[i].id+'"><i class="layui-icon">&#xe642;</i>编辑</button>'
+                        +'<button class="layui-btn layui-btn-warm layui-btn-xs add-cate" path="2" data-id="'+data[i].id+'"  ><i class="layui-icon">&#xe642;</i>添加子分类</button>'
+                        +'<button class="layui-btn-danger layui-btn layui-btn-xs cate-del" pid="'+data[i].pid+'" data-id="'+data[i].id+'" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button>'
+                        +'</td>'
+                        +'<tr>';
+                  }
+
+                if(data[i].childer!=undefined && data[i].childer.length >0 ) {
+                   for(var j=0;j<data[i].childer.length;j++) {
+
+                      var two_checked = "";
+                      if(data[i].childer[j].disabled==1) {
+                        two_checked  = 'checked=""';
+                      }
+                      
+                      dataHtml += '<tr cate-id="'+data[i].childer[j].id+'" fid="'+data[i].childer[j].pid+'">'
+                               + '<td><input type="checkbox" name="" lay-skin="primary"></td>'
+                                +'<td>'+data[i].childer[j].id+'</td>'
+                                +'<td>&nbsp;&nbsp;&nbsp;&nbsp;<i class="layui-icon x-show" Onstatus="true">&#xe623;</i>'
+                                 +''+data[i].childer[j].cate_name+''
+                                  +'</td>'
+                                
+                                +'</td>'
+                                //+'<td><input type="checkbox" name="switch"  lay-text="开启|停用" '+two_checked+'  lay-skin="switch"></td>';
+                      if(data[i].childer[j].path==2) {
+                        dataHtml+='<td class="td-manage">'
+                            +'<button class="layui-btn layui-btn layui-btn-xs cate-edit" data-id="'+data[i].childer[j].id+'" ><i class="layui-icon">&#xe642;</i>编辑</button>'
+                            +'<button class="layui-btn layui-btn-warm layui-btn-xs add-cate" path="3" data-id="'+data[i].childer[j].id+'"  ><i class="layui-icon">&#xe642;</i>添加子分类</button>'
+                            +'<button class="layui-btn-danger layui-btn layui-btn-xs cate-del" data-id="'+data[i].childer[j].id+'" pid="'+data[i].childer[j].pid+'" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button>'
                             +'</td>'
                             +'<tr>';
                       }
 
-                      if(pageData[i].childer!=undefined && pageData[i].childer.length >0 ) {
-                        for(var j=0;j<pageData[i].childer.length;j++) {
-                          dataHtml += '<tr cate-id="'+pageData[i].childer[j].cate_id+'" fid="'+pageData[i].childer[j].p_id+'">'
-                                    +'<td>'+pageData[i].childer[j].cate_id+'</td>'
-                                    +'<td>'
-                                     +' &nbsp;&nbsp;&nbsp;&nbsp;'
-                                     +' <i class="layui-icon x-show" status="true">-|</i>'
-                                      +''+pageData[i].childer[j].cate_name+''
-                                    +'</td>';
-                          if(pageData[i].childer[j].path==2) {
-                            dataHtml+= '<td></td>'
-                                +'<td class="td-manage">'
-                                +'<button class="layui-btn layui-btn layui-btn-xs cate-edit" data-id="'+pageData[i].childer[j].cate_id+'" ><i class="layui-icon">&#xe642;</i>编辑</button>'
+
+                      if(data[i].childer[j].childer.length !=undefined && data[i].childer[j].childer.length >0) {
+                          for(var k=0;k<data[i].childer[j].childer.length;k++) {
+                            
+                                var three_checked = "";
+                                if(data[i].childer[j].childer[k].disabled==1) {
+                                  three_checked  = 'checked=""';
+                                }
                                 
-                                +'<button class="layui-btn-danger layui-btn layui-btn-xs cate-del" data-id="'+pageData[i].childer[j].cate_id+'" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button>'
-                                +'</td>'
-                                +'<tr>';
+                                dataHtml += '<tr cate-id="'+data[i].childer[j].childer[k].id+'" fid="'+data[i].childer[j].childer[k].pid+'">'
+                                         + '<td><input type="checkbox" name="" lay-skin="primary"></td>'
+                                          +'<td>'+data[i].childer[j].childer[k].id+'</td>'
+                                          +'<td>'
+                                           +' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                          
+                                            +'├'+data[i].childer[j].childer[k].cate_name+''
+                                          +'</td>'
+                                          //+'<td><input type="checkbox" name="switch"  lay-text="开启|停用" '+three_checked+'  lay-skin="switch"></td>';
+                                if(data[i].childer[j].childer[k].path==3) {
+                                  dataHtml+='<td class="td-manage">'
+                                      +'<button class="layui-btn layui-btn layui-btn-xs cate-edit" data-id="'+data[i].childer[j].childer[k].id+'" ><i class="layui-icon">&#xe642;</i>编辑</button>'
+                                      
+                                      +'<button class="layui-btn-danger layui-btn layui-btn-xs cate-del" data-id="'+data[i].childer[j].childer[k].id+'"  pid="'+data[i].childer[j].childer[k].pid+'" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button>'
+                                      +'</td>'
+                                      +'<tr>';
+                                }
                           }
-                        }
                       }
-                      //console.log((pageData[i].childer).length);
-                     
-                  }
-                  form.render();
-                }else{
-                  dataHtml += '<tr><td colspan="4">暂无数据</td></tr>';
+                    }
                 }
 
-                $(".x-cate").html(dataHtml);
-                  
+
+
+                }
+                
+              }else {
+                dataHtml += '<tr><td colspan="3">暂无数据</td></tr>';
               }
+              
+              $(".x-cate").html(dataHtml);
+              form.render();
+
+
+              $(".x-cate tr[fid!='0']").hide();
+              // 栏目多级显示效果
+              $(document).on('click','.x-show',function(){
+                
+                  if($(this).attr('Onstatus')=='true'){
+                      $(this).html('&#xe625;'); 
+                      $(this).attr('Onstatus','false');
+                      cateId = $(this).parents('tr').attr('cate-id');
+                      $("tbody tr[fid="+cateId+"]").show();
+                 }else{
+                      cateIds = [];
+                      $(this).html('&#xe623;');
+                      $(this).attr('Onstatus','true');
+                      cateId = $(this).parents('tr').attr('cate-id');
+                      getCateId(cateId);
+                      for (var i in cateIds) {
+                          $("tbody tr[cate-id="+cateIds[i]+"]").hide().find('.x-show').html('&#xe623;').attr('Onstatus','true');
+                      }
+                 }
+              })
+            }
+
+
             
+            
+
           });
 
-           /*用户-删除*/
-          function member_del(obj,id){
-              layer.confirm('确认要删除吗？',function(index){
-                  //发异步删除数据
-                  $(obj).parents("tr").remove();
-                  layer.msg('已删除!',{icon:1,time:1000});
-              });
-          }
+           //添加子分类
+          $(document).on('click','.add-cate',function(){
+              add_cate_html($(this).attr('data-id'),$(this).attr('path'));
+              
+          })
+          //删除分类
+          $(document).on('click','.cate-del',function(){
 
-          // 分类展开收起的分类的逻辑
-          // 
-          $(function(){
+            var params = new Object();
+            params.id = $(this).attr('data-id');
+            params.pid = $(this).attr('pid');
 
-            $("tbody.x-cate tr[fid!='0']").hide();
-            // 栏目多级显示效果
-            $('.x-show').click(function () {
-                console.log($(this).attr('status'));
-                if($(this).attr('status')==='true'){
-                    
-                    $(this).html('&#xe625;'); 
-                    $(this).attr('status',false);
-                    cateId = $(this).parents('tr').attr('cate-id');
+            params.method="cate.del";
+            layer.confirm("确认删除吗？",{title:"删除确认"},function(index){
 
-                    $("tbody tr[fid="+cateId+"]").show();
-               }else{
-                    cateIds = [];
-
-                    $(this).html('&#xe623;');
-                    $(this).attr('status','true');
-                    cateId = $(this).parents('tr').attr('cate-id');
-                    getCateId(cateId);
-                    for (var i in cateIds) {
-                        $("tbody tr[cate-id="+cateIds[i]+"]").hide().find('.x-show').html('&#xe623;').attr('status','true');
-                    }
-               }
+                
+                
+                Shop.post(params,function(rs){
+                  if(rs.code==0) {
+                    layer.alert("删除成功", {icon: 0,closeBtn:0},function (index) {
+                        layer.close(index);
+                        location.replace(location.href);
+                    });
+                  }else {
+                    layer.msg(rs.msg);
+                  }
+              })
             })
           })
+          function add_cate_html(cate_id,path) {
+          
+
+             layer.open({
+                  type: 2,
+                  area: [($(window).width()*0.9)+'px', ($(window).height() - 50) +'px'],
+                  fix: false, //不固定
+                  maxmin: true,
+                  shadeClose: true,
+                  shade:0.4,
+                  title: '添加分类',
+                  content: 'goods-cate-edit.html',
+                  success: function(layero,index){
+                    body = layer.getChildFrame('body', index)
+                    
+                    layero.find("iframe")[0].contentWindow.$("input[name='pid']").val(cate_id);
+                    layero.find("iframe")[0].contentWindow.$("input[name='path']").val(path);
+                        //body.find
+                     
+                    //窗口加载成功刷新frame
+                    // location.replace(location.href);
+                  },
+                  cancel:function(){
+                    
+                    //关闭窗口之后刷新frame
+                    // location.replace(location.href);
+                  },
+                  end:function(){
+                    //窗口销毁之后刷新frame
+                    // location.replace(location.href);
+                  }
+              });
+          }
+          
 
           var cateIds = [];
           function getCateId(cateId) {

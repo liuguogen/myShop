@@ -44,6 +44,13 @@ return  [
                 'spec.del'=>['uses'=>'\specification\spec@del','desc'=>'删除规格'],
                 'cate.save'=>['uses'=>'\classification\cate@save','desc'=>'保存商品分类'],
                 'cate.get'=>['uses'=>'\classification\cate@get','desc'=>'获取商品分类'],
+                'cate.del'=>['uses'=>'\classification\cate@del','desc'=>'删除商品分类'],
+                'goods.save'=>['uses'=>'\goods\products@save','desc'=>'商品保存'],
+                'goods.get'=>['uses'=>'\goods\products@get','desc'=>'商品获取'],
+                'goods.type.save'=>['uses'=>'\goods\type@save','desc'=>'商品类型保存'],
+                'goods.type.get'=>['uses'=>'\goods\type@get','desc'=>'商品类型获取'],
+                'goods.type.update'=>['uses'=>'\goods\type@get','desc'=>'商品类型更新数据'],
+                'goods.type.getrow'=>['uses'=>'\goods\type@getRow','desc'=>'商品类型获取单条数据'],
             ],
         ],
 
