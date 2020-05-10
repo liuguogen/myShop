@@ -47,6 +47,8 @@ return  [
                 'cate.del'=>['uses'=>'\classification\cate@del','desc'=>'删除商品分类'],
                 'goods.save'=>['uses'=>'\goods\products@save','desc'=>'商品保存'],
                 'goods.get'=>['uses'=>'\goods\products@get','desc'=>'商品获取'],
+                'goods.del'=>['uses'=>'\goods\products@del','desc'=>'商品删除'],
+                'goods.update'=>['uses'=>'\goods\products@update','desc'=>'商品更新'],
                 'goods.type.save'=>['uses'=>'\goods\type@save','desc'=>'商品类型保存'],
                 'goods.type.get'=>['uses'=>'\goods\type@get','desc'=>'商品类型获取'],
                 'goods.type.update'=>['uses'=>'\goods\type@get','desc'=>'商品类型更新数据'],

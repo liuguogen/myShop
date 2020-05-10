@@ -262,7 +262,7 @@ class products
 		$id = intval($params['id']);
 		unset($params['id']);
 		$params['update_time'] = time();
-		$flag = $this->goodsTypeMdl->where(['id'=>$id])->update($params);
+		$flag = $this->goodsMdl->where(['id'=>$id])->update($params);
 		
 		if(!$flag) throw new HttpException(404,'修改失败！');
 		return ['data'=>$flag];
@@ -270,16 +270,17 @@ class products
 
 	
 	/**
-	 * 删除类型
+	 * 删除商品
 	 * @param  [type] $params [description]
 	 * @return [type]         [description]
 	 */
 	public  function del($params)
 	{
+
 		$validate = new Validate([
 		    
 		    'id' => 'require',
-		    'pid'=>'require',
+		    
 		],[
 			'id.require'=>'ID必填',
 			
@@ -292,13 +293,26 @@ class products
 		if (!$validate->check($check_data)) {
 		    throw new HttpException(404,$validate->getError());
 		}
-
+		if(is_array($params['id']) && $params['id']) {
+			$ids = $params['id'];
+		}else {
+			$ids = [$params['id']];
+		}
+		unset($params['id']);
+		DB::startTrans();
+		try{
+			$this->goodsMdl->where(['id'=>['in',$ids]])->delete();
+			$this->productMdl->where(['goods_id'=>['in',$ids]])->delete();
+			Db::commit();
+			return ['data'=>$ids];
+		}catch(\Exception $e) {
+			Db::rollback();
+			throw new HttpException(404,$e->getMessage());
+		}
 		
-		$flag = $this->goodsTypeMdl->where(['id'=>intval($params['id'])])->delete();
 		
 		
-		if(!$flag) throw new HttpException(404,'删除失败');
-		return ['id'=>intval($params['id'])];
+		
 	}
 
 	

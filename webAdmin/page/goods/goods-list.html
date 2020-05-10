@@ -73,7 +73,7 @@
     </script>
     <script type="text/html" id="switchTpl">
         <!-- 这里的checked的状态只是演示 -->
-        <input type = "checkbox" data-id="{{d.id}}" name = "disabled" value = "{{d.sales_status}}" lay-skin = "switch" lay-text = "是|否" lay-filter = "disabled" {{ d.sales_status == 1 ? 'checked': ''}} >
+        <input type = "checkbox" data-id="{{d.id}}" name = "sales_status" value = "{{d.sales_status}}" lay-skin = "switch" lay-text = "是|否" lay-filter = "sales_status" {{ d.sales_status == 1 ? 'checked': ''}} >
     </script>
 
     <script type="text/html" id="goodsImgTpl">
@@ -105,7 +105,7 @@
             ,where:tableParams.getParams("goods.get")
             ,title: '商品列表'
             ,page: true //开启分页
-            ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+            ,toolbar: '<div class="layui-table-tool"><div class="layui-table-tool-temp"><div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div><div class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div></div><div class="layui-table-tool-self"><div class="layui-inline" title="筛选列" lay-event="LAYTABLE_COLS"><i class="layui-icon layui-icon-cols"></i></div><div class="layui-inline" title="导出" lay-event="LAYTABLE_EXPORT"><i class="layui-icon layui-icon-export"></i></div><div class="layui-inline" title="打印" lay-event="LAYTABLE_PRINT"><i class="layui-icon layui-icon-print"></i></div></div></div>' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
             ,totalRow: false //开启合计行
             ,cols: [[ //表头
               {type: 'checkbox', fixed: 'left'}
@@ -127,22 +127,24 @@
             ]]
           });
 
-            form.on('switch(disabled)',function(data) {
+            form.on('switch(sales_status)',function(data) {
 
                 var id = data.elem.getAttribute('data-id');
                 var params  = {
-                    "method":"spec.update",
+                    "method":"goods.update",
                     "id":id,
                 }
 
-                var disabled = this.checked ? 1 :0;
+                var sales_status = this.checked ? 1 :0;
                 
-                params.disabled = disabled;
+                params.sales_status = sales_status;
                 
                 Shop.post(params,function(rs) {
                     if(rs.code ==0) {
+                        
                         layer.msg('修改成功');
                     }else {
+
                         layer.msg(rs.msg);
                     }
                 })
@@ -179,19 +181,30 @@
 
                 ,layEvent = obj.event; //获得 lay-event 对应的值
 
-                console.log(data.id);
+                
                 if(layEvent === 'detail'){
                   layer.msg('查看操作');
                 } else if(layEvent === 'del'){
                   layer.confirm('确认删除吗？', function(index){
-                    obj.del(); //删除对应行（tr）的DOM结构
-                    layer.close(index);
-                    //向服务端发送删除指令
+                    var del_params = new Object();
+                    del_params.method = 'goods.del';
+                    del_params.id = data.id;
+                    Shop.post(del_params,function(rs){
+                        if(rs.code==0) {
+                            layer.msg('删除成功');
+                            obj.del(); //删除对应行（tr）的DOM结构
+                            layer.close(index);
+                            //向服务端发送删除指令
+                        }else {
+                            layer.msg(rs.msg);
+                        }
+                    })
+                    
                   });
                 } else if(layEvent === 'edit'){
                   //layer.msg('编辑操作');
                   //
-                  tableParams.editData('spec.getrow',data.id,'编辑规格','/page/goods/goods-spec-edit.html');
+                  tableParams.editData('spec.getrow',data.id,'编辑商品','/page/goods/goods-edit.html');
                 }
             });
 
@@ -200,6 +213,7 @@
             table.on('toolbar(table-data)',
             function(obj) {
                 var checkStatus = table.checkStatus(obj.config.id);
+
                 switch (obj.event) {
                 case 'add':
                    x_admin_show('添加商品','/page/goods/goods-edit.html')
@@ -210,6 +224,26 @@
                     break;
                 case 'isAll':
                     layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+                case 'delete':
+                    var ids = [];
+                    for (var i = 0; i < checkStatus.data.length; i++) {
+                       ids.push(checkStatus.data[i].id);
+                    }
+                    var del_params = new Object();
+                    del_params.method = 'goods.del';
+                    del_params.id = ids;
+                    Shop.post(del_params,function(rs){
+                        if(rs.code==0) {
+                            layer.msg('删除成功');
+                            setTimeout(function(){
+                                location.reload();
+                            },2000)
+                        }else {
+                            layer.msg(rs.msg);
+                        }
+                    })
+                   
                     break;
                 };
             });
