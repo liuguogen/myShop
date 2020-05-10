@@ -34,7 +34,7 @@ class products
 	{
 		$this->goodsMdl = model('Goods');
 		$this->productMdl = model('Product');
-		$this->goodsTypeMdl = model('Goodstype');
+		$this->goodsTypeMdl = model('GoodsType');
 		$this->brandMel = model('Brands');
 		$this->goodsCate = model('GoodsCate'); 
 	}
