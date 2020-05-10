@@ -28,7 +28,7 @@ class cate
 
 	public function __construct()
 	{
-		$this->goodsCateMdl = model('goodscate');
+		$this->goodsCateMdl = model('goodsCate');
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述

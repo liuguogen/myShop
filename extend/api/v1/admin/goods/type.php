@@ -28,7 +28,7 @@ class type
 
 	public function __construct()
 	{
-		$this->goodsTypeMdl = model('goodstype');
+		$this->goodsTypeMdl = model('GoodsType');
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述

@@ -32,11 +32,11 @@ class products
 
 	public function __construct()
 	{
-		$this->goodsMdl = model('goods');
-		$this->productMdl = model('product');
-		$this->goodsTypeMdl = model('goodstype');
-		$this->brandMel = model('brands');
-		$this->goodsCate = model('goodscate'); 
+		$this->goodsMdl = model('Goods');
+		$this->productMdl = model('Product');
+		$this->goodsTypeMdl = model('Goodstype');
+		$this->brandMel = model('Brands');
+		$this->goodsCate = model('GoodsCate'); 
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
