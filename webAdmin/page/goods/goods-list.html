@@ -141,7 +141,7 @@
                 
                 Shop.post(params,function(rs) {
                     if(rs.code ==0) {
-                        
+
                         layer.msg('修改成功');
                     }else {
 
@@ -226,6 +226,10 @@
                     layer.msg(checkStatus.isAll ? '全选': '未全选');
                     break;
                 case 'delete':
+                    if(checkStatus.data.length <= 0) {
+                        layer.msg('请选择数据');
+                        return;
+                    } 
                     var ids = [];
                     for (var i = 0; i < checkStatus.data.length; i++) {
                        ids.push(checkStatus.data[i].id);

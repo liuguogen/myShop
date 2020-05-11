@@ -361,7 +361,16 @@
     <?php } else { ?>
     <div class="exception">
         
-            <div class="info"><h1><?php echo htmlentities($message); ?></h1></div>
+            <!-- <div class="info"><h1><?php echo htmlentities($message); ?></h1></div> -->
+
+            <div class="layui-container">
+               <div class="fly-panel"> 
+                <div class="fly-none"> 
+                 <h2><i class="layui-icon layui-icon-404"></i></h2> 
+                 <p>页面或者数据被运到火星了，啥都看不到了…</p> 
+                </div>
+               </div>
+          </div>
         
     </div>
     <?php } ?>
@@ -439,11 +448,7 @@
     </div>
     <?php } ?>
 
-    <div class="copyright">
-        <a title="官方网站" href="http://www.thinkphp.cn">ThinkPHP</a> 
-        <span>V<?php echo THINK_VERSION; ?></span> 
-        <span>{ 十年磨一剑-为API开发设计的高性能框架 }</span>
-    </div>
+    
     <?php if(\think\App::$debug) { ?>
     <script>
         var LINE = <?php echo $line; ?>;

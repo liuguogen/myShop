@@ -200,7 +200,11 @@ class brand
 		$data['data']['brand_keywords'] = $data['data']['brand_keywords']? implode('|',unserialize($data['data']['brand_keywords'])) : '';
 		return $data;
 	}
-
+	/**
+	 * 删除品牌
+	 * @param  [type] $params [description]
+	 * @return [type]         [description]
+	 */
 	public  function delBrand($params)
 	{
 		$validate = new Validate([
@@ -216,9 +220,17 @@ class brand
 		if (!$validate->check($check_data)) {
 		    throw new HttpException(404,$validate->getError());
 		}
-		$flag = $this->brandMdl->where(['id'=>intval($params['id'])])->delete();
+
+		if($params['id'] && is_array($params['id'])) {
+			$ids = $params['id'];
+		}else {
+			$ids = [$params['id']];
+		}
+		
+		unset($params['id']);
+		$flag = $this->brandMdl->where(['id'=>['in',$ids]])->delete();
 		if(!$flag) throw new HttpException(404,'删除失败');
-		return ['id'=>intval($params['id'])];
+		return ['id'=>$ids];
 	}
 }
 
