@@ -52,6 +52,7 @@ return  [
                 'goods.update'=>['uses'=>'\goods\products@update','desc'=>'商品更新'],
                 'goods.type.save'=>['uses'=>'\goods\type@save','desc'=>'商品类型保存'],
                 'goods.type.get'=>['uses'=>'\goods\type@get','desc'=>'商品类型获取'],
+                'goods.type.del'=>['uses'=>'\goods\type@del','desc'=>'商品类型删除'],
                 'goods.type.update'=>['uses'=>'\goods\type@get','desc'=>'商品类型更新数据'],
                 'goods.type.getrow'=>['uses'=>'\goods\type@getRow','desc'=>'商品类型获取单条数据'],
             ],

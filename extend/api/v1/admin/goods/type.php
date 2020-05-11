@@ -17,6 +17,7 @@ use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
 use \model\GoodsType;
+use \model\Goods;
 /**
  * 
  */
@@ -29,6 +30,7 @@ class type
 	public function __construct()
 	{
 		$this->goodsTypeMdl = model('GoodsType');
+		$this->goodsMdl = model('Goods');
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
@@ -195,7 +197,6 @@ class type
 		$validate = new Validate([
 		    
 		    'id' => 'require',
-		    'pid'=>'require',
 		],[
 			'id.require'=>'ID必填',
 			
@@ -209,12 +210,20 @@ class type
 		    throw new HttpException(404,$validate->getError());
 		}
 
-		
-		$flag = $this->goodsTypeMdl->where(['id'=>intval($params['id'])])->delete();
+		if($params['id'] && is_array($params['id'])) {
+			$ids = $params['id'];
+		}else {
+			$ids = [$params['id']];
+		}
+		unset($params['id']);
+		if($this->goodsMdl->field('id')->where(['type_id'=>['in',$ids]])->select()) {
+			throw new HttpException(404,'该类型有商品使用不能删除');
+		}
+		$flag = $this->goodsTypeMdl->where(['id'=>['in',$ids]])->delete();
 		
 		
 		if(!$flag) throw new HttpException(404,'删除失败');
-		return ['id'=>intval($params['id'])];
+		return ['id'=>$ids];
 	}
 
 	

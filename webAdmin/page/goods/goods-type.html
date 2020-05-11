@@ -166,13 +166,17 @@
                   layer.msg('查看操作');
                 } else if(layEvent === 'del'){
                   layer.confirm('确认删除吗？', function(index){
-                    obj.del(); //删除对应行（tr）的DOM结构
-                    layer.close(index);
-                    //向服务端发送删除指令
+                       Shop.post({method:"goods.type.del",id:data.id},function(rs){
+                            if(rs.code ==0) {
+                                obj.del(); //删除对应行（tr）的DOM结构
+                                layer.close(index);
+                            }else {
+                                layer.msg(rs.msg);
+                            }
+                        })
                   });
                 } else if(layEvent === 'edit'){
-                  //layer.msg('编辑操作');
-                  //
+                 
                   tableParams.editData('goods.type.getrow',data.id,'编辑规格','/page/goods/goods-type-edit.html');
                 }
             });
@@ -192,6 +196,27 @@
                     break;
                 case 'isAll':
                     layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+                case 'delete':
+                    if(checkStatus.data.length <= 0) {
+                        layer.msg('请选择数据');
+                        return;
+                    }
+                    var ids = [];
+                    for (var i = 0; i < checkStatus.data.length; i++) {
+                        ids.push(checkStatus.data[i].id);
+                    }
+
+                    Shop.post({method:"goods.type.del",id:ids},function(rs){
+                        if(rs.code ==0) {
+                            layer.msg('删除成功');
+                            setTimeout(function(){
+                                location.reload();
+                            },2000)
+                        }else {
+                            layer.msg(rs.msg);
+                        }
+                    });
                     break;
                 };
             });

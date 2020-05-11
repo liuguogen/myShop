@@ -17,6 +17,7 @@ use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
 use \model\Brands;
+use \model\Goods;
 /**
  * 
  */
@@ -29,6 +30,7 @@ class brand
 	public function __construct()
 	{
 		$this->brandMdl = model('brands');
+		$this->goodsMdl = model('Goods');
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
@@ -226,7 +228,10 @@ class brand
 		}else {
 			$ids = [$params['id']];
 		}
-		
+		//查询是否有商品再用
+		if($this->goodsMdl->field('id')->where(['brand_id'=>['in',$ids]])->select()){
+			throw new HttpException(404,'该品牌有商品使用不能删除');
+		}
 		unset($params['id']);
 		$flag = $this->brandMdl->where(['id'=>['in',$ids]])->delete();
 		if(!$flag) throw new HttpException(404,'删除失败');
