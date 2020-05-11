@@ -73,8 +73,18 @@ class home
      */
     public function get(array $params) {
     	
+    	$goodsList = $this->goodsMdl->where(['sales_status'=>1])->select();
+    	foreach ($goodsList as $key => &$value) {
+    		$cate_name = $this->goodsCate->field('cate_name')->where(['id'=>intval($value['cate_id'])])->find();
+			$value['cate_name']  = $cate_name ? $cate_name['cate_name'] : '';
+			$brand_name = $this->brandMel->field('brand_name')->where(['id'=>intval($value['brand_id'])])->find();
+			$value['brand_name'] = $brand_name ? $brand_name['brand_name'] :'';
+			$type_name = $this->goodsTypeMdl->field('type_name')->where(['id'=>intval($value['type_id'])])->find();
+			$value['type_name'] = $type_name ? $type_name['type_name'] :  '';
+			$value['product'] = $this->productMdl->where(['goods_id'=>$value['id']])->select();
+    	}
     	
-		return ['data'=>json_encode(['data'=>'test'])];
+		return ['data'=>$goodsList,'count'=>count($goodsList)];
     }
     
 
