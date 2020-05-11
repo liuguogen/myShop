@@ -18,6 +18,7 @@ return  [
 
 
         'v1'=>[
+            //后台接口数据
             'admin'=>[
 
                 'menu.get'=>['uses'=>'\menu\menulist@get','desc'=>'获取菜单列表'],
@@ -53,6 +54,10 @@ return  [
                 'goods.type.get'=>['uses'=>'\goods\type@get','desc'=>'商品类型获取'],
                 'goods.type.update'=>['uses'=>'\goods\type@get','desc'=>'商品类型更新数据'],
                 'goods.type.getrow'=>['uses'=>'\goods\type@getRow','desc'=>'商品类型获取单条数据'],
+            ],
+            //前端接口数据
+            'web'=>[
+                'home.get'=>['uses'=>'\home\home@get','desc'=>'获取首页数据'],
             ],
         ],
 
