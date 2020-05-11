@@ -49,7 +49,7 @@ return [
 			'href'=>'',
 			'rule'=>'member_rule',
 			'children'=>[
-				['label'=>'会员列表','rule'=>'member.list','parent'=>'member_rule','href'=>'page/member/index.html'],
+				['label'=>'会员列表','rule'=>'member.list','parent'=>'member_rule','href'=>'page/member/member-list.html'],
 			],
 		],
 
