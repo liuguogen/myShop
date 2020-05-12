@@ -126,11 +126,11 @@
               $("#type_name").val(data.type_name);
 
               for(var i=0;i<data.spec_id.length;i++) {
-                 $("input[value='"+data.spec_id[i]+"']").attr('checked',true);
+                 $("input[value='"+data.spec_id[i]+"']").prop('checked',true);
               }
              
              
-              $("input[name='disabled']").attr('checked',data.disabled == 1 ?true:false);
+              $("input[name='disabled']").prop('checked',data.disabled == 1 ?true:false);
               
               layui.form.render();
             });

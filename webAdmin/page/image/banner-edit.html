@@ -59,7 +59,7 @@
                 <div class="layui-form-item">
                 <label class="layui-form-label">选择商品</label>
                 <div class="layui-input-inline layui-show-xs-block select-goods">
-                  <select multiple="multiple" lay-filter="goods"  id="goods_id">
+                  <select  lay-filter="goods"  name="goods_id" id="goods_id">
                    
                   </select>
                 </div>
@@ -92,7 +92,7 @@
         layui.use(['form','layer','upload','multiSelect'], function(){
           var form = layui.form
           ,layer = layui.layer
-          ,multiSelect = layui.multiSelect
+          //,multiSelect = layui.multiSelect
           ,upload = layui.upload;
         
           //获取商品
@@ -106,27 +106,27 @@
               var goods_html = '<option value=""></option>';
               for (var i = 0; i < rs.data.length; i++) {
 
-                goods_html+='<option value="'+rs.data[i].id+'">'+rs.data[i].name+'</option>';
+                goods_html+='<option id="goods_'+rs.data[i].id+'" value="'+rs.data[i].id+'">'+rs.data[i].name+'</option>';
               }
 
               $("#goods_id").append(goods_html);
             }else {
               layer.msg(rs.msg);
             }
-            multiSelect.render();
+            form.render();
           });
           
-          form.on('select(goods)',function(data){
+          // form.on('select(goods)',function(data){
 
             
             
             
-            $('select[multiple] option:selected').each(function() {
-              $('.select-goods').append('<input type="hidden" name="goods_id[]" value="'+$(this).val()+'" />')
+          //   $('select[multiple] option:selected').each(function() {
+          //     $('.select-goods').append('<input type="hidden" name="goods_id[]" value="'+$(this).val()+'" />')
               
-            });
+          //   });
             
-          });
+          // });
           //图片上传
           upload.render({
                   elem:"#image",
@@ -193,14 +193,9 @@
               $("#upload_img").attr('src',data.image);
               
               $("input[name='disabled']").attr('checked',data.disabled == 1 ?true:false);
-              if(data.goods_id !=undefined && data.goods_id.length > 0) {
-                console.log($("select[multiple] option[value='6']").attr('selected',true));
-                for (var i = 0; i < data.goods_id.length; i++) {
-                  
-                  // $("select[multiple] option").eq(1).attr('selected',true);
-                }
-                 layui.multiSelect.render();
-              }
+              var option = new Option(data.goods_name,data.goods_id);
+              
+              $("#goods_id").append(option);
              layui.form.render();
             });
           }

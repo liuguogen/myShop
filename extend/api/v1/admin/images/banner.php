@@ -17,6 +17,7 @@ use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
 use \model\Banners;
+use \model\Goods;
 /**
  * 
  */
@@ -27,6 +28,7 @@ class banner
 	public function __construct()
 	{
 		$this->bannerMdl = model('Banners');
+		$this->goodsMdl = model('Goods');
 		
 	}
 
@@ -97,7 +99,7 @@ class banner
 		$data = [
 			'banner_name'=>trim($params['banner_name']),
 			'image'=>trim($params['image']),
-			'goods_id'=>is_array($params['goods_id']) ? implode(',', $params['goods_id']) : '',
+			'goods_id'=>$params['goods_id'] ? $params['goods_id'] : 0,
 			'disabled'=>intval($params['disabled']),
 			'create_time'=>time(),
 		];
@@ -144,7 +146,7 @@ class banner
 		
 		if(!$rs) throw new HttpException(404,'获取失败');
 		if($rs['goods_id']) {
-			$rs['goods_id'] = explode(',', $rs['goods_id']);
+			$rs['goods_name'] = $this->goodsMdl->field('name')->where(['id'=>$rs['goods_id']])->find()['name'];
 		}
 		$data['data'] = $rs;
 		
