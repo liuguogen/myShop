@@ -85,7 +85,7 @@ class home
     	}
     	
     	$return['goods'] = [
-    		'goods'=>$goodsList,
+    		'data'=>$goodsList,
     		'count'=>count($goodsList),
     	];
     	
