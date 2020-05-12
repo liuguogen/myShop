@@ -63,6 +63,17 @@ return [
 				['label'=>'角色管理','rule'=>'role.rule','parent'=>'admin_rule','href'=>'page/admin/role.html']
 			],
 		],
+
+		'image_rule'=>[
+			'label'=>'图片管理',
+			'icon'=>'&#xe6fb;',
+			'href'=>'',
+			'rule'=>'image_rule',
+			'children'=>[
+				['label'=>'轮播图管理','rule'=>'banner.rule','parent'=>'image_rule','href'=>'page/image/banner.html'],
+				
+			],
+		],
 	],
 ];
 ?>

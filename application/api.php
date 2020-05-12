@@ -55,6 +55,9 @@ return  [
                 'goods.type.del'=>['uses'=>'\goods\type@del','desc'=>'商品类型删除'],
                 'goods.type.update'=>['uses'=>'\goods\type@get','desc'=>'商品类型更新数据'],
                 'goods.type.getrow'=>['uses'=>'\goods\type@getRow','desc'=>'商品类型获取单条数据'],
+                'banner.get'=>['uses'=>'\images\banner@get','desc'=>'轮播图获取'],
+                'banner.save'=>['uses'=>'\images\banner@save','desc'=>'轮播图保存'],
+                'banner.getrow'=>['uses'=>'\images\banner@getRow','desc'=>'轮播图取单条数据'],
             ],
             //前端接口数据
             'web'=>[

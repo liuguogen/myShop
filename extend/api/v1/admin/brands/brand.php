@@ -92,6 +92,7 @@ class brand
 			'create_time'=>time(),
 		];
 		if(isset($params['id']) && $params['id']) {
+			$data['update_time'] = time();
 			$flag = $this->brandMdl->where(['id'=>intval($params['id'])])->update($data);
 		}else {
 			$flag = $this->brandMdl->save($data);

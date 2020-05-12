@@ -468,51 +468,51 @@
 
 
         
-          tree.render({
-            elem: "#classtree"
-            ,
-            data: [{
-                title: '常用文件夹',
-                id: 1,
-                alias: 'changyong',
-                children: [{title: '所有未读', id: 11, href: 'http://www.layui.com/', alias: 'weidu'}, {
-                    title: '置顶邮件',
-                    id: 12
-                }, {title: '标签邮件', id: 13}]
-            }, {
-                title: '我的邮箱',
-                id: 2,
-                checked:true,
-                children: [{
-                    title: 'QQ邮箱',
-                    id: 21,
+        //   tree.render({
+        //     elem: "#classtree"
+        //     ,
+        //     data: [{
+        //         title: '常用文件夹',
+        //         id: 1,
+        //         alias: 'changyong',
+        //         children: [{title: '所有未读', id: 11, href: 'http://www.layui.com/', alias: 'weidu'}, {
+        //             title: '置顶邮件',
+        //             id: 12
+        //         }, {title: '标签邮件', id: 13}]
+        //     }, {
+        //         title: '我的邮箱',
+        //         id: 2,
+        //         checked:true,
+        //         children: [{
+        //             title: 'QQ邮箱',
+        //             id: 21,
                     
-                    checked:true,
-                    children: [{
-                        title: '收件箱',
-                        id: 211,
-                        children: [{title: '所有未读', id: 2111}, {title: '置顶邮件', id: 2112}, {title: '标签邮件', id: 2113}]
-                    }, {title: '已发出的邮件', id: 212}, {title: '垃圾邮件', id: 213}]
-                }, {
-                    title: '阿里云邮',
-                    id: 22,
-                    children: [{title: '收件箱', id: 221}, {title: '已发出的邮件', id: 222}, {title: '垃圾邮件', id: 223}]
-                }]
-            }]
-            ,
-            click: function (node) {
-                var $select = $($(this)[0].elem).parents(".layui-form-select");
+        //             checked:true,
+        //             children: [{
+        //                 title: '收件箱',
+        //                 id: 211,
+        //                 children: [{title: '所有未读', id: 2111}, {title: '置顶邮件', id: 2112}, {title: '标签邮件', id: 2113}]
+        //             }, {title: '已发出的邮件', id: 212}, {title: '垃圾邮件', id: 213}]
+        //         }, {
+        //             title: '阿里云邮',
+        //             id: 22,
+        //             children: [{title: '收件箱', id: 221}, {title: '已发出的邮件', id: 222}, {title: '垃圾邮件', id: 223}]
+        //         }]
+        //     }]
+        //     ,
+        //     click: function (node) {
+        //         var $select = $($(this)[0].elem).parents(".layui-form-select");
                 
-                $select.removeClass("layui-form-selected").find(".layui-select-title span").html(node.data.title).end().find("input:hidden[name='selectID']").val(node.data.id);
-            }
-        });
-        $(".downpanel").on("click", ".layui-select-title", function (e) {
-            $(".layui-form-select").not($(this).parents(".layui-form-select")).removeClass("layui-form-selected");
-            $(this).parents(".downpanel").toggleClass("layui-form-selected");
-            layui.stope(e);
-        }).on("click", "dl i", function (e) {
-            layui.stope(e);
-        });
+        //         $select.removeClass("layui-form-selected").find(".layui-select-title span").html(node.data.title).end().find("input:hidden[name='selectID']").val(node.data.id);
+        //     }
+        // });
+        // $(".downpanel").on("click", ".layui-select-title", function (e) {
+        //     $(".layui-form-select").not($(this).parents(".layui-form-select")).removeClass("layui-form-selected");
+        //     $(this).parents(".downpanel").toggleClass("layui-form-selected");
+        //     layui.stope(e);
+        // }).on("click", "dl i", function (e) {
+        //     layui.stope(e);
+        // });
         // $(document).on("click", function (e) {
         //     $(".layui-form-select").removeClass("layui-form-selected");
         // });
