@@ -84,7 +84,12 @@ class home
 			$value['product'] = $this->productMdl->where(['goods_id'=>$value['id']])->select();
     	}
     	
-		return ['data'=>$goodsList,'count'=>count($goodsList)];
+    	$return['goods'] = [
+    		'goods'=>$goodsList,
+    		'count'=>count($goodsList),
+    	];
+    	
+		return ['data'=>$return];
     }
     
 
