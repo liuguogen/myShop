@@ -90,8 +90,11 @@ class ThinkApi
             'msg'  => $msg,
             'time' => Request::instance()->server('REQUEST_TIME'),
             'data' => isset($data['data']) ? $data['data'] :[],
-            'count'=>isset($data['count']) ? $data['count']  : 0,
+            
         ];
+        if(isset($data['count'])) {
+            $result['count'] = $data['count'];
+        }
         $type = $type ?: $this->getResponseType();
         $response = Response::create($result, $type)->header($header);
 
