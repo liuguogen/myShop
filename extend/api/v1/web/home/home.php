@@ -81,7 +81,7 @@ class home
 			$value['brand_name'] = $brand_name ? $brand_name['brand_name'] :'';
 			$type_name = $this->goodsTypeMdl->field('type_name')->where(['id'=>intval($value['type_id'])])->find();
 			$value['type_name'] = $type_name ? $type_name['type_name'] :  '';
-			$value['product'] = $this->productMdl->where(['goods_id'=>$value['id']])->select();
+			//$value['product'] = $this->productMdl->where(['goods_id'=>$value['id']])->select();
     	}
     	
     	$return['goods'] = [
