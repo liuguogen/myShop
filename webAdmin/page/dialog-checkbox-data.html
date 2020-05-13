@@ -26,9 +26,9 @@
         <div class="x-nav">
             <span class="layui-breadcrumb">
                 
-                <a href="">管理员管理</a>
+                <a href=""></a>
                 <a>
-                    <cite>角色管理</cite></a>
+                </a>
             </span>
             <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
                 <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
@@ -60,26 +60,12 @@
     </body>
 
 
-    <script type="text/html" id="barDemo">
-      <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-      <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    </script>
-    <script type="text/html" id="toolbarDemo">
-        <div class = "layui-btn-container" > 
-            <button class = "layui-btn layui-btn-sm" lay-event = "getCheckData" > 获取选中行数据 </button>
-            <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button > 
-            <button class = "layui-btn layui-btn-sm" lay-event = "isAll" > 验证是否全选</button>
-        </div > 
-    </script>
-    <script type="text/html" id="switchTpl">
-        <!-- 这里的checked的状态只是演示 -->
-        <input type = "checkbox" name = "disabled" value = "{{d.disabled}}" lay-skin = "switch" lay-text = "是|否" lay-filter = "sexDemo" {{ d.disabled == 1 ? 'checked': ''}} >
-    </script>
+    
+    
 
 
-<script type="text/javascript" src="../../js/config.js"></script>
-
+<script type="text/javascript" src="../js/config.js"></script>
+<script type="text/javascript" src="../js/user.js"></script>
     <script>layui.use('laydate',
         function() {
             var laydate = layui.laydate;
@@ -99,6 +85,9 @@
 
 
     	function setData(params,type,cols) {
+
+            $(".layui-breadcrumb a").html('角色管理');
+           
     		layui.use(['table','layer'],function() {
             var table = layui.table;
             var layer = parent.layer === undefined ? layui.layer : parent.layer;
@@ -115,32 +104,17 @@
             ,totalRow: false //开启合计行
             ,cols: cols
           });
-            //监听单元格编辑
-            table.on('edit(test)',
-            function(obj) {
-                var value = obj.value //得到修改后的值
-                ,
-                data = obj.data //得到所在行所有键值
-                ,
-                field = obj.field; //得到字段
-                layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
-            });
-
+            
             //头工具栏事件
             table.on('toolbar(table-data)',
             function(obj) {
+                console.log(obj.config.cols);return;
 	                var checkStatus = table.checkStatus(obj.config.id);
 	                switch (obj.event) {
-	                case 'add':
-	                   x_admin_show('添加角色','/page/admin/role-edit.html')
-	                    break;
-	                case 'getCheckLength':
-	                    var data = checkStatus.data;
-	                    layer.msg('选中了：' + data.length + ' 个');
-	                    break;
+	                
 	                case 'save':
 	                	var data = checkStatus.data;
-                        console.log(checkStatus);
+                        
                         if(data.length < 1){
                             layer.msg('请选择数据!');return;
                         }
@@ -154,9 +128,7 @@
 	                    parent.layer.close(index);
 	                    
 	                	break;
-	                case 'isAll':
-	                    layer.msg(checkStatus.isAll ? '全选': '未全选');
-	                    break;
+	                
 	                };
             	});
         	});

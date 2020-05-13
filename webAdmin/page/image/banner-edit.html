@@ -27,7 +27,7 @@
         <div class="layui-row">
             <form action="" method="post" class="layui-form layui-form-pane">
               <input type="hidden" name="id" />
-              
+               
                 <div class="layui-form-item">
                     <label for="banner_name" class="layui-form-label">
                         <span class="x-red">*</span>图片名称
@@ -57,13 +57,13 @@
 
 
                 <div class="layui-form-item">
-                <label class="layui-form-label">选择商品</label>
-                <div class="layui-input-inline layui-show-xs-block select-goods">
-                  <select  lay-filter="goods"  name="goods_id" id="goods_id">
-                   
-                  </select>
-                </div>
-              </div>
+                      <label class="layui-form-label">选择商品</label>
+                      <div class="layui-input-block">
+                      <input type="button" class="layui-btn dialog" value="请选择">
+
+                        <input type="hidden" name="goods_id" />
+                      </div>
+                  </div>
 
                 <div class="layui-form-item">
                     <label for="disabled" class="layui-form-label">
@@ -95,26 +95,7 @@
           //,multiSelect = layui.multiSelect
           ,upload = layui.upload;
         
-          //获取商品
-          var goods_params = new Object();
-          goods_params.method = 'goods.get';
-          goods_params.page= 1;
-          goods_params.limit = 99999999;
-          Shop.post(goods_params,function(rs){
-            
-            if(rs.code==0) {
-              var goods_html = '<option value=""></option>';
-              for (var i = 0; i < rs.data.length; i++) {
-
-                goods_html+='<option id="goods_'+rs.data[i].id+'" value="'+rs.data[i].id+'">'+rs.data[i].name+'</option>';
-              }
-
-              $("#goods_id").append(goods_html);
-            }else {
-              layer.msg(rs.msg);
-            }
-            form.render();
-          });
+          
           
           // form.on('select(goods)',function(data){
 
@@ -178,24 +159,35 @@
           });
 
 
-        
+        $('.dialog').on('click',function(e) {
+          dialog.radio({"method":"goods.get","source":api.source,"version":api.version},[[ //表头
+                {type: 'radio', title: '选择', fixed: 'left'}
+                ,{field: 'id', title: '编号',  sort: true, fixed: 'left'}
+                ,{field: 'name', title: '商品名称', }
+                
+                ,{field: 'create_time', title: '创建时间', sort:true}
+                ,{field: 'update_time', title: '最后更新时间', sort:true}
+                
+              ]],$("input[name='goods_id']").val());
+        });
 
         
         });
 
 
          function editData(data) {
-          layui.use(['form','multiSelect'], function(){
+          layui.use(['form'], function(){
               $("input[name='id']").val(data.id);
               $("#banner_name").val(data.banner_name);
               
               $("input[name='image']").val(data.image);
               $("#upload_img").attr('src',data.image);
               
-              $("input[name='disabled']").attr('checked',data.disabled == 1 ?true:false);
-              var option = new Option(data.goods_name,data.goods_id);
+              //$("input[name='disabled']").attr('checked',data.disabled == 1 ?true:false);
+              //var option = new Option(data.goods_name,data.goods_id);
               
-              $("#goods_id").append(option);
+              $("input[name='goods_id']").val(data.goods_id);
+              $(".dialog").val(data.goods_name);
              layui.form.render();
             });
           }

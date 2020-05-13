@@ -19,7 +19,10 @@ var Shop = {
 	}
 }
 
-
+var router = {
+  "goods.get":"商品管理",
+  "role.get":"角色管理",
+}
 
 //验签开始
 //
@@ -43,21 +46,23 @@ var Shop = {
 }
 
  var dialog = {
-      radio:function(params,title,url,type,cols,w,h) {
-        openDialog(params,title,url,type,cols,w,h)
+
+  
+      radio:function(params,cols,id='',w,h) {
+        openDialog(params,'选择数据','../../page/dialog-radio-data.html','radio',cols,id,w,h)
   	  },
-	  checkbox:function(params,title,url,type,cols,w,h) {
-	    openDialog(params,title,url,type,cols,w,h);
+	    checkbox:function(params,cols,id='',w,h) {
+	     openDialog(params,'选择数据','../../page/dialog-checkbox-data.html','checkbox',cols,id,w,h);
 	  }   
 }
 
 
-function openDialog(params,title,url,type,cols,w,h) {
+function openDialog(params,title,url,type,cols,id='',w,h) {
   if (title == null || title == '') {
             title=false;
         };
         if (url == null || url == '') {
-            url="404.html";
+            url="../../error.html";
         };
         if (w == null || w == '') {
             w=($(window).width()*0.9);
@@ -81,7 +86,7 @@ function openDialog(params,title,url,type,cols,w,h) {
 
               var iframeWin = window[layero.find('iframe')[0]['name']];
                   
-              iframeWin.setData(params,type,cols);
+              iframeWin.setData(params,type,cols,id);
               //窗口加载成功刷新frame
               // location.replace(location.href);
             },

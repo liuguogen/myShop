@@ -53,7 +53,7 @@
                           <input type="hidden" name="avatar" />
                           <div class="layui-upload-list">
                             <img class="layui-upload-img" height="80" id="upload_img">
-                          <!-- <p id="demoText"></p> -->
+                         
                           </div>
                       </div>
 
@@ -182,7 +182,7 @@ layui.use(['form', 'layer','upload'],function() {
 
 
       $('.dialog').on('click',function(e) {
-        dialog.checkbox({"method":"role.get","source":api.source,"version":api.version},'选择数据','../../page/select-radio-data.html','checkbox',[[ //表头
+        dialog.checkbox({"method":"role.get","source":api.source,"version":api.version},[[ //表头
               {type: 'checkbox', title: '选择', fixed: 'left'}
               ,{field: 'id', title: '编号',  sort: true, fixed: 'left'}
               ,{field: 'role_name', title: '角色名', }
