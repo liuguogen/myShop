@@ -93,11 +93,9 @@ class home
     	
     	
     	//获取轮播图
-    	$bannerList = $this->bannerMdl->where(['disabled'=>1])->select();
+    	$bannerList = $this->bannerMdl->field('id,banner_name,image,goods_id,create_time,update_time')->where(['disabled'=>1])->select();
     	if($bannerList) {
-    		foreach ($bannerList as $key => &$value) {
-    			$value['goods_id'] = $value['goods_id'] ? explode(',', $value['goods_id']):'';
-    		}
+    		
     		$return['banner'] = $bannerList;
     	}
     	
