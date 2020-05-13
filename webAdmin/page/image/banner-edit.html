@@ -185,7 +185,7 @@
               
               //$("input[name='disabled']").attr('checked',data.disabled == 1 ?true:false);
               //var option = new Option(data.goods_name,data.goods_id);
-              
+              $("input[name='disabled']").prop('checked',data.disabled == 1 ?true:false);
               $("input[name='goods_id']").val(data.goods_id);
               $(".dialog").val(data.goods_name);
              layui.form.render();

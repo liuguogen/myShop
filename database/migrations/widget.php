@@ -22,6 +22,7 @@ IF NOT EXISTS `widget` (
   `module_title` varchar(200) not null default '' comment '模块标题',
   `module_desc` longtext  default null comment '模块描述',
   `goods_id` varchar(200) not null comment '商品ID,以逗号分隔',
+  `disabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '启用状态 0：禁用； 1：正常',
   `create_time` int(11) not null comment '创建时间',
   `update_time` int(11) not null comment '最后更新时间',
   PRIMARY KEY (`id`),

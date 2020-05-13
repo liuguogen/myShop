@@ -79,7 +79,7 @@ class home
     	
 
 
-    	$widgetList = $this->widgetMdl->select();
+    	$widgetList = $this->widgetMdl->where(['disabled'=>1])->select();
     	$return = [];
     	if($widgetList) {
     		foreach ($widgetList as $key => &$value) {

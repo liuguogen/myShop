@@ -102,7 +102,16 @@
                   </div>
 
                 
-                
+                <div class="layui-form-item">
+                    <label for="disabled" class="layui-form-label">
+                        <span class="x-red">*</span>是否启用
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="disabled" lay-filter = "disabled" lay-text="是|否"  checked="" lay-skin="switch">
+                    </div>
+
+                   
+                </div>
                 <div class="layui-form-item" style="text-align: center;">
                 <button class="layui-btn" lay-submit="" lay-filter="add">保存</button>
               </div>
@@ -168,7 +177,7 @@
           form.on('submit(add)', function(data){
             
             data.field.method = "widget.save";
-            
+            data.field.disabled = data.field.disabled =='on' ? 1 :0;
             Shop.post(data.field,function(rs){
                 if(rs.code == 0) {
                     layer.alert("保存成功", {icon: 6, closeBtn:0},function () {
@@ -214,6 +223,7 @@
               $("#title_desc").val(data.title_desc);
               $("#module_desc").val(data.module_desc);
               $("input[name='goods_id']").val(data.goods_id);
+              $("input[name='disabled']").prop('checked',data.disabled == 1 ?true:false);
               $(".dialog").val(data.goods_name);
              layui.form.render();
             });

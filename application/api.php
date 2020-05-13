@@ -57,11 +57,13 @@ return  [
                 'goods.type.getrow'=>['uses'=>'\goods\type@getRow','desc'=>'商品类型获取单条数据'],
                 'banner.get'=>['uses'=>'\images\banner@get','desc'=>'轮播图获取'],
                 'banner.save'=>['uses'=>'\images\banner@save','desc'=>'轮播图保存'],
+                'banner.update'=>['uses'=>'\images\banner@update','desc'=>'轮播图更新'],
                 'banner.getrow'=>['uses'=>'\images\banner@getRow','desc'=>'轮播图取单条数据'],
                 'widget.get'=>['uses'=>'\widget\widgets@get','desc'=>'首页挂件获取'],
                 'widget.save'=>['uses'=>'\widget\widgets@save','desc'=>'首页挂件保存'],
                 'widget.getrow'=>['uses'=>'\widget\widgets@getRow','desc'=>'首页挂件取单条数据'],
                 'widget.del'=>['uses'=>'\widget\widgets@del','desc'=>'首页挂件删除'],
+                'widget.update'=>['uses'=>'\widget\widgets@update','desc'=>'首页挂件更新'],
             ],
             //前端接口数据
             'web'=>[

@@ -153,6 +153,38 @@ class banner
 		return $data;
 	}
 
+	/**
+	 * 更新数据
+	 * @param  array  $params [description]
+	 * @return [type]         [description]
+	 */
+	public function update(array $params)
+	{
+
+
+		$validate = new Validate([
+		    
+		    'id' => 'require'
+		],[
+			'id.require'=>'ID必填'
+		]);
+		$check_data = [
+		   
+		    'id' => intval($params['id']),
+		];
+
+		if (!$validate->check($check_data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+		$id = intval($params['id']);
+		unset($params['id']);
+		$params['update_time'] = time();
+		$flag = $this->bannerMdl->where(['id'=>$id])->update($params);
+		
+		if(!$flag) throw new HttpException(404,'修改失败！');
+		return ['data'=>$flag];
+	}
+
 	
 }
 

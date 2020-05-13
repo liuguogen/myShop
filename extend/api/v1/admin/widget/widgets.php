@@ -106,7 +106,7 @@ class widgets
 			'module_title'=>$params['module_title'] ? $params['module_title'] : '',
 			'module_desc'=>$params['module_desc'] ? $params['module_desc'] : '',
 			'goods_id'=>$params['goods_id'] ? $params['goods_id'] : '',
-			
+			'disabled'=>intval($params['disabled']),
 			'create_time'=>time(),
 		];
 		
@@ -159,7 +159,37 @@ class widgets
 		
 		return $data;
 	}
+	/**
+	 * 更新数据
+	 * @param  array  $params [description]
+	 * @return [type]         [description]
+	 */
+	public function update(array $params)
+	{
 
+
+		$validate = new Validate([
+		    
+		    'id' => 'require'
+		],[
+			'id.require'=>'ID必填'
+		]);
+		$check_data = [
+		   
+		    'id' => intval($params['id']),
+		];
+
+		if (!$validate->check($check_data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+		$id = intval($params['id']);
+		unset($params['id']);
+		$params['update_time'] = time();
+		$flag = $this->widgetMdl->where(['id'=>$id])->update($params);
+		
+		if(!$flag) throw new HttpException(404,'修改失败！');
+		return ['data'=>$flag];
+	}
 	/**
 	 * 删除挂件
 	 * @param  [type] $params [description]
