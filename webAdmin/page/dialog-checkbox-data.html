@@ -39,16 +39,16 @@
                 <div class="layui-col-md12">
                     <div class="layui-card">
                         <div class="layui-card-body ">
-                            <form class="layui-form layui-col-space5">
+                            <div class="layui-form layui-col-space5">
                                 
                                 
+                                <div class="layui-inline layui-show-xs-block serach-title">
+                                   </div>
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input type="text" name="role_name" placeholder="角色名" autocomplete="off" class="layui-input"></div>
-                                <div class="layui-inline layui-show-xs-block">
-                                    <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                    <button class="layui-btn" lay-submit="" lay-filter="sreach" data-type="reload">
                                         <i class="layui-icon">&#xe615;</i></button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         <div class="layui-card-body ">
                             <table class="layui-hide" id="table-data" lay-filter="table-data"></table>
@@ -84,9 +84,14 @@
     <script>
 
 
-    	function setData(params,type,cols) {
+    	function setData(params,type,cols,id='') {
 
-            $(".layui-breadcrumb a").html('角色管理');
+            switch(params.method) {
+                case 'goods.get':
+                    $(".layui-breadcrumb a").html('商品管理');
+                    $(".serach-title").append('<input type="text" name="goods_name" placeholder="商品名称" autocomplete="off" class="layui-input">')
+                    break;
+            }
            
     		layui.use(['table','layer'],function() {
             var table = layui.table;
@@ -103,12 +108,65 @@
             ,toolbar: '<div><button class="layui-btn"  lay-event="save">保存</button></div>' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
             ,totalRow: false //开启合计行
             ,cols: cols
+            ,done: function(res, page, count){
+                
+                //可以自行添加判断的条件是否选中
+                //这句才是真正选中，通过设置关键字LAY_CHECKED为true选中，这里只对第一行选中
+                
+                if(id) {
+                    
+
+                    for(var i=0;i<res.data.length;i++) {
+
+                        ids = id.split(',');
+                        for(var k=0;k < ids.length;k++) {
+
+                            
+                            if(parseInt(ids[k]) == res.data[i].id) {
+                                var index= res.data[i].LAY_TABLE_INDEX;
+                                
+                                $('tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
+                                $('tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
+                            }
+                        }
+                        
+                    }
+                }
+                
+                
+                
+                
+            }
           });
-            
+            var $ = layui.$, active = {
+                  reload: function(){
+
+
+                    switch(params.method) {
+                        case 'goods.get':
+                            var name = $("input[name='goods_name']");
+                            var where = {name:name.val()};
+                            break;
+                    }
+                    
+                    
+                    //执行重载
+                    table.reload('table-data', {
+                      page: {
+                        curr: 1 //重新从第 1 页开始
+                      }
+                      ,where: where
+                    });
+                  }
+                };
+            $('.layui-col-space5 .layui-btn').on('click', function(){
+                  var type = $(this).data('type');
+                  active[type] ? active[type].call(this) : '';
+            });    
             //头工具栏事件
             table.on('toolbar(table-data)',
             function(obj) {
-                console.log(obj.config.cols);return;
+                
 	                var checkStatus = table.checkStatus(obj.config.id);
 	                switch (obj.event) {
 	                
@@ -118,10 +176,22 @@
                         if(data.length < 1){
                             layer.msg('请选择数据!');return;
                         }
-	                	$(window.parent.document).find(".dialog").empty();
-	                	$(window.parent.document).find(".dialog").append('<input type="hidden" value="'+data[0].id+'" name="role_id" />')
 
-	                	$(window.parent.document).find(".dialog").val(data[0].role_name)
+                       
+	                	$(window.parent.document).find(".dialog").empty();
+	                	switch(params.method){
+                            case 'goods.get':
+                                var goods_name = [];
+                                var goods_id = [];
+                                for(var i = 0;i < data.length;i++) {
+                                    goods_name.push(data[i].name);
+                                    goods_id.push(data[i].id);
+                                }   
+                                $(window.parent.document).find("input[name='goods_id']").val(goods_id.join(','))
+
+                                $(window.parent.document).find(".dialog").val(goods_name.join(','));
+                                break;
+                        }
 	                	
 	                	var index = parent.layer.getFrameIndex(window.name);
 	                        //关闭当前frame

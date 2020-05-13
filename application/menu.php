@@ -65,12 +65,13 @@ return [
 		],
 
 		'image_rule'=>[
-			'label'=>'图片管理',
-			'icon'=>'&#xe6fb;',
+			'label'=>'首页管理',
+			'icon'=>'&#xe6d7;',
 			'href'=>'',
 			'rule'=>'image_rule',
 			'children'=>[
 				['label'=>'轮播图管理','rule'=>'banner.rule','parent'=>'image_rule','href'=>'page/image/banner.html'],
+				['label'=>'挂件管理','rule'=>'widget.rule','parent'=>'image_rule','href'=>'page/widget/widget.html'],
 				
 			],
 		],

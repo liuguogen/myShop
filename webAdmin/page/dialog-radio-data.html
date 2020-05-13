@@ -113,12 +113,14 @@
                 //可以自行添加判断的条件是否选中
                 //这句才是真正选中，通过设置关键字LAY_CHECKED为true选中，这里只对第一行选中
                 //res.data[0]["LAY_CHECKED"]='true';
-                for(var i=0;i<res.data.length;i++) {
+                if(id) {
+                    for(var i=0;i<res.data.length;i++) {
                     
-                    if(parseInt(id) == res.data[i].id) {
-                        var index= res.data[i].LAY_TABLE_INDEX;
-                        
-                        $("tr[data-index = '"+index+"' ] .layui-form-radio").click();
+                        if(parseInt(id) == res.data[i].id) {
+                            var index= res.data[i].LAY_TABLE_INDEX;
+                            
+                            $("tr[data-index = '"+index+"' ] .layui-form-radio").click();
+                        }
                     }
                 }
                 

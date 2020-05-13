@@ -22,6 +22,7 @@ use \model\GoodsCate;
 use \model\GoodsType;
 use \model\Brands;
 use \model\Banners;
+use \model\Widget;
 /**
  * 
  */
@@ -39,6 +40,7 @@ class home
 		$this->brandMel = model('Brands');
 		$this->goodsCateMdl = model('GoodsCate'); 
 		$this->bannerMdl = model('Banners'); 
+		$this->widgetMdl = model('Widget'); 
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
@@ -75,20 +77,17 @@ class home
      */
     public function get(array $params) {
     	
-    	$goodsList = $this->goodsMdl->where(['sales_status'=>1])->select();
+
+
+    	$widgetList = $this->widgetMdl->select();
     	$return = [];
-    	if($goodsList) {
-    		foreach ($goodsList as $key => &$value) {
-	    		$cate_name = $this->goodsCateMdl->field('cate_name')->where(['id'=>intval($value['cate_id'])])->find();
-				$value['cate_name']  = $cate_name ? $cate_name['cate_name'] : '';
-				$brand_name = $this->brandMel->field('brand_name')->where(['id'=>intval($value['brand_id'])])->find();
-				$value['brand_name'] = $brand_name ? $brand_name['brand_name'] :'';
-				$type_name = $this->goodsTypeMdl->field('type_name')->where(['id'=>intval($value['type_id'])])->find();
-				$value['type_name'] = $type_name ? $type_name['type_name'] :  '';
-				//$value['product'] = $this->productMdl->where(['goods_id'=>$value['id']])->select();
+    	if($widgetList) {
+    		foreach ($widgetList as $key => &$value) {
+	    		
+				$value['product'] = $this->goodsMdl->where(['id'=>['in',explode(',', $value['goods_id'])]])->select();
 	    	}
 
-	    	$return['goods'] = $goodsList;
+	    	$return['modules'] = $widgetList;
     	}
     	
     	

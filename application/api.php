@@ -58,6 +58,10 @@ return  [
                 'banner.get'=>['uses'=>'\images\banner@get','desc'=>'轮播图获取'],
                 'banner.save'=>['uses'=>'\images\banner@save','desc'=>'轮播图保存'],
                 'banner.getrow'=>['uses'=>'\images\banner@getRow','desc'=>'轮播图取单条数据'],
+                'widget.get'=>['uses'=>'\widget\widgets@get','desc'=>'首页挂件获取'],
+                'widget.save'=>['uses'=>'\widget\widgets@save','desc'=>'首页挂件保存'],
+                'widget.getrow'=>['uses'=>'\widget\widgets@getRow','desc'=>'首页挂件取单条数据'],
+                'widget.del'=>['uses'=>'\widget\widgets@del','desc'=>'首页挂件删除'],
             ],
             //前端接口数据
             'web'=>[

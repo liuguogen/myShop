@@ -29,25 +29,61 @@
               <input type="hidden" name="id" />
                
                 <div class="layui-form-item">
-                    <label for="banner_name" class="layui-form-label">
-                        <span class="x-red">*</span>图片名称
+                    <label for="title" class="layui-form-label">
+                        <span class="x-red">*</span>标题
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="banner_name" name="banner_name" required="" lay-verify="required"
+                        <input type="text" id="title" name="title" required="" lay-verify="required"
                         autocomplete="off" class="layui-input">
                     </div>
                 </div>
-                
                 <div class="layui-form-item">
-                    <label for="image" class="layui-form-label">
+                    <label for="title_desc" class="layui-form-label">
+                        标题描述
+                    </label>
+                    <div class="layui-input-inline">
+                        <textarea placeholder="请输入标题描述" id="title_desc" name="title_desc" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label for="sub_title" class="layui-form-label">
+                        <span class="x-red">*</span>副标题
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="sub_title" name="sub_title" required="" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                 <div class="layui-form-item">
+                    <label for="module_title" class="layui-form-label">
+                        <span class="x-red">*</span>模块标题
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="module_title" name="module_title" lay-verify="required"
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label for="module_desc" class="layui-form-label">
+                        模块描述
+                    </label>
+                    <div class="layui-input-inline">
+                        <textarea placeholder="请输入标题描述" id="module_desc" name="module_desc" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="banner_img" class="layui-form-label">
                         <span class="x-red"></span>图片
                     </label>
                     <div class="layui-input-inline layui-upload">
-                          <button type="button" class="layui-btn" id="image">
+                          <button type="button" class="layui-btn" id="banner_img">
                             <i class="layui-icon">&#xe67c;</i>上传图片
                           </button>
                           <input class="layui-upload-file" type="file" accept="*" name="file">
-                          <input type="hidden" name="image" />
+                          <input type="hidden" name="banner_img" />
                           <div class="layui-upload-list">
                             <img class="layui-upload-img" height="80" id="upload_img">
                           
@@ -65,16 +101,7 @@
                       </div>
                   </div>
 
-                <div class="layui-form-item">
-                    <label for="disabled" class="layui-form-label">
-                        <span class="x-red">*</span>是否启用
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="checkbox" name="disabled" lay-filter = "disabled" lay-text="是|否"  checked="" lay-skin="switch">
-                    </div>
-
-                   
-                </div>
+                
                 
                 <div class="layui-form-item" style="text-align: center;">
                 <button class="layui-btn" lay-submit="" lay-filter="add">保存</button>
@@ -110,7 +137,7 @@
           // });
           //图片上传
           upload.render({
-                  elem:"#image",
+                  elem:"#banner_img",
                   url:api.url+'?method=image.upload.signle&source='+api.source+'&version='+api.version+'&sign='+signs.gen_sign({"method":"image.upload.signle","version":api.version,"source":api.source}),
                   accept:'images',
                   exts:'jpg|png|gif|bmp|jpeg',
@@ -122,7 +149,7 @@
                       data = typeof(rs.data) == 'string' ? JSON.parse(rs.data) : rs.data;
                       
                       $("#upload_img").attr('src', data.src);
-                      $("input[name='image']").val(data.src);
+                      $("input[name='banner_img']").val(data.src);
                       layer.closeAll('loading');
                     }else {
                       
@@ -140,8 +167,8 @@
           //监听提交
           form.on('submit(add)', function(data){
             
-            data.field.method = "banner.save";
-            data.field.disabled = data.field.disabled =='on' ? 1 :0;
+            data.field.method = "widget.save";
+            
             Shop.post(data.field,function(rs){
                 if(rs.code == 0) {
                     layer.alert("保存成功", {icon: 6, closeBtn:0},function () {
@@ -160,8 +187,8 @@
 
 
         $('.dialog').on('click',function(e) {
-          dialog.radio({"method":"goods.get","source":api.source,"version":api.version,"sales_status":1},[[ //表头
-                {type: 'radio', title: '选择', fixed: 'left'}
+          dialog.checkbox({"method":"goods.get","source":api.source,"version":api.version,"sales_status":1},[[ //表头
+                {type: 'checkbox', title: '选择', fixed: 'left'}
                 ,{field: 'id', title: '编号',  sort: true, fixed: 'left'}
                 ,{field: 'name', title: '商品名称', }
                 
@@ -178,14 +205,14 @@
          function editData(data) {
           layui.use(['form'], function(){
               $("input[name='id']").val(data.id);
-              $("#banner_name").val(data.banner_name);
+              $("#title").val(data.title);
               
-              $("input[name='image']").val(data.image);
-              $("#upload_img").attr('src',data.image);
-              
-              //$("input[name='disabled']").attr('checked',data.disabled == 1 ?true:false);
-              //var option = new Option(data.goods_name,data.goods_id);
-              
+              $("input[name='banner_img']").val(data.banner_img);
+              $("#upload_img").attr('src',data.banner_img);
+              $("input[name='sub_title']").val(data.sub_title);
+              $("input[name='module_title']").val(data.module_title);
+              $("#title_desc").val(data.title_desc);
+              $("#module_desc").val(data.module_desc);
               $("input[name='goods_id']").val(data.goods_id);
               $(".dialog").val(data.goods_name);
              layui.form.render();
