@@ -177,13 +177,19 @@ class type
 		if (!$validate->check($check_data)) {
 		    throw new HttpException(404,$validate->getError());
 		}
-		$id = intval($params['id']);
+
+		if($params['id'] && is_array($params['id'])) {
+			$ids  = $params['id'];
+		} else {
+			$ids = [intval($params['id'])];
+		}
+		
 		unset($params['id']);
 		$params['update_time'] = time();
-		$flag = $this->goodsTypeMdl->where(['id'=>$id])->update($params);
+		$flag = $this->goodsTypeMdl->where(['id'=>['in',$ids]])->update($params);
 		
 		if(!$flag) throw new HttpException(404,'修改失败！');
-		return ['data'=>$flag];
+		return ['id'=>$ids];
 	}
 
 	

@@ -144,37 +144,38 @@ class products
 			unset($params['file']);
 		}
 
-		if(isset($params['goods_spec_type']) && $params['goods_spec_type']=='many') {
+		if(isset($params['sku_type']) && $params['sku_type']=='many') {
 			//多规格
 		}
 		Db::startTrans();
 		try{
 			$goods_data = [
-				'name'=>trim($params['name']),
-				'cate_id'=>intval($params['cate_id']),
-				'type_id'=>intval($params['type_id']),
-				'brand_id'=>intval($params['brand_id']),
-				'bn'=>trim($params['bn']),
-				'price'=>trim($params['price']),
-				'mkt_price'=>trim($params['mkt_price']),
-				'weight'=>trim($params['weight']),
-				'store'=>intval($params['store']),
-				'sales_status'=>intval($params['sales_status']),
-				'store_type'=>intval($params['store_type']),
-				'goods_img'=>trim($params['goods_img']),
-				'thumb'=>isset($params['thumb']) ? implode(',', $params['thumb']) : '',
-				'goods_desc'=>$params['goods_desc'],
+				'name'=>trim($params['name']),//商品名称
+				'cate_id'=>intval($params['cate_id']),//分类id
+				'type_id'=>intval($params['type_id']),//类型id
+				'brand_id'=>intval($params['brand_id']),//品牌id
+				'sku_type'=>$params['sku_type'] ? trim($params['sku_type']) : 'signle',//sku 类型 many 多规格 signle 单规格
+				'bn'=>trim($params['bn']),//商品货号
+				'price'=>trim($params['price']),//商品价格
+				'mkt_price'=>trim($params['mkt_price']),//商品参考价
+				'weight'=>trim($params['weight']),//商品重量
+				'store'=>intval($params['store']),//商品库存
+				'sales_status'=>intval($params['sales_status']),//销售状态
+				'store_type'=>intval($params['store_type']),//库存扣减方式
+				'goods_img'=>trim($params['goods_img']),//商品主图
+				'thumb'=>isset($params['thumb']) ? implode(',', $params['thumb']) : '', //商品缩略图
+				'goods_desc'=>$params['goods_desc'],//商品介绍
 				'update_time'=>time(),
 
 			];
 			$product_data = [
-				'name'=>trim($params['goods_spec_type']) == 'many' ? $params['product']['name'] : trim($params['name']),
-				'bn'=>trim($params['goods_spec_type']) == 'many' ? $params['product']['bn'] : trim($params['bn']),
-				'price'=>trim($params['goods_spec_type']) == 'many' ? $params['product']['price'] : trim($params['price']),
-				'mkt_price'=>trim($params['goods_spec_type']) == 'many' ? $params['product']['mkt_price'] : trim($params['mkt_price']),
-				'weight'=>trim($params['goods_spec_type']) == 'many' ? $params['product']['weight'] : trim($params['weight']),
-				'store'=>trim($params['goods_spec_type']) == 'many' ? $params['product']['store'] : trim($params['store']),
-				'sales_status'=>trim($params['goods_spec_type']) == 'many' ? $params['product']['sales_status'] : trim($params['sales_status']),
+				'name'=>trim($params['sku_type']) == 'many' ? $params['product']['name'] : trim($params['name']),
+				'bn'=>trim($params['sku_type']) == 'many' ? $params['product']['bn'] : trim($params['bn']),
+				'price'=>trim($params['sku_type']) == 'many' ? $params['product']['price'] : trim($params['price']),
+				'mkt_price'=>trim($params['sku_type']) == 'many' ? $params['product']['mkt_price'] : trim($params['mkt_price']),
+				'weight'=>trim($params['sku_type']) == 'many' ? $params['product']['weight'] : trim($params['weight']),
+				'store'=>trim($params['sku_type']) == 'many' ? $params['product']['store'] : trim($params['store']),
+				'sales_status'=>trim($params['sku_type']) == 'many' ? $params['product']['sales_status'] : trim($params['sales_status']),
 				'update_time'=>time(),
 			];
 

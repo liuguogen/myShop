@@ -19,6 +19,7 @@ IF NOT EXISTS `goods` (
   `cate_id` int(11) not null comment '商品分类id',
   `brand_id` int(11) not null comment '品牌id',
   `type_id` int(11) not null comment '商品类型id',
+  `sku_type` enum('signle','many') not null default 'signle' comment 'sku类型 signle 单规格,many 多规格',
   `bn` varchar(50) not null comment '商品货号',
   `price` decimal(10,4) not null default 0 comment '商品价格',
   `mkt_price` decimal(10,4) not null default 0 comment '参考价',
