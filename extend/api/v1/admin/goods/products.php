@@ -144,9 +144,7 @@ class products
 			unset($params['file']);
 		}
 
-		if(isset($params['sku_type']) && $params['sku_type']=='many') {
-			//多规格
-		}
+		
 		Db::startTrans();
 		try{
 			$goods_data = [
@@ -168,20 +166,32 @@ class products
 				'update_time'=>time(),
 
 			];
-			$product_data = [
-				'name'=>trim($params['sku_type']) == 'many' ? $params['product']['name'] : trim($params['name']),
-				'bn'=>trim($params['sku_type']) == 'many' ? $params['product']['bn'] : trim($params['bn']),
-				'price'=>trim($params['sku_type']) == 'many' ? $params['product']['price'] : trim($params['price']),
-				'mkt_price'=>trim($params['sku_type']) == 'many' ? $params['product']['mkt_price'] : trim($params['mkt_price']),
-				'weight'=>trim($params['sku_type']) == 'many' ? $params['product']['weight'] : trim($params['weight']),
-				'store'=>trim($params['sku_type']) == 'many' ? $params['product']['store'] : trim($params['store']),
-				'sales_status'=>trim($params['sku_type']) == 'many' ? $params['product']['sales_status'] : trim($params['sales_status']),
-				'update_time'=>time(),
-			];
+
+
+			if(isset($params['sku_type']) && $params['sku_type']=='many') {
+				//多规格
+			}else {
+				//单规格
+				
+				$product_data = [
+					'name'=>trim($params['sku_type']) == 'many' ? $params['product']['name'] : trim($params['name']),
+					'bn'=>trim($params['sku_type']) == 'many' ? $params['product']['bn'] : trim($params['bn']),
+					'price'=>trim($params['sku_type']) == 'many' ? $params['product']['price'] : trim($params['price']),
+					'mkt_price'=>trim($params['sku_type']) == 'many' ? $params['product']['mkt_price'] : trim($params['mkt_price']),
+					'weight'=>trim($params['sku_type']) == 'many' ? $params['product']['weight'] : trim($params['weight']),
+					'store'=>trim($params['sku_type']) == 'many' ? $params['product']['store'] : trim($params['store']),
+					'sales_status'=>trim($params['sku_type']) == 'many' ? $params['product']['sales_status'] : trim($params['sales_status']),
+					'update_time'=>time(),
+				];
+			}
+			
 
 			if($params['id']) {
 				//编辑
 				
+				$this->goodsMdl->where(['id'=>intval($params['id'])])->update($goods_data);
+
+				$this->productMdl->where(['goods_id'=>intval($params['id'])])->update($product_data);
 			}else {
 				//新增
 				$goods_data['create_time']  = time();
@@ -195,7 +205,7 @@ class products
 
 			}
 			Db::commit();
-			return ['data'=>$goods_id ? $goods_id : intval($params['id'])];
+			return ['data'=>isset($goods_id) && $goods_id ? $goods_id : intval($params['id'])];
 
 		}catch(\Exception $e) {
 			Db::rollback();
@@ -228,11 +238,11 @@ class products
 
 		$id = intval($params['id']);
 		unset($params['id']);
-		$rs = $this->goodsTypeMdl->where(['id'=>$id])->find();
+		$rs = $this->goodsMdl->where(['id'=>$id])->find();
 		
 		if(!$rs) throw new HttpException(404,'获取失败');
 		$data['data'] = $rs;
-		$data['data']['spec_id'] = $rs['spec_id'] ? explode(',', $rs['spec_id']) : [];
+		
 		
 		return $data;
     }

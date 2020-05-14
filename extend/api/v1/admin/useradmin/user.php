@@ -76,7 +76,7 @@ class user
 			throw new HttpException(404,'该账号没有启用请联系管理员!');
 		}
 		if(!$PasswordHashs->CheckPassword($params['password'],$adminData['password'])) {
-				throw new HttpException(404,'密码错误!');
+			throw new HttpException(404,'密码错误!');
 		}
 		
 		
