@@ -119,13 +119,16 @@
                     for(var i=0;i<res.data.length;i++) {
 
                         ids = id.split(',');
+
                         for(var k=0;k < ids.length;k++) {
 
                             
                             if(parseInt(ids[k]) == res.data[i].id) {
                                 var index= res.data[i].LAY_TABLE_INDEX;
                                 
-                                $('tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
+                                //$('tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
+                                //$('tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
+                                $('tr[data-index=' + index + '] .layui-form-checkbox').click();
                                 $('tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
                             }
                         }
