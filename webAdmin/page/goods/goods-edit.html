@@ -288,21 +288,13 @@
           ,layer = layui.layer
           ,tree = layui.tree
           ,upload = layui.upload;
+          //异步请求数据
           
           //获取分类
           var cate_params = new Object();
           cate_params.method = 'cate.get';
           cate_params.page= 1;
-          cate_params.limit = 99999999;
-
-
-                      
-                        
-                     
-                      
-                        
-                        
-                      
+          cate_params.limit = 99999999;           
           Shop.post(cate_params,function(rs){
             if(rs.code ==0) {
                 if(rs.data.length>0) {
@@ -336,7 +328,7 @@
               layer.msg(rs.msg);
             }
             form.render();
-          })
+          },false)
           //获取品牌
           var brand_params = new Object();
           brand_params.method= 'brand.get';
@@ -355,7 +347,7 @@
               layer.msg(rs.msg);
             }
             form.render();
-          })
+          },false)
            
          //获取商品类型
          var type_params = new Object();
@@ -375,7 +367,7 @@
             layer.msg(rs.msg);
           }
           form.render();
-         })
+         },false)
           
           //商品主图上传
           upload.render({

@@ -7,8 +7,8 @@ var api = {
 }
 
 var Shop = {
-	post : function(params,callback) {
-		
+	post : function(params,callback,async=true) {
+		$.ajaxSettings.async = async;
 		params.source = api.source;
 		params.version = api.version;
 		var  sign = signs.gen_sign(params);
