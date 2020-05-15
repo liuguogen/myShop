@@ -406,17 +406,7 @@
               if($(".show-spec").is(':hidden')) {
 
 
-                var params = new Object();
-                params.method = 'goods.type.spec.get';
-                params.type_id = type_id;
-                Shop.post(params,function(rs){
-                  if(rs.code==0) {
-                    if(rs.data && rs.data.length > 0) {
-                      skuHtml(rs.data);
-                      form.render();
-                    }
-                  }
-                })
+                getSkuValue(type_id,layui);
                 
               }
               
@@ -508,7 +498,21 @@
 
        
         });
-
+        function getSkuValue(type_id,layui) {
+          var params = new Object();
+          params.method = 'goods.type.spec.get';
+                params.type_id = type_id;
+                Shop.post(params,function(rs){
+                  if(rs.code==0) {
+                    if(rs.data && rs.data.length > 0) {
+                      skuHtml(rs.data);
+                      layui.form.render();
+                    }
+                  }else {
+                    layer.msg(rs.msg);
+                  }
+          })
+        }
          function skuHtml(data) {
            var sku_html = '';
             for(var i=0;i<data.length;i++) {
@@ -671,6 +675,10 @@
               $("input[name='store_type'][value='"+data.store_type+"']").attr('checked',true);
               
               ue.setContent(data.goods_desc);
+
+              if(data.sku_type=='many') {
+                getSkuValue(data.type_id,layui);
+              }
               //$("input[name='disabled'][value=1]").attr('checked',data.disabled == 1 ?true:false);
               //$("input[name='disabled'][value=0]").attr('checked',data.disabled == 0 ?true:false);
               $("input[name='sales_status']").attr('checked',data.sales_status == 1 ?true:false);
