@@ -55,6 +55,7 @@ return  [
                 'goods.type.save'=>['uses'=>'\goods\type@save','desc'=>'商品类型保存'],
                 'goods.type.get'=>['uses'=>'\goods\type@get','desc'=>'商品类型获取'],
                 'goods.type.del'=>['uses'=>'\goods\type@del','desc'=>'商品类型删除'],
+                'goods.type.spec.get'=>['uses'=>'\goods\type@getSpecValue','desc'=>'根据商品类型获取规格值'],
                 'goods.type.update'=>['uses'=>'\goods\type@update','desc'=>'商品类型更新数据'],
                 'goods.type.getrow'=>['uses'=>'\goods\type@getRow','desc'=>'商品类型获取单条数据'],
                 'banner.get'=>['uses'=>'\images\banner@get','desc'=>'轮播图获取'],

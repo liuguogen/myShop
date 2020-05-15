@@ -21,6 +21,7 @@ use \model\Product;
 use \model\GoodsCate;
 use \model\GoodsType;
 use \model\Brands;
+use \model\SpecValues;
 /**
  * 
  */
@@ -37,6 +38,7 @@ class products
 		$this->goodsTypeMdl = model('GoodsType');
 		$this->brandMel = model('Brands');
 		$this->goodsCate = model('GoodsCate'); 
+		$this->specValueMdl = model('SpecValues');
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
@@ -169,11 +171,59 @@ class products
 
 
 			if(isset($params['sku_type']) && $params['sku_type']=='many') {
+
+
 				//多规格
+				$validate = new Validate([
+		    
+		    
+				    'product'=>'require',
+				    
+				],[
+					'product.require'=>'sku必填',
+					
+				]);
+
+				$check_data = [
+				   
+				    'product' => $params['product'],
+				    
+				];
+
+				
+				
+				if (!$validate->check($check_data)) {
+				    throw new HttpException(404,$validate->getError());
+				}
+				$product = [];
+				foreach ($params['product'] as $key => $value) {
+					foreach ($value as $k => $v) {
+
+						
+						$product[array_keys($v)[0]][$k] = array_values($v)[0];
+					}
+				}
+				$product_data = [];
+				foreach ($product as $key => $value) {
+					$spec_value = $this->specValueMdl->field('spec_value')->where(['id'=>['in',explode(',', $key)]])->select();
+					
+					$product_data[] = [
+						'name'=>$value['name'],
+						'bn'=>$value['bn'],
+						'price'=>$value['price'],
+						'mkt_price'=>$value['mkt_price'],
+						'store'=>$value['store'],
+						'spec_value'=>$key,
+						'spec_text'=>$spec_value ? implode(',', array_column($spec_value, 'spec_value')) : '',
+						'update_time'=>time(),
+					];
+				}
+				
+				
 			}else {
 				//单规格
 				
-				$product_data = [
+				$product_data = [[
 					'name'=>trim($params['sku_type']) == 'many' ? $params['product']['name'] : trim($params['name']),
 					'bn'=>trim($params['sku_type']) == 'many' ? $params['product']['bn'] : trim($params['bn']),
 					'price'=>trim($params['sku_type']) == 'many' ? $params['product']['price'] : trim($params['price']),
@@ -182,7 +232,7 @@ class products
 					'store'=>trim($params['sku_type']) == 'many' ? $params['product']['store'] : trim($params['store']),
 					'sales_status'=>trim($params['sku_type']) == 'many' ? $params['product']['sales_status'] : trim($params['sales_status']),
 					'update_time'=>time(),
-				];
+				]];
 			}
 			
 
@@ -197,10 +247,12 @@ class products
 				$goods_data['create_time']  = time();
 				$this->goodsMdl->insert($goods_data);
 				$goods_id = $this->goodsMdl->getLastInsID();
-				$product_data['goods_id']= $goods_id;
-				$product_data['create_time']  = time();
+				foreach ($product_data as $key => &$value) {
+					$value['goods_id']= $goods_id;
+					$value['create_time']  = time();
+				}
 
-				$this->productMdl->insert($product_data);
+				$this->productMdl->saveAll($product_data);
 				
 
 			}

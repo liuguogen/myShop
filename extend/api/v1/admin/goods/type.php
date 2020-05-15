@@ -18,6 +18,8 @@ use api\v1\admin\userMake;
 use \think\Config;
 use \model\GoodsType;
 use \model\Goods;
+use \model\Specs;
+use \model\SpecValues;
 /**
  * 
  */
@@ -31,6 +33,8 @@ class type
 	{
 		$this->goodsTypeMdl = model('GoodsType');
 		$this->goodsMdl = model('Goods');
+		$this->specMdl = model('Specs');
+		$this->specValueMdl = model('SpecValues');
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
@@ -230,6 +234,41 @@ class type
 		
 		if(!$flag) throw new HttpException(404,'删除失败');
 		return ['id'=>$ids];
+	}
+	/**
+	 * 根据类型ID获取规格值
+	 * @return [type] [description]
+	 */
+	public function getSpecValue(array $params) {
+		$validate = new Validate([
+		    
+		    'type_id' => 'require',
+		],[
+			'type_id.require'=>'ID必填',
+			
+		]);
+		$check_data = [
+		   
+		    'type_id' => intval($params['type_id']),
+		   
+		];
+		if (!$validate->check($check_data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+
+		$type_data = $this->goodsTypeMdl->where(['id'=>intval($params['type_id'])])->find();
+		if(!$type_data) {
+			throw new HttpException(404,'暂无商品类型数据');
+		}
+		//根据规格id获取规格值
+		$spec_value = $this->specMdl->where(['id'=>['in',explode(',', $type_data['spec_id'])]])->select();
+
+		if(!$spec_value) throw new HttpException(404,'暂无规格数据');
+		foreach ($spec_value as $key => &$value) {
+			$value['spec_value'] = $this->specValueMdl->where(['spec_id'=>intval($value['id'])])->select();
+		}
+
+		return ['data'=>$spec_value];
 	}
 
 	

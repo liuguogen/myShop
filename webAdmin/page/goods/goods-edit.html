@@ -100,42 +100,9 @@
               </div>
               <div class="layui-form-item layui-form-text show-spec" style="display: none;">
                     
-                    <div class="layui-form-item layui-form-text">
-                      <span>颜色:</span>
-                      <div class="layui-input-block color-spec">
-                        <input type="checkbox" name="color[]"  lay-skin="primary" lay-filter="color" title="红色" >
-                        <input type="checkbox" name="color[]" lay-skin="primary" lay-filter="color" title="蓝色">
-                        <input type="checkbox" name="color[]" lay-skin="primary" lay-filter="color" title="紫色" >
-                      </div>
-                    </div>
-                    <div class="layui-form-item layui-form-text">
-                      <span>重量:</span>
-                      <div class="layui-input-block weight-spec">
-                        <input type="checkbox" name="weight[]" lay-skin="primary" lay-filter="weight" value="120g" title="120g" >
-                        <input type="checkbox" name="weight[]" lay-skin="primary" lay-filter="weight" value="240g" title="240g">
-                        <input type="checkbox" name="weight[]" lay-skin="primary" lay-filter="weight" value="500g" title="500g" >
-                      </div>
-                    </div>
-                    <table class="layui-table">
-
-                      <thead>
-                        <tr>
-                          <th>规格值</th>
-                          <th>商品名称</th>
-                          <th>货号</th>
-                          <th>商品价格</th>
-                          <th>商品参考价</th>
-                          <th>商品库存</th>
-                          <th>操作</th>
-                        </tr> 
-                      </thead>
-
-                      <tbody id="spec_values">
-                        
-                        
-                      </tbody>
-                    </table>
-                </div>
+                    
+                   
+              </div>
             <div class="layui-form-item">
                     <label for="name" class="layui-form-label">
                         <span class="x-red">*</span>商品名称
@@ -426,20 +393,50 @@
 
           });
 
-          form.on('checkbox(weight)',function(data){
-            alert(data.value);
-          });
+          
           form.on('radio(goods_spec)',function(data){
             if(data.value=='many') {
-              $(".show-spec").show();
+              var type_id = $("select[name='type_id']").val();
+              if(!type_id) {
+
+                layer.msg('请选择类型');return;
+              }
+              
+
+              if($(".show-spec").is(':hidden')) {
+
+
+                var params = new Object();
+                params.method = 'goods.type.spec.get';
+                params.type_id = type_id;
+                Shop.post(params,function(rs){
+                  if(rs.code==0) {
+                    if(rs.data && rs.data.length > 0) {
+                      skuHtml(rs.data);
+                      form.render();
+                    }
+                  }
+                })
+                
+              }
+              
+              
             }else {
               $(".show-spec").hide();
             }
-            form.render();
+
+
+            form.on('checkbox(spec_value)',function(data){
+              resetTable();
+            });
+            
           });
+
+
+
           //监听提交
           form.on('submit(add)', function(data){
-            console.log(data);
+            
             data.field.method = "goods.save";
             data.field.sales_status = data.field.sales_status =='on' ? 1 :0;
             Shop.post(data.field,function(rs){
@@ -512,7 +509,147 @@
        
         });
 
-         
+         function skuHtml(data) {
+           var sku_html = '';
+            for(var i=0;i<data.length;i++) {
+                sku_html+='<div class="layui-form-item layui-form-text sku-spec">'
+                             +'<span class="">'+data[i].spec_name+':</span>'
+                             +'<div class="layui-input-block sku-spec-'+i+'">';
+
+                for(var k=0;k<data[i].spec_value.length;k++) {
+                    sku_html+='<input type="checkbox"  class="v-'+data[i].spec_value[k].id+'"  lay-skin="primary" lay-filter="spec_value"  title="'+data[i].spec_value[k].spec_value+'" value="'+data[i].spec_value[k].id+'" >';
+                }
+                  sku_html+='</div></div>';
+            }
+                    
+            sku_html+='<table class="layui-table"><thead><tr>'
+                    +'<th>规格值</th>'
+                    +'<th>商品名称</th>'
+                    +' <th>货号</th>'
+                    +'<th>商品价格</th>'
+                    +'<th>商品参考价</th>'
+                    +'<th>商品库存</th>'
+                    +'</tr>'
+                    +'</thead>'
+                    +'<tbody id="spec_values">'
+                    +'</tbody>'
+                    +'</table>';
+            $(".show-spec").empty();       
+            $('.show-spec').append(sku_html);
+            $(".show-spec").show();
+
+             
+         }
+
+         function getCheckArr(elem) {
+            var arr = [];
+            $('.show-spec .sku-spec').each(function() {
+                var me = $(this),
+                    checkeds = me.find(':checked');
+                if (checkeds.length) {
+                    var temp = [];
+                    checkeds.each(function() {
+                        temp.push($(this).val())
+                    })
+                    arr.push(temp);
+                }
+            })
+            
+            return arr;
+        }
+
+          function getArr(arr) {
+
+              function run(arr) {
+                  var len = arr.length;
+                  if (len < 2) {
+                      return arr[0];
+                  } else {
+                      var len1 = arr[0].length;
+                      var len2 = arr[1].length;
+                      var temp = [];
+                      for (var i = 0; i < len1; i++) {
+                          for (var j = 0; j < len2; j++) {
+                              temp.push(arr[0][i] + ',' + arr[1][j]);
+                          }
+                      }
+                      var newarr = arr.slice(2);
+                      if (newarr.length) {
+                          newarr.unshift(temp);
+                          return run(newarr)
+                      }
+                      return temp
+                  }
+              }
+
+              var res = run(arr);
+              if (!res) {
+                  return '';
+              }
+              var len = res.length;
+
+              
+              for (var i = 0; i < len; i++) {
+
+
+                  res[i] = res[i].split(',')
+                  
+              }
+              
+              return res;
+
+          }
+
+          function resetTable(data) {
+              var tpl = '';
+
+              var arr = getArr(getCheckArr());
+             
+              var temp = [];
+
+              $.each(arr, function(k, v) {
+
+                
+                
+                  tpl += '<tr>';
+                  // $.each(v, function(key, val) {
+                  //     tpl += getCell(v.slice(0, key + 1).toString(), key, val);
+                  // })
+                  // 
+                  tpl+='<td>'+v+'</td>'
+                  tpl += '<td><input type="text" id="name" name="product['+k+'][name]['+v+']" required="" lay-verify="required" autocomplete="off" class="layui-input"></td>'
+                  +'<td><input type="text" id="name" name="product['+k+'][bn]['+v+']" required="" lay-verify="required" autocomplete="off" class="layui-input"></td>'
+                  +'<td><input type="text" id="name" name="product['+k+'][price]['+v+']" required="" lay-verify="required" autocomplete="off" class="layui-input"></td>'
+                  +'<td><input type="text" id="name" name="product['+k+'][mkt_price]['+v+']" required="" lay-verify="required" autocomplete="off" class="layui-input"></td>'
+                  +'<td><input type="text" id="name" name="product['+k+'][store]['+v+']" required="" lay-verify="required" autocomplete="off" class="layui-input"></td>';
+                  
+                 
+                  tpl += '</tr>';
+              })
+
+              // function getCell(val, index, value) {
+              //     var i;
+              //     if ($.inArray(val, temp) === -1) {
+              //         i = 0;
+              //         temp.push(val);
+              //         $.each(arr, function(k, v) {
+              //             if (v.slice(0, index + 1).toString() == val) {
+              //                 i++;
+              //             }
+              //         })
+              //     }
+
+
+              //     if (i && i >= 1) {
+                   
+              //         return '<td rowspan="' + i + '">' + value + '</td>'
+              //     }
+              //     return '';
+              // }
+
+              $('#spec_values').html(tpl)
+          }
+
          function editData(data) {
           layui.use('form', function(){
               $("input[name='id']").val(data.id);
