@@ -158,13 +158,14 @@
             
               $("input[name='disabled']").attr('checked',data.disabled == 1 ?true:false);
               if(data.item.length > 0) {
+                console.log(data.item);
                 var spec_values_html = '';
                 for(var i=0;i<data.item.length;i++) {
-                  spec_values_html+='<tr>'
+                  spec_values_html+='<tr class="spec-'+i+'">'
                   +'<td><input type="text" id="spec_values['+i+'][spec_value]" name="spec_values['+i+'][spec_value]" required="" lay-verify="required" autocomplete="off" value="'+data.item[i].spec_value+'" class="layui-input"></td>'
                   +'<input type="hidden" id="spec_values['+i+'][spec_id]" name="spec_values['+i+'][spec_id]" value="'+data.item[i].id+'" />'
                   +'<td><input type="text" value="'+data.item[i].spec_alias+'" id="spec_values['+i+'][spec_alias]" name="spec_values['+i+'][spec_alias]"  autocomplete="off" class="layui-input"></td>'
-                  +'<td><i style="cursor: pointer;" onclick="$(this).parent().parent().remove()" class="layui-icon">&#xe640;</i></td>'
+                  +'<td><i style="cursor: pointer;" onclick="delSpecValue('+i+','+data.item[i].id+')" class="layui-icon">&#xe640;</i></td>'
                   +'<tr>';
                 }
 
@@ -174,7 +175,27 @@
               layui.form.render();
             });
           }
-
+          /**
+           * 删除规格
+           * @param  {[type]} i  [description]
+           * @param  {[type]} id [description]
+           * @return {[type]}    [description]
+           */
+          function delSpecValue(i,id) {
+            layui.use('form',function() {
+                var params  = new Object();
+                params.method = "spec.val.del";
+                params.id = id;
+                Shop.post(params,function(rs) {
+                  if(rs.code == 0) {
+                    $(".spec-"+i).remove();
+                  }else {
+                    layui.msg(rs.msg);
+                  }
+                })
+            })
+            
+          }
         $('.add-spec-values').on('click',function(ev){
           var spec_values_html = '';
           var i=new Date().getTime();

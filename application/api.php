@@ -43,6 +43,7 @@ return  [
                 'spec.update'=>['uses'=>'\specification\spec@update','desc'=>'更新规格数据'],
                 'spec.getrow'=>['uses'=>'\specification\spec@getRow','desc'=>'获取规格单条数据'],
                 'spec.del'=>['uses'=>'\specification\spec@del','desc'=>'删除规格'],
+                'spec.val.del'=>['uses'=>'\specification\spec@delValue','desc'=>'删除规格值'],
                 'cate.save'=>['uses'=>'\classification\cate@save','desc'=>'保存商品分类'],
                 'cate.get'=>['uses'=>'\classification\cate@get','desc'=>'获取商品分类'],
                 'cate.del'=>['uses'=>'\classification\cate@del','desc'=>'删除商品分类'],

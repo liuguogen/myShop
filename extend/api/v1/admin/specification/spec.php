@@ -92,14 +92,23 @@ class spec
 			 	//update
 				 $params['update_time'] = time();
 				 $this->specMdl->where(['id'=>intval($params['id'])])->update($params);
-				 $spec_id = '';
+				
 
 				 foreach ($spec_value_data as $key => &$value) {
 
-				 	$spec_id  = intval($value['spec_id']);
-				 	unset($value['spec_id']);
+				 	if(isset($value['spec_id']) && $value['spec_id']) {
+				 		$spec_id =intval($value['spec_id']);
+				 		unset($value['spec_id']);
+				 		$value['spec_id'] = intval($params['id']);
+				 		$this->specValuesMdl->where(['id'=>$spec_id])->update($value);
+				 	}else {
+				 		$value['spec_id'] = intval($params['id']);
+				 		$this->specValuesMdl->insert($value);
 
-				 	$this->specValuesMdl->where(['id'=>$spec_id])->update($value);
+				 	}
+				 	
+
+				 	
 				 	
 				 }
 
@@ -253,6 +262,37 @@ class spec
 		}
 
 		
+	}
+
+	/**
+	 * 删除规格值
+	 * @return [type] [description]
+	 */
+	public function delValue(array $params) {
+		$validate = new Validate([
+		    
+		    'id' => 'require'
+		],[
+			'id.require'=>'ID必填'
+		]);
+		$checkData = [
+		   
+		    'id' => intval($params['id']),
+		];
+
+		if (!$validate->check($checkData)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+
+		if($params['id'] && is_array($params['id'])) {
+			$ids = $params['id'];
+		} else {
+			$ids = [intval($params['id'])];
+		}
+		unset($params['id']);
+		$flag = $this->specValuesMdl->where(['id'=>['in',$ids]])->delete();
+		if(!$flag) throw new HttpException(404,'删除失败');
+		return ['id'=>$ids];
 	}
 
 	

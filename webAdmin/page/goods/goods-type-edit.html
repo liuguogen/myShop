@@ -39,7 +39,7 @@
                 </div>
                 
                 <div class="layui-form-item">
-                <label class="layui-form-label">规格</label>
+                <label class="layui-form-label">选择规格</label>
                 <div class="layui-input-block switch-spec">
                   
                 </div>
@@ -91,7 +91,7 @@
             }else {
               layer.msg(rs.msg);
             }
-          })
+          },false)
           //监听提交
           form.on('submit(add)', function(data){
             
