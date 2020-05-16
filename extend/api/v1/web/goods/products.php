@@ -82,6 +82,7 @@ class products
         $goods_data = $this->goodsMdl->where(['id'=>intval($params['goods_id'])])->find();
 
         if(!$goods_data) throw new HttpException(404,'商品好像不见了~');
+        $goods_data['thumb'] = $goods_data['thumb'] ? explode(',', $goods_data['thumb']) :'';
         $goods_data['product']  = $this->productMdl->where(['goods_id'=>intval($params['goods_id'])])->select();
 
         if($goods_data['sku_type']=='many' && $goods_data['product']) {
