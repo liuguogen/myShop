@@ -73,6 +73,7 @@ return  [
             'web'=>[
                 'home.get'=>['uses'=>'\home\home@get','desc'=>'获取首页数据'],
                 'member.save'=>['uses'=>'\member\user@save','desc'=>'会员创建'],
+                'wechat.info'=>['uses'=>'\wechat\wechat@get','desv'=>'微信用户信息获取'],
             ],
         ],
 

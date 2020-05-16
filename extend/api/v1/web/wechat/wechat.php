@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // |  liuguogen <liuguogen_vip@163.com>
 // +----------------------------------------------------------------------
-namespace api\v1\web\member;
+namespace api\v1\web\wechat;
 use \think\exception\HttpException;
 use \think\helper;
 use \think\Db;
@@ -16,12 +16,12 @@ use \think\Validate;
 use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
-use \model\Member;
+
 
 /**
  * 
  */
-class user
+class wechat
 {
 
 
@@ -29,7 +29,7 @@ class user
 
 	public function __construct()
 	{
-		$this->memberMdl = model('Member');
+		
 		
 	}
 	/**
@@ -54,15 +54,13 @@ class user
      * @param  array  $params [description]
      * @return [type]         [description]
      */
-    public function save(array $params) {
+    public function get(array $params) {
     	
-
-
-    	$validate = new Validate([
+        $validate = new Validate([
             
             'code' => 'require'
         ],[
-            'code.require'=>'code必填'
+            'code.require'=>'ID必填'
         ]);
         $checkData = [
            
@@ -72,29 +70,11 @@ class user
         if (!$validate->check($checkData)) {
             throw new HttpException(404,$validate->getError());
         }
-
         $url  ='https://api.weixin.qq.com/sns/jscode2session?appid='.config('wechat')['appid'].'&secret='.config('wechat')['appsecret'].'&js_code='.trim($params['code']).'&grant_type=authorization_code';
-        $response_data = file_get_contents($url);
-        if(!isset($response_data['openid'])) {
-            throw new HttpException(404,$response_data['errmsg']);
-        }
+    	$data = file_get_contents($url);
 
-         $data = [
-            'openid'=>trim($response_data['openid']),
-        ];
-        if(isset($params['accessToken']) && $params['accessToken']) {
-            throw new HttpException(404,$validate->getError());
-        }else {
-
-            if($this->memberMdl->insert($data)) {
-                $member_id = $this->memberMdl->getLastInsID();
-                $accessToken = userMake::make($member_id,$data);
-            }else {
-                throw new HttpException(404,'用户注册失败');
-            }
-            
-        }
-        return ['data'=>$accessToken];
+        $response_data = json_decode($data,1);
+        return ['data'=>$response_data];
 
     }
     

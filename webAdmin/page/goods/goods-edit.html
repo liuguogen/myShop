@@ -679,6 +679,10 @@
               if(data.sku_type=='many') {
                 getSkuValue(data.type_id,layui);
               }
+
+              layui.form.on('checkbox(spec_value)',function(data){
+                resetTable();
+              });
               //$("input[name='disabled'][value=1]").attr('checked',data.disabled == 1 ?true:false);
               //$("input[name='disabled'][value=0]").attr('checked',data.disabled == 0 ?true:false);
               $("input[name='sales_status']").attr('checked',data.sales_status == 1 ?true:false);
