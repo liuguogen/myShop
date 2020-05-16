@@ -73,6 +73,8 @@ class user
             throw new HttpException(404,$validate->getError());
         }
 
+       
+
         $url  ='https://api.weixin.qq.com/sns/jscode2session?appid='.config('wechat')['appid'].'&secret='.config('wechat')['appsecret'].'&js_code='.trim($params['code']).'&grant_type=authorization_code';
         $response_data = file_get_contents($url);
         if(!isset($response_data['openid'])) {
@@ -94,7 +96,13 @@ class user
             }
             
         }
-        return ['data'=>$accessToken];
+        $rs_data = [
+            'accessToken'=>$accessToken,
+        ];
+        if(isset($response_data['openid']) && $response_data['openid']) {
+            $rs_data['openid'] = $response_data['openid'];
+        }
+        return ['data'=>$rs_data];
 
     }
     
