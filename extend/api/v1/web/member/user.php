@@ -86,6 +86,7 @@ class user
          $data = [
             'openid'=>trim($response_data['openid']),
             'create_time'=>time(),
+            'update_time'=>time(),
         ];
         if(isset($params['accessToken']) && $params['accessToken']) {
             
