@@ -77,6 +77,8 @@ class user
 
         $url  ='https://api.weixin.qq.com/sns/jscode2session?appid='.config('wechat')['appid'].'&secret='.config('wechat')['appsecret'].'&js_code='.trim($params['code']).'&grant_type=authorization_code';
         $response_data = file_get_contents($url);
+        $response_data = json_decode($response_data,1);
+        
         if(!isset($response_data['openid'])) {
             throw new HttpException(404,isset($response_data['errmsg']) ? $response_data['errmsg'] : '获取openid失败');
         }
@@ -85,7 +87,7 @@ class user
             'openid'=>trim($response_data['openid']),
         ];
         if(isset($params['accessToken']) && $params['accessToken']) {
-            throw new HttpException(404,$validate->getError());
+            
         }else {
 
             if($this->memberMdl->insert($data)) {
