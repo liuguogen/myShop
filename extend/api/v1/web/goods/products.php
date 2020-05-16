@@ -18,6 +18,8 @@ use api\v1\admin\userMake;
 use \think\Config;
 use \model\Goods;
 use \model\Product;
+use \model\Specs;
+use \model\SpecValues;
 
 /**
  * 
@@ -32,6 +34,8 @@ class products
 	{
 		$this->goodsMdl = model('Goods');
         $this->productMdl = model('Product');
+        $this->specMdl = model('Specs');
+        $this->specValueMdl = model('SpecValues');
 		
 	}
 	/**
@@ -80,6 +84,30 @@ class products
         if(!$goods_data) throw new HttpException(404,'商品好像不见了~');
         $goods_data['product']  = $this->productMdl->where(['goods_id'=>intval($params['goods_id'])])->select();
 
+        if($goods_data['sku_type']=='many' && $goods_data['product']) {
+            $products_data = collection($goods_data['product'])->toArray();
+            foreach ($products_data as $key => $value) {
+                 
+                $spec_data = $this->specValueMdl->where(['id'=>['in',explode(',', $value['spec_value'])]])->select();
+
+                if($spec_data) {
+                    $_spec = [];
+                    
+                    foreach (collection($spec_data)->toArray() as $k => $v) {
+                        $spec_name = $this->specMdl->where(['id'=>$v['spec_id']])->find()['spec_name'];
+                       
+
+                        $_spec[] =   [$spec_name=>$v['spec_value']];
+                      
+                    }
+                }
+
+
+                $products_data[$key]['spec_text'] =$_spec;
+            }
+            $goods_data['product'] = $products_data;
+        }
+       
         return ['data'=>$goods_data];
 
     }
