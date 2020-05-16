@@ -162,7 +162,7 @@ class products
 				'sales_status'=>intval($params['sales_status']),//销售状态
 				'store_type'=>intval($params['store_type']),//库存扣减方式
 				'goods_img'=>trim($params['goods_img']),//商品主图
-				'thumb'=>isset($params['thumb']) ? implode(',', $params['thumb']) : '', //商品缩略图
+				'thumb'=>isset($params['thumb']) && $params['thumb'] =='' ? trim($params['goods_img']) : implode(',', $params['thumb']), //商品缩略图
 				'goods_desc'=>$params['goods_desc'],//商品介绍
 				'update_time'=>time(),
 
