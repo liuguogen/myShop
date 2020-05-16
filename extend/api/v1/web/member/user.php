@@ -92,6 +92,14 @@ class user
             
         }else {
 
+            //查询是否存在
+            $check_user   = $this->memberMdl->where(['openid'=>$response_data['openid']])->find();
+
+
+            if($check_user) {
+                $accessToken = userMake::make($member_id,['openid'=>$check_user['openid'],'create_time'=>$check_user['create_time'],'update_time'=>$check_user['update_time']]);
+                return ['data'=>['openid'=>$check_user['openid'],'accessToken'=>$accessToken]];
+            }
             if($this->memberMdl->insert($data)) {
                 $member_id = $this->memberMdl->getLastInsID();
                 $accessToken = userMake::make($member_id,$data);
