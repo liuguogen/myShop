@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // |  liuguogen <liuguogen_vip@163.com>
 // +----------------------------------------------------------------------
-namespace api\v1\web\home;
+namespace api\v1\web\member;
 use \think\exception\HttpException;
 use \think\helper;
 use \think\Db;
@@ -16,17 +16,12 @@ use \think\Validate;
 use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
-use \model\Goods;
-use \model\Product;
-use \model\GoodsCate;
-use \model\GoodsType;
-use \model\Brands;
-use \model\Banners;
-use \model\Widget;
+use \model\Member;
+
 /**
  * 
  */
-class home
+class user
 {
 
 
@@ -34,13 +29,8 @@ class home
 
 	public function __construct()
 	{
-		$this->goodsMdl = model('Goods');
-		$this->productMdl = model('Product');
-		$this->goodsTypeMdl = model('GoodsType');
-		$this->brandMel = model('Brands');
-		$this->goodsCateMdl = model('GoodsCate'); 
-		$this->bannerMdl = model('Banners'); 
-		$this->widgetMdl = model('Widget'); 
+		$this->memberMdl = model('Member');
+		
 	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
@@ -59,36 +49,47 @@ class home
         return $return;
     }
 
-
     /**
-     * 获取首页数据
+     * 创建用户
      * @param  array  $params [description]
      * @return [type]         [description]
      */
-    public function get(array $params) {
+    public function save(array $params) {
     	
 
 
-    	$widgetList = $this->widgetMdl->where(['disabled'=>1])->select();
-    	$return = [];
-    	if($widgetList) {
-    		foreach ($widgetList as $key => &$value) {
-	    		
-				$value['product'] = $this->goodsMdl->where(['id'=>['in',explode(',', $value['goods_id'])]])->select();
-	    	}
+    	$validate = new Validate([
+            
+            'openid' => 'require'
+        ],[
+            'openid.require'=>'ID必填'
+        ]);
+        $checkData = [
+           
+            'openid' => intval($params['openid']),
+        ];
 
-	    	$return['modules'] = $widgetList;
-    	}
-    	
-    	
-    	//获取轮播图
-    	$bannerList = $this->bannerMdl->field('id,banner_name,image,goods_id,create_time,update_time')->where(['disabled'=>1])->select();
-    	if($bannerList) {
-    		
-    		$return['banner'] = $bannerList;
-    	}
-    	
-		return ['data'=>$return];
+        if (!$validate->check($checkData)) {
+            throw new HttpException(404,$validate->getError());
+        }
+
+        $data = [
+            'openid'=>trim($params['openid']),
+        ];
+        if(isset($params['accessToken']) && $params['accessToken']) {
+
+        }else {
+
+            if($this->memberMdl->insert($data)) {
+                $member_id = $this->memberMdl->getLastInsID();
+                $accessToken = userMake::make($member_id,$data);
+            }else {
+                throw new HttpException(404,'用户注册失败');
+            }
+            
+        }
+        return ['data'=>$accessToken];
+
     }
     
 

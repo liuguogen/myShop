@@ -42,7 +42,7 @@
                             <div class="layui-form layui-col-space5">
                                 
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input type="text" name="goods_name" placeholder="商品名称" autocomplete="off" class="layui-input"></div>
+                                    <input type="text" name="username" placeholder="用户名" autocomplete="off" class="layui-input"></div>
                                 <div class="layui-inline layui-show-xs-block">
                                     <button class="layui-btn" lay-submit="" lay-filter="sreach" data-type="reload">
                                         <i class="layui-icon">&#xe615;</i></button>
@@ -76,10 +76,10 @@
         <input type = "checkbox" data-id="{{d.id}}" name = "sales_status" value = "{{d.sales_status}}" lay-skin = "switch" lay-text = "是|否" lay-filter = "sales_status" {{ d.sales_status == 1 ? 'checked': ''}} >
     </script>
 
-    <script type="text/html" id="goodsImgTpl">
+    <script type="text/html" id="avatarTpl">
         
-        {{#  if(d.goods_img){ }}
-            <img src="{{d.goods_img}}" class="layui-nav-img">
+        {{#  if(d.avatar){ }}
+            <img src="{{d.avatar}}" class="layui-nav-img">
         {{#  } else { }}
            暂无图像
         {{#  } }}
@@ -102,26 +102,19 @@
             ,loading:true
             ,url: api.url //数据接口
             ,method:"post"
-            ,where:tableParams.getParams("goods.get")
-            ,title: '商品列表'
+            ,where:tableParams.getParams("member.get")
+            ,title: '会员列表'
             ,page: true //开启分页
             ,toolbar: '<div class="layui-table-tool"><div class="layui-table-tool-temp"><div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div><div class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div></div><div class="layui-table-tool-self"><div class="layui-inline" title="筛选列" lay-event="LAYTABLE_COLS"><i class="layui-icon layui-icon-cols"></i></div><div class="layui-inline" title="导出" lay-event="LAYTABLE_EXPORT"><i class="layui-icon layui-icon-export"></i></div><div class="layui-inline" title="打印" lay-event="LAYTABLE_PRINT"><i class="layui-icon layui-icon-print"></i></div></div></div>' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
             ,totalRow: false //开启合计行
             ,cols: [[ //表头
               {type: 'checkbox', fixed: 'left'}
               
-              ,{field: 'id', title: '编号',  sort: true, fixed: 'true',width:70}
-              ,{field:'goods_img', title:'商品图片', width:80, templet:'#goodsImgTpl'}
-              ,{field: 'name', title: '商品名称', width:100 }
-              ,{field: 'price', title: '商品价格', width:100 ,sort:true}
-              ,{field: 'mkt_price', title: '商品参考价', width:110,sort:true }
-              ,{field: 'cate_name', title: '商品分类', width:80 }
-              ,{field: 'brand_name', title: '商品品牌', width:100 }
-              ,{field: 'type_name', title: '商品类型', width:80 }
-              ,{field: 'bn', title: '商品货号',width:100 }
-              ,{field: 'sales_status', title: '上下架',templet: '#switchTpl',width:80}
-              ,{field: 'create_time', title: '创建时间', sort:true,width:160}
-              ,{field: 'update_time', title: '最后更新时间', sort:true,width:160}
+              ,{field: 'id', title: '编号',  sort: true, fixed: 'true',width:80}
+              ,{field:'username', title:'用户名', width:120}
+              ,{field: 'avatar', title: '头像',templet: '#avatarTpl'}
+              ,{field: 'create_time', title: '创建时间', sort:true}
+              ,{field: 'update_time', title: '最后更新时间', sort:true}
               ,{fixed: 'right', title:'操作', width:200,align:'center', toolbar: '#barData'}
               
             ]]
@@ -131,7 +124,7 @@
 
                 var id = data.elem.getAttribute('data-id');
                 var params  = {
-                    "method":"goods.update",
+                    "method":"member.update",
                     "id":id,
                 }
 

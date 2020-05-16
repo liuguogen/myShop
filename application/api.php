@@ -67,10 +67,12 @@ return  [
                 'widget.getrow'=>['uses'=>'\widget\widgets@getRow','desc'=>'首页挂件取单条数据'],
                 'widget.del'=>['uses'=>'\widget\widgets@del','desc'=>'首页挂件删除'],
                 'widget.update'=>['uses'=>'\widget\widgets@update','desc'=>'首页挂件更新'],
+                'member.get'=>['uses'=>'\member\members@get','desc'=>'获取用户列表'],
             ],
             //前端接口数据
             'web'=>[
                 'home.get'=>['uses'=>'\home\home@get','desc'=>'获取首页数据'],
+                'member.save'=>['uses'=>'\member\user@save','desc'=>'会员创建'],
             ],
         ],
 

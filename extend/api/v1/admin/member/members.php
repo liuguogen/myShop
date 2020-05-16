@@ -8,26 +8,24 @@
 // +----------------------------------------------------------------------
 // |  liuguogen <liuguogen_vip@163.com>
 // +----------------------------------------------------------------------
-namespace api\v1\admin\images;
+namespace api\v1\admin\member;
 use \think\exception\HttpException;
 use \think\helper;
 use \think\Db;
 use \think\Validate;
 use \think\Cache;
 use \think\Config;
-use \model\Banners;
-use \model\Goods;
+use \model\Member;
 /**
  * 
  */
-class banner
+class members
 {
 
 
 	public function __construct()
 	{
-		$this->bannerMdl = model('Banners');
-		$this->goodsMdl = model('Goods');
+		$this->memberMdl = model('Member');
 		
 	}
 
@@ -40,14 +38,14 @@ class banner
         //接口传入的参数
         
         $return =  [
-        	['field'=>'banner_name','type'=>'string','valid'=>'require','desc'=>'accessToken','example'=>''],
+        	['field'=>'username','type'=>'string','valid'=>'require','desc'=>'username','example'=>''],
         	
         ];
         return $return;
     }
 	
 	/**
-	 * 轮播图获取
+	 * 用户获取
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
@@ -60,62 +58,12 @@ class banner
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
 		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:1;
 		unset($params['limit'],$params['page']);
-		$brandList['count'] = $this->bannerMdl->where(array_filter($params))->count();
-		$brandList['data'] = $this->bannerMdl->where(array_filter($params))->limit(''.$offset.','.$limit.'')->select();
+		$brandList['count'] = $this->memberMdl->where(array_filter($params))->count();
+		$brandList['data'] = $this->memberMdl->where(array_filter($params))->limit(''.$offset.','.$limit.'')->select();
 		return $brandList;
 	}
 
-	/**
-     * 保存轮播图
-     * @param  [type] $params [description]
-     * @return [type]         [description]
-     */
-    public function save(array $params)
-    {
-
-
-    	$validate = new Validate([
-		    
-		    'banner_name' => 'require',
-		    'image'=>'require',
-		],[
-			'banner_name.require'=>'图片名称必填',
-			'image.require'=>'图片必填'
-		]);
-		$check_data = [
-		   
-		    'banner_name' => $params['banner_name'],
-		    'image'=>$params['image'],
-		];
-
-		if (!$validate->check($check_data)) {
-		    throw new HttpException(404,$validate->getError());
-		}
-		if(isset($params['file'])) {
-			unset($params['file']);
-		}
-		
-		$data = [
-			'banner_name'=>trim($params['banner_name']),
-			'image'=>trim($params['image']),
-			'goods_id'=>$params['goods_id'] ? $params['goods_id'] : 0,
-			'disabled'=>intval($params['disabled']),
-			'create_time'=>time(),
-		];
-		
-		if(isset($params['id']) && $params['id']) {
-			$data['update_time']  =time();
-			$flag = $this->bannerMdl->where(['id'=>intval($params['id'])])->update($data);
-		}else {
-			$flag = $this->bannerMdl->save($data);
-		}
-		
-		if(!$flag) {
-			throw new HttpException(404,'保存失败！');
-		}
-		return ['data'=>$flag];
-		
-    }
+	
 
     /**
 	 * 获取单条数据
@@ -141,15 +89,13 @@ class banner
 
 		$id = intval($params['id']);
 		unset($params['id']);
-		$rs = $this->bannerMdl->where(['id'=>$id])->find();
+		$rs = $this->memberMdl->where(['id'=>$id])->find();
 		
 		if(!$rs) throw new HttpException(404,'获取失败');
-		if($rs['goods_id']) {
-			$rs['goods_name'] = $this->goodsMdl->field('name')->where(['id'=>$rs['goods_id']])->find()['name'];
-		}
-		$data['data'] = $rs;
 		
-		return $data;
+		
+		
+		return ['data'=>$rs];
 	}
 
 	/**
@@ -183,7 +129,7 @@ class banner
 		
 		unset($params['id']);
 		$params['update_time'] = time();
-		$flag = $this->bannerMdl->where(['id'=>['in',$ids]])->update($params);
+		$flag = $this->memberMdl->where(['id'=>['in',$ids]])->update($params);
 		
 		if(!$flag) throw new HttpException(404,'修改失败！');
 		return ['id'=>$ids];

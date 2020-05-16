@@ -14,7 +14,6 @@ use \think\helper;
 use \think\Db;
 use \think\Validate;
 use \think\Cache;
-use api\v1\admin\userMake;
 use \think\Config;
 use \model\Goods;
 use \model\Product;
@@ -206,7 +205,7 @@ class products
 				$product_data = [];
 				foreach ($product as $key => $value) {
 					$spec_value = $this->specValueMdl->field('spec_value')->where(['id'=>['in',explode(',', $key)]])->select();
-					
+
 					$product_data[] = [
 						'name'=>$value['name'],
 						'bn'=>$value['bn'],
