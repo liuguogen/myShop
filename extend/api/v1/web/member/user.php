@@ -243,7 +243,7 @@ class user
         $member_id = userMake::check(trim($params['accessToken']));
         unset($params['accessToken']);
 
-        $addressData = $this->addressMdl->where(['id'=>intval($params['id']),'member_id'=>intval($member_id)])->find();
+        $addressData = $this->addressMdl->field('id,name,mobile,province,city,area,address')->where(['id'=>intval($params['id']),'member_id'=>intval($member_id)])->find();
         return ['data'=>$addressData ? $addressData :[]];
     }
     
