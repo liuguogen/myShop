@@ -177,6 +177,36 @@ class user
         if(!$flag) throw new HttpException(404,'地址保存错误！');
         return  ['data'=>isset($params['id']) && $params['id'] ? $params['id']  : $flag];
     }
+
+
+    public function getAddr(array $params) {
+        $validate = new Validate([
+            
+            'accessToken' => 'require',
+            
+        ],[
+            'accessToken.require'=>'accessToken必填',
+            
+        ]);
+        $data = [
+           
+            'accessToken' => $params['accessToken'],
+            
+        ];
+
+        if (!$validate->check($data)) {
+            throw new HttpException(404,$validate->getError());
+        }
+
+        $member_id = userMake::check(trim($params['accessToken']));
+        unset($params['accessToken']);
+
+        $addressData = $this->addressMdl->where(['member_id'=>intval($member_id)])->select();
+
+        return ['data'=>$addressData ? $addressData : []];
+
+
+    }
     
 
 	
