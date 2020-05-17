@@ -140,6 +140,7 @@ class user
             'province.require'=>'省份必填',
             'city.require'=>'市必填',
             'area.require'=>'区必填',
+            'address.require'=>'详细地址必填',
         ]);
         $data = [
            
