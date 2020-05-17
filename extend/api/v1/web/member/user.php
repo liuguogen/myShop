@@ -232,6 +232,7 @@ class user
         $data = [
            
             'accessToken' => $params['accessToken'],
+            'id'=>$params['id'],
             
         ];
 
