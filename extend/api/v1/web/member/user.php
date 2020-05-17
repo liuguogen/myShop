@@ -180,7 +180,11 @@ class user
         return  ['data'=>isset($params['id']) && $params['id'] ? $params['id']  : $flag];
     }
 
-
+    /**
+     * 获取地址列表
+     * @param  array  $params [description]
+     * @return [type]         [description]
+     */
     public function getAddr(array $params) {
         $validate = new Validate([
             
@@ -208,6 +212,38 @@ class user
         return ['data'=>$addressData ? $addressData : []];
 
 
+    }
+    /**
+     * 获取单条地址
+     * @param  array  $params [description]
+     * @return [type]         [description]
+     */
+    public function getAddrRow(array $params) {
+        $validate = new Validate([
+            
+            'accessToken' => 'require',
+            'id'=>'require',
+            
+        ],[
+            'accessToken.require'=>'accessToken必填',
+            'id.require'=>'地址ID必填',
+            
+        ]);
+        $data = [
+           
+            'accessToken' => $params['accessToken'],
+            
+        ];
+
+        if (!$validate->check($data)) {
+            throw new HttpException(404,$validate->getError());
+        }
+
+        $member_id = userMake::check(trim($params['accessToken']));
+        unset($params['accessToken']);
+
+        $addressData = $this->addressMdl->where(['id'=>intval($params['id']),'member_id'=>intval($member_id)])->find();
+        return ['data'=>$addressData ? $addressData :[]];
     }
     
 

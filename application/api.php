@@ -78,6 +78,7 @@ return  [
                 'goods.query'=>['uses'=>'\goods\products@getAll','desc'=>'获取全部商品'],
                 'address.save'=>['uses'=>'\member\user@saveAddr','desc'=>'用户地址保存'],
                 'address.get'=>['uses'=>'\member\user@getAddr','desc'=>'用户地址获取'],
+                'address.getrow'=>['uses'=>'\member\user@getAddrRow','desc'=>'获取单个用户地址'],
             ],
         ],
 
