@@ -180,8 +180,9 @@ class products
         ];
 
         if(isset($params['name']) && $params['name']) {
-            $where['name'] =['like',$params['name']];
+            $where['name'] =['like','%'.$params['name'].'%'];
         }
+        
         $goodsList['count'] = $this->goodsMdl->where($where)->count();
         $goodsList['data'] = $this->goodsMdl->where($where)->select();
 
