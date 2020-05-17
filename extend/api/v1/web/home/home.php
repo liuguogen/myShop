@@ -31,7 +31,7 @@ class home
 
 
 
-
+    static $expire_time = 86400;//过期时间
 	public function __construct()
 	{
 		$this->goodsMdl = model('Goods');
@@ -68,7 +68,13 @@ class home
     public function get(array $params) {
     	
 
+        //首页数据加缓存
+        //
+        $cacah_home_data = Cache::get('home_data');
 
+        if($cacah_home_data) {
+            return ['data'=>json_decode($cacah_home_data,1)];
+        }
     	$widgetList = $this->widgetMdl->where(['disabled'=>1])->select();
     	$return = [];
     	if($widgetList) {
@@ -87,7 +93,8 @@ class home
     		
     		$return['banner'] = $bannerList;
     	}
-    	
+    	//设置缓存
+        Cache::set('home_data',json_encode($return),self::$expire_time);
 		return ['data'=>$return];
     }
     

@@ -30,7 +30,7 @@ class products
 
 
 
-    static $expire_time = 86400;
+    
 	public function __construct()
 	{
 		$this->goodsMdl = model('Goods');
@@ -64,13 +64,7 @@ class products
      */
     public function get(array $params) {
     	
-        //首页数据加缓存
-        //
-        $cacah_home_data = Cache::get('home_data');
-
-        if($cacah_home_data) {
-            return ['data'=>json_decode($cacah_home_data,1)];
-        }
+        
 
     	$validate = new Validate([
             
@@ -147,8 +141,7 @@ class products
             $goods_data['spec_goods'] = $spec_goods;
             $goods_data['product'] =  $products_data;
         }
-        //设置缓存
-        Cache::set('home_data',json_encode($goods_data),self::$expire_time);
+       
         return ['data'=>$goods_data];
 
     }
