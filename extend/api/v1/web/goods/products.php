@@ -121,8 +121,14 @@ class products
 
                         
                     }
+                    
                     foreach ($sku_lists as $key => &$value) {
-                       $value['spec_value'] = $this->array_unique_bykey($value['spec_value'],'spec_value');
+
+                       if(isset($value['spec_value']) && $value['spec_value']) {
+                            $value['spec_value'] = $this->array_unique_bykey($value['spec_value'],'spec_value');
+                       }else {
+                            unset($sku_lists[$key]);
+                       }
                     }
                     
                     
