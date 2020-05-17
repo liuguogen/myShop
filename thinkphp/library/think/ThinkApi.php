@@ -88,7 +88,7 @@ class ThinkApi
         $result = [
             'code' => $code,
             'msg'  => $msg,
-            'time' => Request::instance()->server('REQUEST_TIME'),
+            'time' => date('Y-m-d H:i:s',Request::instance()->server('REQUEST_TIME')),
             'data' => isset($data['data']) ? $data['data'] :[],
             
         ];
