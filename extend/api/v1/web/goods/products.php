@@ -20,6 +20,7 @@ use \model\Goods;
 use \model\Product;
 use \model\Specs;
 use \model\SpecValues;
+use \model\GoodsType;
 
 /**
  * 
@@ -36,6 +37,7 @@ class products
         $this->productMdl = model('Product');
         $this->specMdl = model('Specs');
         $this->specValueMdl = model('SpecValues');
+        $this->goodsTypeMdl = model('GoodsType');
 		
 	}
 	/**
@@ -88,31 +90,75 @@ class products
         if($goods_data['sku_type']=='many' && $goods_data['product']) {
             $products_data = collection($goods_data['product'])->toArray();
             foreach ($products_data as $key => $value) {
-                 
-                $spec_data = $this->specValueMdl->where(['id'=>['in',explode(',', $value['spec_value'])]])->select();
-
-                if($spec_data) {
-                    $_spec = [];
-                    
-                    foreach (collection($spec_data)->toArray() as $k => $v) {
-                        $spec_name = $this->specMdl->where(['id'=>$v['spec_id']])->find()['spec_name'];
-                       
-
-                        $_spec[] =   [$spec_name=>$v['spec_value']];
-                      
-                    }
-                }
-
-
-                $products_data[$key]['spec_text'] =$_spec;
+                $sku_value[] = explode(',', $value['spec_value']);
+                $spec_goods[] = array(
+                    $value['spec_text'] => $value['id']
+                );
             }
-            $goods_data['product'] = $products_data;
+            
+            $type_spec = $this->goodsTypeMdl->field('spec_id')->where(['id'=>$goods_data['type_id']])->find();
+            if($type_spec) {
+                
+                $sku_list = $this->specMdl->field('id,spec_name')->where(['id'=>['in',explode(',', $type_spec['spec_id'])]])->select();
+
+                if($sku_list) {
+                    $sku_lists = collection($sku_list)->toArray();
+                    foreach ($sku_lists as $k => $v) {
+                        
+                        $_specValue = $this->specValueMdl->field('id,spec_value')->where(['spec_id'=>intval($v['id'])])->select();
+                        $_specValue = collection($_specValue)->toArray();
+                        
+                        foreach ($_specValue as $s_k => $s_v) {
+                            foreach ($sku_value as $kk => $vv) {
+                                
+                                if(in_array($s_v['id'], $vv)) {
+                                   
+                                    
+                                    $sku_lists[$k]['spec_value'][] = $_specValue[$s_k];
+                                }
+                            }
+                        }
+
+                        
+                    }
+                    foreach ($sku_lists as $key => &$value) {
+                       $value['spec_value'] = $this->array_unique_bykey($value['spec_value'],'spec_value');
+                    }
+                    
+                    
+
+                    $goods_data['sku_list'] = $sku_lists;
+                }
+               
+            }
+            
+            $goods_data['spec_goods'] = $spec_goods;
+            $goods_data['product'] =  $products_data;
         }
        
         return ['data'=>$goods_data];
 
     }
-    
+    /**
+     * 二维数组去重
+     * @param  [type] $arr [description]
+     * @param  [type] $key [description]
+     * @return [type]      [description]
+     */
+    private function array_unique_bykey($arr, $key){
+        $tmp_arr = array();
+        foreach($arr as $k => $v)
+        {
+            if(in_array($v[$key], $tmp_arr))   //搜索$v[$key]是否在$tmp_arr数组中存在，若存在返回true
+            {
+                unset($arr[$k]); //销毁一个变量  如果$tmp_arr中已存在相同的值就删除该值
+            }else {
+                $tmp_arr[$k] = $v[$key];  //将不同的值放在该数组中保存
+            }
+       }
+       //ksort($arr); //ksort函数对数组进行排序(保留原键值key)  sort为不保留key值
+      return $arr;
+   }
 
 	
 }
