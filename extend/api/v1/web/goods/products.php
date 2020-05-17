@@ -165,6 +165,28 @@ class products
        //ksort($arr); //ksort函数对数组进行排序(保留原键值key)  sort为不保留key值
       return $arr;
    }
+   /**
+    * 获取所有商品
+    * @return [type] [description]
+    */
+   public function getAll( $params = []) {
+
+
+        $limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
+        $offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:1;
+        unset($params['limit'],$params['page']);
+        $where = [
+            'sales_status'=>1,
+        ];
+
+        if(isset($params['name']) && $params['name']) {
+            $where['name'] =['like',$params['name']];
+        }
+        $goodsList['count'] = $this->goodsMdl->where($where)->count();
+        $goodsList['data'] = $this->goodsMdl->where($where)->select();
+
+       return ['data'=>$goodsList];
+   }
 
 	
 }

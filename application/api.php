@@ -75,6 +75,7 @@ return  [
                 'member.save'=>['uses'=>'\member\user@save','desc'=>'会员创建'],
                 'wechat.info'=>['uses'=>'\wechat\wechat@get','desc'=>'微信用户信息获取'],
                 'goods.get'=>['uses'=>'\goods\products@get','desc'=>'商品详情获取'],
+                'goods.query'=>['uses'=>'\goods\products@getAll','desc'=>'获取全部商品'],
             ],
         ],
 
