@@ -184,7 +184,7 @@ class products
         }
         
         $goodsList['count'] = $this->goodsMdl->where($where)->count();
-        $goodsList['data'] = $this->goodsMdl->where($where)->select();
+        $goodsList['data'] = $this->goodsMdl->where($where)->limit(''.$offset.','.$limit.'')->select();
 
        return ['data'=>$goodsList];
    }
