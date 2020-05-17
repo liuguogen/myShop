@@ -56,7 +56,7 @@ class members
 		
 		
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
-		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:1;
+		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;
 		unset($params['limit'],$params['page']);
 		$brandList['count'] = $this->memberMdl->where(array_filter($params))->count();
 		$brandList['data'] = $this->memberMdl->where(array_filter($params))->limit(''.$offset.','.$limit.'')->select();

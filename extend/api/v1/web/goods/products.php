@@ -173,7 +173,7 @@ class products
 
 
         $limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
-        $offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:1;
+        $offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;
         unset($params['limit'],$params['page']);
         $where = [
             'sales_status'=>1,
