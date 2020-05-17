@@ -15,7 +15,7 @@ use \think\Cache;
 use \think\exception\HttpResponseException;
 class userMake  {
 
-    public static $expire = '2592000';//60*60*24*30
+    public static $expire = 0;//60*60*24*30
 
     public static $systemToken = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         

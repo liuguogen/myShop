@@ -161,7 +161,7 @@ class user
         if(!$member_id) {
             throw new HttpException(404,'解析用户ID错误！');
         }
-
+        $params['member_id'] = $member_id;
         if(isset($params['id']) && $params['id']) {
             $id = $params['id'];
             unset($params['id']);
