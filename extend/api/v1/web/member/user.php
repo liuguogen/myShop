@@ -17,6 +17,7 @@ use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
 use \model\Member;
+use \model\Address;
 
 /**
  * 
@@ -30,6 +31,7 @@ class user
 	public function __construct()
 	{
 		$this->memberMdl = model('Member');
+        $this->addressMdl = model('Address');
 		
 	}
 	/**
@@ -116,6 +118,64 @@ class user
         }
         return ['data'=>$rs_data];
 
+    }
+    /**
+     * 用户地址保存
+     * @return [type] [description]
+     */
+    public function saveAddr(array $params) {
+        $validate = new Validate([
+            
+            'accessToken' => 'require',
+            'name'=>'require',
+            'mobile'=>'require',
+            'province'=>'require',
+            'city'=>'require',
+            'area'=>'require',
+            'address'=>'require',
+        ],[
+            'accessToken.require'=>'accessToken必填',
+            'name.require'=>'姓名必填',
+            'mobile.require'=>'手机号必填',
+            'province.require'=>'省份必填',
+            'city.require'=>'市必填',
+            'area.require'=>'区必填',
+        ]);
+        $data = [
+           
+            'accessToken' => $params['accessToken'],
+            'name'=>$params['name'],
+            'mobile'=>$params['mobile'],
+            'province'=>$params['province'],
+            'city'=>$params['city'],
+            'area'=>$params['area'],
+            'address'=>$params['address'],
+        ];
+
+        if (!$validate->check($data)) {
+            throw new HttpException(404,$validate->getError());
+        }
+        $member_id = userMake::check(trim($params['accessToken']));
+        unset($params['accessToken']);
+        if(!$member_id) {
+            throw new HttpException(404,'解析用户ID错误！');
+        }
+
+        if(isset($params['id']) && $params['id']) {
+            $id = $params['id'];
+            unset($params['id']);
+            //更新数据
+            $params['update_time'] = time();
+            $flag = $this->addressMdl->where(['id'=>intval($id)])->update($params);
+        }else {
+            //创建数据
+            $params['create_time'] = time();
+            $params['update_time'] = time();
+            $flag = $this->addressMdl->save($params);
+        }
+
+        if(!$flag) throw new HttpException(404,'地址保存错误！');
+        return  ['data'=>isset($params['id']) && $params['id'] ? $params['id']  : $flag];
     }
     
 
