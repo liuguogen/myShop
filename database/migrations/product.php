@@ -23,6 +23,7 @@ IF NOT EXISTS `product` (
   `weight` decimal(10,3) not null default 0 comment '重量' ,
   `store` int(11) not null default 0 comment '库存',
   `spece_value` varchar(200) not null default '' comment '规格值',
+  `spec_text` varchar(200) not null default '' comment '规格描述',
   `sales_status` tinyint(1) not null default 0 comment '是否上架 0 否 1 是',
   `create_time` int(11) not null comment '创建时间',
   `update_time` int(11) not null comment '最后更新时间',
