@@ -161,15 +161,16 @@ class user
         if(!$member_id) {
             throw new HttpException(404,'解析用户ID错误！');
         }
-        $params['member_id'] = $member_id;
+
         if(isset($params['id']) && $params['id']) {
             $id = $params['id'];
             unset($params['id']);
             //更新数据
             $params['update_time'] = time();
-            $flag = $this->addressMdl->where(['id'=>intval($id)])->update($params);
+            $flag = $this->addressMdl->where(['member_id'=>intval($member_id),'id'=>intval($id)])->update($params);
         }else {
             //创建数据
+            $params['member_id'] = $member_id;
             $params['create_time'] = time();
             $params['update_time'] = time();
             $flag = $this->addressMdl->save($params);
