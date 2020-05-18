@@ -60,7 +60,7 @@ class user
 		    throw new HttpException(404,$validate->getError());
 		}
 		
-		$PasswordHashs = new \think\PasswordHash(8, false);  
+		$PasswordHashs = new \app\library\PasswordHash(8, false);  
 		//$hashedPassword = $PasswordHashs->HashPassword($password); 
 		
 		
@@ -175,7 +175,7 @@ class user
 			
 		    throw new HttpException(404,$validate->getError());
 		}
-		$PasswordHashs = new \think\PasswordHash(8, false);  
+		$PasswordHashs = new \app\library\PasswordHash(8, false);  
 		
 		$userData = [
 			'username'=>$params['username'],

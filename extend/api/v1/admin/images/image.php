@@ -15,6 +15,8 @@ use \think\Db;
 use \think\Validate;
 use \think\Cache;
 use \think\Config;
+use \OSS\OssClient;
+use \OSS\Core\OssException;
 /**
  * 
  */
@@ -42,9 +44,10 @@ class image
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
-	public function singleUpload($params=null) {
+	public function singleUploads($params=null) {
 		
 		$file = request()->file('file');
+		
 		 if($file){
 		 	$info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
 		 	
@@ -58,6 +61,39 @@ class image
 		 }else {
 		 	throw new HttpException(404,'请上传图片!');
 		 }
+	}
+	public function singleUpload($params=null) {
+
+		//如果配置阿里云oss
+		if(!empty(config('aliOss'))) {
+			$ossClient = new OssClient(
+		        config('aliOss')['KeyId'], 
+		        config('aliOss')['KeySecret'], 
+		        config('aliOss')['Endpoint']
+        	);
+        	#执行阿里云上传
+	      	try{
+
+	      		$result = [];
+	      		foreach ($_FILES as $key => $value) {
+	      			$ext = substr($value['name'], strrpos($value['name'], '.')+ 1);
+					$filname = date('Ymd') . DS . md5(microtime(true)).'.'.$ext;
+					$result = $ossClient->uploadFile(
+				        config('aliOss')['Bucket'], 
+				        $filname, 
+				        $value['tmp_name']
+			    	);
+	      		}
+	      		return ['data'=>isset($result['info']['url']) && $result['info']['url'] ? ['src'=>$result['info']['url']] : ''];
+	      		
+	      	}catch(\Exception $e){
+	      		throw new HttpException(404,'请上传图片!');
+	      	}
+	      }else {
+	      	//本地上传
+	      	return $this->singleUploads();
+	      }
+      	
 	}
 
 	

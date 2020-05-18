@@ -1,10 +1,9 @@
 <?php
 namespace app\index\controller;
-use \think\Rpc;
+use \app\library\Rpc;
 use \think\Request;
-use \think\ThinkApi;
+use \app\library\ThinkApi;
 use \think\exception\HttpException;
-use \think\Config;
 class Api extends ThinkApi
 {
     public function __construct()
