@@ -104,7 +104,7 @@ class carts
             throw new HttpException(404,'商品sku好像不见了~');
         }
         $product_store = $this->orderSalesMdl->query("select sum(free_num) as free_num from order_sales where product_id=".intval($params['product_id'].' and goods_id='.intval($params['goods_id']))); //$this->orderSalesMdl->where(['goods_id'=>intval($params['goods_id']),'goods_id'=>intval($params['goods_id'])])->find();
-        if(intval($params['num']) > ($product_data['store'] - $product_store[0]['free_num'] )) {
+        if(intval($params['num']) > (intval($product_data['store']) - intval($product_store[0]['free_num']) )) {
             throw new HttpException(404,'库存已超最大上限！');
         }
         if(!$check_cart_data) {
