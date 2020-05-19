@@ -83,6 +83,8 @@ return  [
                 'order.create'=>['uses'=>'\order\trade@createOrder','desc'=>'订单创建'],
                 'order.get'=>['uses'=>'\order\trade@get','desc'=>'订单获取'],
                 'cart.save'=>['uses'=>'\cart\carts@save','desc'=>'保存到购物车'],
+                'cart.get'=>['uses'=>'\cart\carts@get','desc'=>'获取购物车'],
+                'cart.num'=>['uses'=>'\cart\carts@getCartNum','desc'=>'获取购物车数量'],
             ],
         ],
 

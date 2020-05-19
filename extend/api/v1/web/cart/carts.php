@@ -54,7 +54,7 @@ class carts
     }
 
     /**
-     * 获取商品详情
+     * 保存购物车
      * @param  array  $params [description]
      * @return [type]         [description]
      */
@@ -120,8 +120,79 @@ class carts
 
     }
     
-   
+    /**
+     * 购物车获取
+     * @param  array  $params [description]
+     * @return [type]         [description]
+     */
+    public function get(array $params) {
+        $validate = new Validate([
+            
+            'accessToken' => 'require',
+           
+        ],[
+            'accessToken.require'=>'accessToken必填',
+            
+        ]);
+        $checkData = [
+            'accessToken'=>$params['accessToken'],
+          
+        ];
 
+        if (!$validate->check($checkData)) {
+            throw new HttpException(404,$validate->getError());
+        }
+
+        $member_id = userMake::check(trim($params['accessToken']));
+        unset($params['accessToken']);
+        if(!$member_id) {
+            throw new HttpException(404,'解析用户ID错误！');
+        }
+
+        $cart_data = $this->cartMdl->where(['member_id'=>intval($member_id)])->select();
+        if(!$cart_data) return ['data'=>[]];
+        $cart_data = collection($cart_data)->toArray();
+        foreach ($cart_data as $key => &$value) {
+            $goods_data = $this->goodsMdl->where(['id'=>intval($value['goods_id'])])->find();
+            $value['goods_img'] = $goods_data ? $goods_data['goods_img'] : '';
+            $product_data = $this->productMdl->where(['id'=>intval($value['product_id'])])->find();
+            $value['price'] = $product_data ? $product_data['price'] : '';
+        }
+        return  ['data'=>$cart_data];
+    }
+    /**
+     * 获取购物车数量
+     * @param  array  $params [description]
+     * @return [type]         [description]
+     */
+    public function getCartNum(array $params) {
+         $validate = new Validate([
+            
+            'accessToken' => 'require',
+           
+        ],[
+            'accessToken.require'=>'accessToken必填',
+            
+        ]);
+        $checkData = [
+            'accessToken'=>$params['accessToken'],
+          
+        ];
+
+        if (!$validate->check($checkData)) {
+            throw new HttpException(404,$validate->getError());
+        }
+
+        $member_id = userMake::check(trim($params['accessToken']));
+        unset($params['accessToken']);
+        if(!$member_id) {
+            throw new HttpException(404,'解析用户ID错误！');
+        }
+
+        
+        $data = $this->cartMdl->query("select sum(num) as num from cart where member_id=".intval($member_id));
+        return ['data'=>$data? $data['num'] : 0];
+    }
 	
 }
 
