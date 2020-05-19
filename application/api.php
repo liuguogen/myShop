@@ -85,6 +85,7 @@ return  [
                 'cart.save'=>['uses'=>'\cart\carts@save','desc'=>'保存到购物车'],
                 'cart.get'=>['uses'=>'\cart\carts@get','desc'=>'获取购物车'],
                 'cart.num'=>['uses'=>'\cart\carts@getCartNum','desc'=>'获取购物车数量'],
+                'cart.del'=>['uses'=>'\cart\carts@del','desc'=>'删除购物车'],
             ],
         ],
 

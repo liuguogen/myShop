@@ -202,6 +202,44 @@ class carts
        
         return ['data'=>['num'=>$num ? $num : 0]];
     }
+    /**
+     * 删除购物车
+     * @param  array  $params [description]
+     * @return [type]         [description]
+     */
+    public function del(array $params ) {
+        $validate = new Validate([
+            
+            'accessToken' => 'require',
+            'id'=>'require|number|egt:1',
+            
+        ],[
+            'accessToken.require'=>'accessToken必填',
+            'id.require'=>'商品ID必填',
+            'id.number'=>'商品ID必须是整数',
+            'id.egt'=>'商品ID必填大于等于1',
+            
+        ]);
+        $checkData = [
+            'accessToken'=>$params['accessToken'],
+            'id' => intval($params['id']),
+            
+        ];
+
+        if (!$validate->check($checkData)) {
+            throw new HttpException(404,$validate->getError());
+        }
+
+        $member_id = userMake::check(trim($params['accessToken']));
+        unset($params['accessToken']);
+        if(!$member_id) {
+            throw new HttpException(404,'解析用户ID错误！');
+        }
+
+        $flag = $this->cartMdl->where(['member_id'=>intval($member_id),'id'=>intval($params['id'])])->delete();
+        if (!$flag) throw new HttpException(404,'删除购物车失败！');
+        return ['data'=>['id'=>$params['id']]];
+    }
 	
 }
 
