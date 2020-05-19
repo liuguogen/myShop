@@ -240,8 +240,14 @@ class products
 				//编辑
 				
 				$this->goodsMdl->where(['id'=>intval($params['id'])])->update($goods_data);
+				if(isset($params['sku_type']) && $params['sku_type']=='many') {
+					//多规格
+				}else {
 
-				$this->productMdl->where(['goods_id'=>intval($params['id'])])->update($product_data);
+
+					$this->productMdl->where(['goods_id'=>intval($params['id'])])->update($product_data[0]);
+				}
+				
 			}else {
 				//新增
 				$goods_data['create_time']  = time();
