@@ -76,9 +76,9 @@ class carts
             'product_id.require'=>'sku ID必填',
             'product_id.number'=>'sku ID必须是整数',
             'product_id.egt'=>'sku ID必填大于等于1',
-            'num.require'=>'sku ID必填',
-            'num.number'=>'sku ID必须是整数',
-            'num.egt'=>'sku ID必填大于等于1',
+            'num.require'=>'数量必填',
+            'num.number'=>'数量必须是整数',
+            'num.egt'=>'数量必填大于等于1',
         ]);
         $checkData = [
             'accessToken'=>$params['accessToken'],
