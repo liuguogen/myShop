@@ -82,6 +82,7 @@ return  [
                 'address.getrow'=>['uses'=>'\member\user@getAddrRow','desc'=>'获取单个用户地址'],
                 'order.create'=>['uses'=>'\order\trade@createOrder','desc'=>'订单创建'],
                 'order.get'=>['uses'=>'\order\trade@get','desc'=>'订单获取'],
+                'cart.save'=>['uses'=>'\cart\carts@save','desc'=>'保存到购物车'],
             ],
         ],
 
