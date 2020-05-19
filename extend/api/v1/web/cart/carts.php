@@ -19,6 +19,7 @@ use \think\Config;
 use \model\Goods;
 use \model\Product;
 use \model\Cart;
+use \model\OrderSales;
 /**
  * 
  */
@@ -33,7 +34,7 @@ class carts
 		$this->goodsMdl = model('Goods');
         $this->productMdl = model('Product');
         $this->cartMdl = model('Cart');
-        
+        $this->orderSalesMdl = model('OrderSales');
 		
 	}
 	/**
@@ -98,7 +99,11 @@ class carts
         }
         $where = ['member_id'=>$member_id,'goods_id'=>intval($params['goods_id']),'product_id'=>intval($params['product_id'])];
         $check_cart_data = $this->cartMdl->where($where)->find();
-        
+        $product_data = $this->productMdl->where(['id'=>intval($params['product_id']),'goods_id'=>intval($params['goods_id'])])->find();
+        $product_store = $this->orderSalesMdl->where(['goods_id'=>intval($params['goods_id']),'goods_id'=>intval($params['goods_id'])])->find();
+        if(intval($params['num']) > ($product_data['store'] - $product_store['free_num'] )) {
+            throw new HttpException(404,'库存已超最大上限！');
+        }
         if(!$check_cart_data) {
             //新增
             $cart_data = [
@@ -111,7 +116,7 @@ class carts
             $flag = $this->cartMdl->save($cart_data);
         }else {
             $cart_data =[
-                'num'=>intval($check_cart_data['num']) + intval($params['num']),
+                'num'=>intval($params['num']),
             ];
             $flag = $this->cartMdl->where($where)->update($cart_data);
         }
