@@ -99,7 +99,7 @@ class user
 
 
             if($check_user) {
-                $accessToken = userMake::make($member_id,['openid'=>$check_user['openid'],'create_time'=>$check_user['create_time'],'update_time'=>$check_user['update_time']]);
+                $accessToken = userMake::make($check_user['id'],['openid'=>$check_user['openid'],'create_time'=>$check_user['create_time'],'update_time'=>$check_user['update_time']]);
                 return ['data'=>['openid'=>$check_user['openid'],'accessToken'=>$accessToken]];
             }
             if($this->memberMdl->insert($data)) {
