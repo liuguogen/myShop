@@ -166,6 +166,9 @@ class carts
             $product_data = $this->productMdl->where(['id'=>intval($value['product_id'])])->find();
             $value['price'] = $product_data ? $product_data['price'] : '';
             $value['name'] = $product_data ? $product_data['name'] : '';
+            
+            $value['spec_text']  = $product_data ? $product_data['spec_text'] : '';
+            
         }
         return  ['data'=>$cart_data];
     }
