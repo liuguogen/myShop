@@ -190,9 +190,9 @@ class carts
         }
 
         
-        $data = $this->cartMdl->query("select sum(num) as num from cart where member_id=".intval($member_id));
+        $num = $this->cartMdl->where(['member_id'=>$member_id])->count();
        
-        return ['data'=>['num'=>$data? $data[0]['num'] : 0]];
+        return ['data'=>['num'=>$num ? $num : 0]];
     }
 	
 }
