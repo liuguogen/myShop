@@ -191,7 +191,8 @@ class carts
 
         
         $data = $this->cartMdl->query("select sum(num) as num from cart where member_id=".intval($member_id));
-        return ['data'=>$data? $data['num'] : 0];
+       
+        return ['data'=>['num'=>$data? $data[0]['num'] : 0]];
     }
 	
 }
