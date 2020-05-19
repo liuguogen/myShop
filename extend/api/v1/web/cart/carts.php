@@ -216,9 +216,9 @@ class carts
             
         ],[
             'accessToken.require'=>'accessToken必填',
-            'id.require'=>'商品ID必填',
-            'id.number'=>'商品ID必须是整数',
-            'id.egt'=>'商品ID必填大于等于1',
+            'id.require'=>'ID必填',
+            'id.number'=>'ID必须是整数',
+            'id.egt'=>'ID必填大于等于1',
             
         ]);
         $checkData = [
