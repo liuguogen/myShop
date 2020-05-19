@@ -81,6 +81,7 @@ return  [
                 'address.get'=>['uses'=>'\member\user@getAddr','desc'=>'用户地址获取'],
                 'address.getrow'=>['uses'=>'\member\user@getAddrRow','desc'=>'获取单个用户地址'],
                 'order.create'=>['uses'=>'\order\trade@createOrder','desc'=>'订单创建'],
+                'order.get'=>['uses'=>'\order\trade@get','desc'=>'订单获取'],
             ],
         ],
 

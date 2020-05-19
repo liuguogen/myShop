@@ -188,8 +188,51 @@ class trade
     private function _generate_order_no() {
         return date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
     }
+    /**
+     * 订单获取
+     * @return [type] [description]
+     */
+    public function get(array $params) {
 
-    
+
+        $limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
+        $offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;
+        $validate = new Validate([
+            
+            'accessToken' => 'require',
+            
+        ],[
+            'accessToken.require'=>'accessToken必填',
+            
+        ]);
+        $data = [
+           
+            'accessToken' => $params['accessToken'],
+            
+        ];
+
+        if (!$validate->check($data)) {
+            throw new HttpException(404,$validate->getError());
+        }
+        $member_id = userMake::check(trim($params['accessToken']));
+        unset($params['accessToken']);
+        if(!$member_id) {
+            throw new HttpException(404,'解析用户ID错误！');
+        }
+        $where = ['member_id'=>intval($member_id)];
+        if(isset($params['pay_status'])) {
+            $where['pay_status'] = trim($params['pay_status']);
+        }
+        if(isset($params['deliviery_status'])) {
+            $where['deliviery_status'] = trim($params['deliviery_status']);
+        }
+        if(isset($params['order_status'])) {
+            $where['order_status'] = trim($params['order_status']);
+        }
+        $orderList['count'] = $this->orderMdl->where($where)->count();
+        $orderList['data'] = $this->orderMdl->where($where)->limit(''.$offset.','.$limit.'')->select();
+        return ['data'=>$orderList ? $orderList : []];
+    }
 	
 }
 
