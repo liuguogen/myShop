@@ -165,6 +165,7 @@ class carts
             $value['goods_img'] = $goods_data ? $goods_data['goods_img'] : '';
             $product_data = $this->productMdl->where(['id'=>intval($value['product_id'])])->find();
             $value['price'] = $product_data ? $product_data['price'] : '';
+            $value['name'] = $product_data ? $product_data['name'] : '';
         }
         return  ['data'=>$cart_data];
     }
@@ -235,10 +236,15 @@ class carts
         if(!$member_id) {
             throw new HttpException(404,'解析用户ID错误！');
         }
-
-        $flag = $this->cartMdl->where(['member_id'=>intval($member_id),'id'=>intval($params['id'])])->delete();
+        if($params['id'] && is_array($params['id'])) {
+            $ids = $params['id'];
+        } else {
+            $ids = [$params['id']];
+        }
+        unset($params['id']);
+        $flag = $this->cartMdl->where(['member_id'=>intval($member_id),'id'=>['in',$ids]])->delete();
         if (!$flag) throw new HttpException(404,'删除购物车失败！');
-        return ['data'=>['id'=>$params['id']]];
+        return ['data'=>['id'=>$ids]];
     }
 	
 }
