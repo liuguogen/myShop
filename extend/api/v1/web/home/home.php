@@ -17,10 +17,6 @@ use \think\Cache;
 use api\v1\admin\userMake;
 use \think\Config;
 use \model\Goods;
-use \model\Product;
-use \model\GoodsCate;
-use \model\GoodsType;
-use \model\Brands;
 use \model\Banners;
 use \model\Widget;
 /**
@@ -35,10 +31,6 @@ class home
 	public function __construct()
 	{
 		$this->goodsMdl = model('Goods');
-		$this->productMdl = model('Product');
-		$this->goodsTypeMdl = model('GoodsType');
-		$this->brandMel = model('Brands');
-		$this->goodsCateMdl = model('GoodsCate'); 
 		$this->bannerMdl = model('Banners'); 
 		$this->widgetMdl = model('Widget'); 
 	}

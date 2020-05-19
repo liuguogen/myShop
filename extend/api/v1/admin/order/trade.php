@@ -8,24 +8,24 @@
 // +----------------------------------------------------------------------
 // |  liuguogen <liuguogen_vip@163.com>
 // +----------------------------------------------------------------------
-namespace api\v1\admin\member;
+namespace api\v1\admin\order;
 use \think\exception\HttpException;
 use \think\helper;
 use \think\Db;
 use \think\Validate;
 use \think\Cache;
 use \think\Config;
-use \model\Member;
+use \model\Order;
 /**
  * 
  */
-class members
+class trade
 {
 
 
 	public function __construct()
 	{
-		$this->memberMdl = model('Member');
+		$this->orderMdl = model('Order');
 		
 	}
 
@@ -58,8 +58,8 @@ class members
 		$limit = isset($params['limit']) ? intval($params['limit']) : config('paginate')['list_rows'];
 		$offset = isset($params['page']) ?  (intval($params['page'])-1)*$limit:0;
 		unset($params['limit'],$params['page']);
-		$brandList['count'] = $this->memberMdl->where(array_filter($params))->count();
-		$brandList['data'] = $this->memberMdl->where(array_filter($params))->limit(''.$offset.','.$limit.'')->select();
+		$brandList['count'] = $this->orderMdl->where(array_filter($params))->count();
+		$brandList['data'] = $this->orderMdl->where(array_filter($params))->limit(''.$offset.','.$limit.'')->select();
 		return $brandList;
 	}
 
@@ -89,7 +89,7 @@ class members
 
 		$id = intval($params['id']);
 		unset($params['id']);
-		$rs = $this->memberMdl->where(['id'=>$id])->find();
+		$rs = $this->orderMdl->where(['id'=>$id])->find();
 		
 		if(!$rs) throw new HttpException(404,'获取失败');
 		
@@ -129,7 +129,7 @@ class members
 		
 		unset($params['id']);
 		$params['update_time'] = time();
-		$flag = $this->memberMdl->where(['id'=>['in',$ids]])->update($params);
+		$flag = $this->orderMdl->where(['id'=>['in',$ids]])->update($params);
 		
 		if(!$flag) throw new HttpException(404,'修改失败！');
 		return ['data'=>['id'=>$ids]];

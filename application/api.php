@@ -68,6 +68,7 @@ return  [
                 'widget.del'=>['uses'=>'\widget\widgets@del','desc'=>'首页挂件删除'],
                 'widget.update'=>['uses'=>'\widget\widgets@update','desc'=>'首页挂件更新'],
                 'member.get'=>['uses'=>'\member\members@get','desc'=>'获取用户列表'],
+                'order.get'=>['uses'=>'\order\trade@get','desc'=>'获取订单列表'],
             ],
             //前端接口数据
             'web'=>[
@@ -79,6 +80,7 @@ return  [
                 'address.save'=>['uses'=>'\member\user@saveAddr','desc'=>'用户地址保存'],
                 'address.get'=>['uses'=>'\member\user@getAddr','desc'=>'用户地址获取'],
                 'address.getrow'=>['uses'=>'\member\user@getAddrRow','desc'=>'获取单个用户地址'],
+                'order.create'=>['uses'=>'\order\trade@createOrder','desc'=>'订单创建'],
             ],
         ],
 

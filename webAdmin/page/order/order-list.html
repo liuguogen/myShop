@@ -42,7 +42,7 @@
                             <div class="layui-form layui-col-space5">
                                 
                                 <div class="layui-inline layui-show-xs-block">
-                                    <input type="text" name="goods_name" placeholder="商品名称" autocomplete="off" class="layui-input"></div>
+                                    <input type="text" name="order_no" placeholder="订单号" autocomplete="off" class="layui-input"></div>
                                 <div class="layui-inline layui-show-xs-block">
                                     <button class="layui-btn" lay-submit="" lay-filter="sreach" data-type="reload">
                                         <i class="layui-icon">&#xe615;</i></button>
@@ -61,8 +61,7 @@
 
     <script type="text/html" id="barData">
       <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-      <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+      
     </script>
     <script type="text/html" id="toolbarDemo">
         <div class = "layui-btn-container" > 
@@ -76,12 +75,50 @@
         <input type = "checkbox" data-id="{{d.id}}" name = "sales_status" value = "{{d.sales_status}}" lay-skin = "switch" lay-text = "是|否" lay-filter = "sales_status" {{ d.sales_status == 1 ? 'checked': ''}} >
     </script>
 
-    <script type="text/html" id="goodsImgTpl">
+    <script type="text/html" id="orderStatusTpl">
         
-        {{#  if(d.goods_img){ }}
-            <img src="{{d.goods_img}}" class="layui-nav-img">
+        {{#  if(d.order_status=='create'){ }}
+            订单创建
+        {{# }else if(d.order_status=='cancel'){ }}
+            订单取消
+        {{# }else if(d.order_status=='finish'){ }}
+            订单完成
         {{#  } else { }}
-           暂无图像
+           订单创建
+        {{#  } }}
+
+
+    </script>
+    <script type="text/html" id="payStatusTpl">
+        
+        {{#  if(d.pay_status=='wait'){ }}
+            待支付
+        {{# }else if(d.pay_status=='already'){ }}
+            已支付
+        {{# }else if(d.pay_status=='finish'){ }}
+            支付完成
+        {{# }else if(d.pay_status=='cancel'){ }}
+            支付取消
+        {{#  } else { }}
+           等待支付
+        {{#  } }}
+
+
+    </script>
+     <script type="text/html" id="deliveryStatusTpl">
+        
+        {{#  if(d.delivery_status=='wait'){ }}
+            待发货
+        {{# }else if(d.delivery_status=='shipped'){ }}
+            未发货
+        {{# }else if(d.delivery_status=='confirm'){ }}
+            确认收货
+        {{# }else if(d.delivery_status=='finish'){ }}
+            完成
+        {{# }else if(d.delivery_status=='cancel'){ }}
+            取消
+        {{#  } else { }}
+           待发货
         {{#  } }}
 
 
@@ -102,8 +139,8 @@
             ,loading:true
             ,url: api.url //数据接口
             ,method:"post"
-            ,where:tableParams.getParams("goods.get")
-            ,title: '商品列表'
+            ,where:tableParams.getParams("order.get")
+            ,title: '订单列表'
             ,page: true //开启分页
             ,toolbar: '<div class="layui-table-tool"><div class="layui-table-tool-temp"><div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div><div class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div></div><div class="layui-table-tool-self"><div class="layui-inline" title="筛选列" lay-event="LAYTABLE_COLS"><i class="layui-icon layui-icon-cols"></i></div><div class="layui-inline" title="导出" lay-event="LAYTABLE_EXPORT"><i class="layui-icon layui-icon-export"></i></div><div class="layui-inline" title="打印" lay-event="LAYTABLE_PRINT"><i class="layui-icon layui-icon-print"></i></div></div></div>' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
             ,totalRow: false //开启合计行
@@ -111,51 +148,32 @@
               {type: 'checkbox', fixed: 'left'}
               
               ,{field: 'id', title: '编号',  sort: true, fixed: 'true',width:70}
-              ,{field:'goods_img', title:'商品图片', width:80, templet:'#goodsImgTpl'}
-              ,{field: 'name', title: '商品名称', width:100 }
-              ,{field: 'price', title: '商品价格', width:100 ,sort:true}
-              ,{field: 'mkt_price', title: '商品参考价', width:110,sort:true }
-              ,{field: 'cate_name', title: '商品分类', width:80 }
-              ,{field: 'brand_name', title: '商品品牌', width:100 }
-              ,{field: 'type_name', title: '商品类型', width:80 }
-              ,{field: 'bn', title: '商品货号',width:100 }
-              ,{field: 'sales_status', title: '上下架',templet: '#switchTpl',width:80}
+              ,{field:'order_no', title:'订单号', width:140}
+              ,{field: 'order_status', title: '订单状态', width:80,templet:'#orderStatusTpl' }
+              ,{field: 'pay_status', title: '支付状态', width:80 ,templet:'#payStatusTpl'}
+              ,{field: 'delivery_status', title: '发货状态', width:80 ,templet:'#deliveryStatusTpl'}
+              ,{field: 'amount', title: '订单金额', width:100,sort:true }
+              ,{field: 'pay_amount', title: '支付金额', width:100,sort:true }
+              ,{field: 'name', title: '姓名', width:80 }
+              ,{field: 'mobile', title: '手机号', width:120 }
+              ,{field: 'province', title: '省', width:80 }
+              ,{field: 'city', title: '市', width:80 }
+              ,{field: 'area', title: '区', width:80 }
+              ,{field: 'address', title: '详细地址', width:100 }
               ,{field: 'create_time', title: '创建时间', sort:true,width:160}
               ,{field: 'update_time', title: '最后更新时间', sort:true,width:160}
-              ,{fixed: 'right', title:'操作', width:200,align:'center', toolbar: '#barData'}
+              ,{fixed: 'right', title:'操作', width:80,align:'center', toolbar: '#barData'}
               
             ]]
           });
 
-            form.on('switch(sales_status)',function(data) {
-
-                var id = data.elem.getAttribute('data-id');
-                var params  = {
-                    "method":"goods.update",
-                    "id":id,
-                }
-
-                var sales_status = this.checked ? 1 :0;
-                
-                params.sales_status = sales_status;
-                
-                Shop.post(params,function(rs) {
-                    if(rs.code ==0) {
-                        
-                        layer.msg('修改成功');
-                    }else {
-
-                        layer.msg(rs.msg);
-                    }
-                })
-               
-            });
+            
 
 
 
             var $ = layui.$, active = {
                   reload: function(){
-                    var goods_name = $("input[name='goods_name']");
+                    var order_no = $("input[name='order_no']");
                     
                     //执行重载
                     table.reload('table-data', {
@@ -163,7 +181,7 @@
                         curr: 1 //重新从第 1 页开始
                       }
                       ,where: {
-                        name: goods_name.val()
+                        order_no: order_no.val()
                       }
                     });
                   }
