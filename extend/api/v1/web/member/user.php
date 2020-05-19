@@ -152,7 +152,11 @@ class user
             'area'=>$params['area'],
             'address'=>$params['address'],
         ];
-
+        if(isset($params['mobile']) && $params['mobile']) {
+            if(!preg_match("/^1[3456789]\d{9}$/", $params['mobile'])) {
+                throw new HttpException(404,'手机号格式不正确！');
+            }
+        }
         if (!$validate->check($data)) {
             throw new HttpException(404,$validate->getError());
         }
