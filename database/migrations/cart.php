@@ -18,6 +18,7 @@ IF NOT EXISTS `cart` (
   `member_id` int(11) unsigned not null comment '用户ID',
   `goods_id` int(11) unsigned not null comment '主商品ID',
   `product_id` int(11) unsigned not null comment 'skuID',
+  `num` int(11) unsigned not null default 0 comment '商品数量',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '注册时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`),
