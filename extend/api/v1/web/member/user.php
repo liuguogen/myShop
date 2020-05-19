@@ -246,7 +246,9 @@ class user
 
         $member_id = userMake::check(trim($params['accessToken']));
         unset($params['accessToken']);
-
+        if(!$member_id) {
+            throw new HttpException(404,'解析用户ID错误！');
+        }
         $addressData = $this->addressMdl->field('id,name,mobile,province,city,area,address')->where(['id'=>intval($params['id']),'member_id'=>intval($member_id)])->find();
         return ['data'=>$addressData ? $addressData :[]];
     }
