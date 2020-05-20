@@ -120,6 +120,7 @@ class carts
                 'goods_id'=>intval($params['goods_id']),
                 'num'=>intval($params['num']),
                 'member_id'=>$member_id,
+                'create_time'=>time(),
             ];
            
             $flag = $this->cartMdl->save($cart_data);
@@ -133,6 +134,7 @@ class carts
             }
             $cart_data =[
                 'num'=>$num,
+                'update_time'=>time(),
             ];
             $flag = $this->cartMdl->where($where)->update($cart_data);
         }
