@@ -21,6 +21,7 @@ use \model\Product;
 use \model\Specs;
 use \model\SpecValues;
 use \model\GoodsType;
+use \model\OrderSales;
 
 /**
  * 
@@ -38,6 +39,7 @@ class products
         $this->specMdl = model('Specs');
         $this->specValueMdl = model('SpecValues');
         $this->goodsTypeMdl = model('GoodsType');
+        $this->orderSalesMdl = model('OrderSales');
 		
 	}
 	/**
@@ -86,7 +88,18 @@ class products
         if(!$goods_data) throw new HttpException(404,'商品好像不见了~');
         $goods_data['thumb'] = $goods_data['thumb'] ? explode(',', $goods_data['thumb']) :'';
         $goods_data['product']  = $this->productMdl->where(['goods_id'=>intval($params['goods_id'])])->select();
+        $products_data = collection($goods_data['product'])->toArray();
 
+        //计算库存
+        foreach ($products_data as $key => &$value) {
+            $sales_data = $this->orderSalesMdl->query("select sum(free_num) as free_num,sum(sales_num) as sales_num from order_sales where goods_id=".intval($value['goods_id']).' and product_id='.intval($value['id']));
+
+            $value['store'] = $value['store'] - ($sales_data ? $sales_data[0]['free_num'] : 0) ;
+            $value['sales_num'] = $sales_data && isset($sales_data[0]['sales_num']) ? $sales_data[0]['sales_num'] : 0;
+        }
+
+        
+        $goods_data['product'] =  $products_data;
         if($goods_data['sku_type']=='many' && $goods_data['product']) {
             $products_data = collection($goods_data['product'])->toArray();
             foreach ($products_data as $key => $value) {
@@ -141,7 +154,7 @@ class products
             $goods_data['spec_goods'] = $spec_goods;
             $goods_data['product'] =  $products_data;
         }
-       
+        
         return ['data'=>$goods_data];
 
     }

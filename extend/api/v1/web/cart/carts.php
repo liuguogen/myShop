@@ -253,6 +253,57 @@ class carts
         if (!$flag) throw new HttpException(404,'删除购物车失败！');
         return ['data'=>['id'=>$ids]];
     }
+
+    /**
+     * 订单确认页
+     * @return [type] [description]
+     */
+    public function checkout(array $params) {
+        
+        $validate = new Validate([
+            
+            'accessToken' => 'require',
+            'product_id'=>'require',
+            
+        ],[
+            'accessToken.require'=>'accessToken必填',
+            'product_id.require'=>'sku ID必填',
+        ]);
+        $checkData = [
+            'accessToken'=>$params['accessToken'],
+            'product_id' => intval($params['product_id']),
+            
+        ];
+
+        if (!$validate->check($checkData)) {
+            throw new HttpException(404,$validate->getError());
+        }
+        $params['product_id'] = explode(',', $params['product_id']);
+        $member_id = userMake::check(trim($params['accessToken']));
+        unset($params['accessToken']);
+        if(!$member_id) {
+            throw new HttpException(404,'解析用户ID错误！');
+        }
+        $product_data = $this->productMdl->where(['id'=>['in',$params['product_id']]])->select();
+        if(!$product_data) throw new HttpException(404,'商品错误！');
+        $product_data = collection($product_data)->toArray();
+        $rs_data = [];
+        $amount = 0;
+        foreach ($product_data as $key => $value) {
+            $goods_data = $this->goodsMdl->where(['id'=>intval($value['goods_id'])])->find();
+            $cart_data = $this->cartMdl->where(['member_id'=>intval($member_id),'goods_id'=>intval($value['goods_id']),'product_id'=>intval($value['id'])])->find();
+            $rs_data[] = [
+                'goods_img'=>$goods_data ? $goods_data['goods_img'] : '',
+                'name'=>$value['name'],
+                'price'=>$value['price'],
+                'num'=>$cart_data ? $cart_data['num'] : 1,
+            ];
+
+            $amount += $value['price'] * ($cart_data ? $cart_data['num'] : 1);
+        }
+
+        return ['data'=>['goods_data'=>$rs_data,'amount'=>number_format($amount,2)]];
+    }
 	
 }
 

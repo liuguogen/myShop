@@ -87,6 +87,7 @@ return  [
                 'cart.get'=>['uses'=>'\cart\carts@get','desc'=>'获取购物车'],
                 'cart.num'=>['uses'=>'\cart\carts@getCartNum','desc'=>'获取购物车数量'],
                 'cart.del'=>['uses'=>'\cart\carts@del','desc'=>'删除购物车'],
+                'cart.checkout'=>['uses'=>'\cart\carts@checkout','desc'=>'确认订单'],
             ],
         ],
 
