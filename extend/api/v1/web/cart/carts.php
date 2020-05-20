@@ -108,7 +108,9 @@ class carts
             throw new HttpException(404,'商品sku好像不见了~');
         }
         $product_store = $this->orderSalesMdl->query("select sum(free_num) as free_num from order_sales where product_id=".intval($params['product_id'].' and goods_id='.intval($params['goods_id']))); 
-        if(intval($params['num']) > (intval($product_data['store']) - intval($product_store[0]['free_num']) )) {
+
+        $num = isset($params['cart_type']) && $params['cart_type']=='add' ? $check_cart_data['num'] + intval($params['num']) :  $check_cart_data['num'] - intval($params['num']);
+        if(intval($num) > (intval($product_data['store']) - intval($product_store[0]['free_num']) )) {
             throw new HttpException(404,'库存已超最大上限！');
         }
         if(!$check_cart_data) {
@@ -123,7 +125,7 @@ class carts
             $flag = $this->cartMdl->save($cart_data);
         }else {
 
-            $num = isset($params['cart_type']) && $params['cart_type']=='add' ? $check_cart_data['num'] + intval($params['num']) :  $check_cart_data['num'] - intval($params['num']);
+            
 
             if($num <= 0) {
                 
@@ -320,8 +322,10 @@ class carts
      * 快速购买
      * @return [type] [description]
      */
-    private function _fastBuy() {
-
+    private function _fastBuy($params) {
+        if(!isset($params['num']) && $params['num'] < 0) {
+            throw new HttpException(404,'最小数量为1！');
+        }
     }
 	
 }
