@@ -291,6 +291,55 @@ class carts
         }
 
 
+        if(isset($params['buy_type']) && $params['buy_type'] =='fast_buy') {
+            return $this->_fastBuy($params);
+        }else {
+            return $this->_cartBuy($params);
+        }
+    }
+
+    /**
+     * 快速购买
+     * @return [type] [description]
+     */
+    private function _fastBuy($params) {
+        if(!isset($params['num']) && $params['num'] < 0) {
+            throw new HttpException(404,'最小数量为1！');
+        }
+
+
+        $params['product_id'] = explode(',', $params['product_id']);
+        $member_id = userMake::check(trim($params['accessToken']));
+        unset($params['accessToken']);
+        if(!$member_id) {
+            throw new HttpException(404,'解析用户ID错误！');
+        }
+        $product_data = $this->productMdl->where(['id'=>['in',$params['product_id']]])->select();
+        if(!$product_data) throw new HttpException(404,'商品错误！');
+        $product_data = collection($product_data)->toArray();
+        $rs_data = [];
+        $amount = 0;
+        foreach ($product_data as $key => $value) {
+            $goods_data = $this->goodsMdl->where(['id'=>intval($value['goods_id'])])->find();
+            $cart_data = $this->cartMdl->where(['member_id'=>intval($member_id),'goods_id'=>intval($value['goods_id']),'product_id'=>intval($value['id'])])->find();
+            $rs_data[] = [
+                'goods_img'=>$goods_data ? $goods_data['goods_img'] : '',
+                'name'=>$value['name'],
+                'price'=>$value['price'],
+                'num'=>$params['num'] ? $params['num'] : 1,
+            ];
+
+            $amount += $value['price'] * ($params['num'] ? $params['num'] : 1);
+        }
+
+        return ['data'=>['goods_data'=>$rs_data,'amount'=>number_format($amount,2)]];
+    }
+    /**
+     * 购物车购买
+     * @param  [type] $params [description]
+     * @return [type]         [description]
+     */
+    private function _cartBuy($params) {
         $params['product_id'] = explode(',', $params['product_id']);
         $member_id = userMake::check(trim($params['accessToken']));
         unset($params['accessToken']);
@@ -314,18 +363,7 @@ class carts
 
             $amount += $value['price'] * ($cart_data ? $cart_data['num'] : 1);
         }
-
         return ['data'=>['goods_data'=>$rs_data,'amount'=>number_format($amount,2)]];
-    }
-
-    /**
-     * 快速购买
-     * @return [type] [description]
-     */
-    private function _fastBuy($params) {
-        if(!isset($params['num']) && $params['num'] < 0) {
-            throw new HttpException(404,'最小数量为1！');
-        }
     }
 	
 }
