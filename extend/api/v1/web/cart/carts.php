@@ -69,6 +69,7 @@ class carts
             'goods_id'=>'require|number|egt:1',
             'product_id'=>'require|number|egt:1',
             'num'=>'require|number|egt:1',
+            'cart_type'=>'require|in:add,cut',
         ],[
             'accessToken.require'=>'accessToken必填',
             'goods_id.require'=>'商品ID必填',
@@ -80,12 +81,15 @@ class carts
             'num.require'=>'数量必填',
             'num.number'=>'数量必须是整数',
             'num.egt'=>'数量必填大于等于1',
+            'cart_type.require'=>'购物车类型必填',
+            'cart_type.in'=>'购物车类型只能在add,cut之间',
         ]);
         $checkData = [
             'accessToken'=>$params['accessToken'],
             'goods_id' => intval($params['goods_id']),
             'product_id'=>intval($params['product_id']),
             'num'=>intval($params['num']),
+            'cart_type'=>trim($params['cart_type']),
         ];
 
         if (!$validate->check($checkData)) {
@@ -103,7 +107,7 @@ class carts
         if(!$product_data) {
             throw new HttpException(404,'商品sku好像不见了~');
         }
-        $product_store = $this->orderSalesMdl->query("select sum(free_num) as free_num from order_sales where product_id=".intval($params['product_id'].' and goods_id='.intval($params['goods_id']))); //$this->orderSalesMdl->where(['goods_id'=>intval($params['goods_id']),'goods_id'=>intval($params['goods_id'])])->find();
+        $product_store = $this->orderSalesMdl->query("select sum(free_num) as free_num from order_sales where product_id=".intval($params['product_id'].' and goods_id='.intval($params['goods_id']))); 
         if(intval($params['num']) > (intval($product_data['store']) - intval($product_store[0]['free_num']) )) {
             throw new HttpException(404,'库存已超最大上限！');
         }
@@ -119,7 +123,7 @@ class carts
             $flag = $this->cartMdl->save($cart_data);
         }else {
             $cart_data =[
-                'num'=>intval($params['num']),
+                'num'=>isset($params['cart_type']) && $params['cart_type']=='add' ? $check_cart_data['num'] + intval($params['num']) :  $check_cart_data['num'] - intval($params['num']),
             ];
             $flag = $this->cartMdl->where($where)->update($cart_data);
         }

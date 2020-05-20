@@ -17,6 +17,9 @@ class Api extends ThinkApi
         $method = $request['method'];
         $source = $request['source'];
         $version = $request['version'];
+        if(isset($request['file'])) {
+            unset($request['file']);
+        }
         $sign  = $request['sign'];
         unset($request['s'],$request['method'],$request['source'],$request['version'],$request['sign']);
         try {
@@ -26,7 +29,7 @@ class Api extends ThinkApi
                 
                 
         } catch (HttpException $e) {
-            $this->error($e->getMessage(),[],400);
+            $this->error($e->getMessage(),[],$e->getStatusCode());
         }
        
         
