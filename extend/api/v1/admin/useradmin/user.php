@@ -23,6 +23,10 @@ class user
 {
 
 
+
+	public function __construct() {
+		$this->adminMdl = model('Admin');
+	}
 	/**
      * 定义应用级参数，参数的数据类型，参数是否必填，参数的描述
      * 用于在调用接口前，根据定义的参数，过滤必填参数是否已经参入
@@ -64,7 +68,7 @@ class user
 		//$hashedPassword = $PasswordHashs->HashPassword($password); 
 		
 		
-		$adminData = model('admin')->field('id,username,password,avatar,is_disabled')->where('username',trim($params['username']))->find();
+		$adminData = model('admin')->field('id,username,password,avatar,is_disabled,is_super')->where('username',trim($params['username']))->find();
 
 		if(!$adminData) {
 			throw new HttpException(404,'没有该用户!');
@@ -88,7 +92,7 @@ class user
 		cookie('accessToken',$accessToken,time()+3600*24*7);
 		cookie('adminName',$adminData['username'],time()+3600*24*7);
 
-		return ['data'=>['accessToken'=>$accessToken,'username'=>$adminData['username'],'avatar'=>$adminData['avatar']]];
+		return ['data'=>['accessToken'=>$accessToken,'is_super'=>$adminData['is_super'],'username'=>$adminData['username'],'avatar'=>$adminData['avatar']]];
 			
 		
 		
@@ -175,6 +179,10 @@ class user
 			
 		    throw new HttpException(404,$validate->getError());
 		}
+
+		if(trim($params['password']) != trim($params['password_confrim']))  {
+			throw new HttpException(404,'两次密码不一致！');
+		}
 		$PasswordHashs = new \app\library\PasswordHash(8, false);  
 		
 		$userData = [
@@ -230,7 +238,57 @@ class user
 		}
 		$flag = model('admin')->where(['id'=>intval($params['id'])])->delete();
 		if(!$flag) throw new HttpException(404,'删除失败');
-		return ['id'=>intval($params['id'])];
+		return ['data'=>['id'=>intval($params['id'])]];
+	}
+
+	public function updateSuper(array $params) {
+		$validate = new Validate([
+		    
+		    'accessToken' => 'require',
+		    'old_password'=>'require',
+		    'password'=>'require',
+		    'password_confrim'=>'require',
+		]);
+		$data = [
+		   
+		    'accessToken' => $params['accessToken'],
+		    'old_password'=>$params['old_password'],
+		    'password'=>$params['password'],
+		    'password_confrim'=>$params['password_confrim'],
+		];
+
+		if (!$validate->check($data)) {
+		    throw new HttpException(404,$validate->getError());
+		}
+		$id = userMake::check(trim($params['accessToken']));
+		if(!$id) {
+			throw new HttpException(404,'解析用户ID错误！');
+		}
+		// $adminData = db('admin')->field('id,username')->where('id',intval($id))->find();
+		// if(!$adminData) {
+		// 	throw new HttpException(404,'没有该用户'.$adminData['username']);
+		// }
+		$PasswordHashs = new \app\library\PasswordHash(8, false); 
+
+		$check_pass = $this->adminMdl->where(['id'=>$id])->find();
+		
+		if(!$PasswordHashs->CheckPassword($params['old_password'],$check_pass['password'])) {
+			throw new HttpException(404,'原密码不正确！');
+		}
+
+		if(trim($params['password']) != trim($params['password_confrim']))  {
+			throw new HttpException(404,'两次密码不一致！');
+		}
+		$up_data = [
+			'password'=>$PasswordHashs->HashPassword($params['password']),
+			'update_time'=>time(),
+		];
+
+		$flag  = $this->adminMdl->where(['id'=>intval($id)])->update($up_data);
+		if(!$flag) throw new HttpException(404,'密码修改失败！');
+		cookie('adminId',null);
+		cookie('adminName',null);
+		return ['data'=>['accessToken'=>$params['accessToken']]];
 	}
 	
 }

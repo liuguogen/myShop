@@ -57,6 +57,7 @@
                    data = typeof(rs.data) == 'string' ? JSON.parse(rs.data) : rs.data;
                    setCookie('accessToken',data.accessToken,api.expire,'/');
                    setCookie('adminName',data.username,api.expire,'/');
+                   setCookie('isSuper',data.is_super,api.expire,'/');
                    location.href='../../index.html';
                  }
                  

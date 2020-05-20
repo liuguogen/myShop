@@ -27,6 +27,7 @@ return  [
                 'admin.user.getrow'=>['uses'=>'\useradmin\user@getRow','desc'=>'获取后台用户单条数据'],
                 'admin.user.save'=>['uses'=>'\useradmin\user@save','desc'=>'保存后台用户'],
                 'admin.user.del'=>['uses'=>'\useradmin\user@delUser','desc'=>'删除用户'],
+                'admin.super.update'=>['uses'=>'\useradmin\user@updateSuper','desc'=>'修改超级管理员密码'],
                 'admin.loginout'=>['uses'=>'\useradmin\loginout@loginout','desc'=>'后台用户退出'],
                 'brand.get'=>['uses'=>'\brands\brand@get','desc'=>'获取品牌列表'],
                 'brand.update'=>['uses'=>'\brands\brand@update','desc'=>'更新品牌数据'],

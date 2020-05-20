@@ -40,8 +40,9 @@
                     <a href="javascript:;"><img src="//t.cn/RCzsdCq" class="layui-nav-img"><script type="text/javascript">document.write(getCookie('adminName'))</script></a>
                     <dl class="layui-nav-child">
                         <!-- 二级菜单 -->
-                        <dd>
-                            <a onclick="xadmin.open('个人信息','http://www.baidu.com')">个人信息</a></dd>
+                        <dd id="super_admin" style="display: none;">
+                            <a onclick="x_admin_show('修改密码','./page/admin/admin-edit.html',800,500)">修改密码</a>
+                        </dd>
                         <dd>
                             <a id="loginout">切换帐号</a></dd>
                         <dd>
@@ -96,7 +97,10 @@
 
 
 $(function  () {
-
+    
+    if(getCookie('isSuper') == 1) {
+        $("#super_admin").show();
+    }
     layui.use(['form','layer'], function(){
     var form = layui.form;
     var layer = parent.layer === undefined ? layui.layer : parent.layer;
