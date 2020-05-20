@@ -332,7 +332,7 @@ class carts
             $amount += $value['price'] * ($params['num'] ? $params['num'] : 1);
         }
 
-        return ['data'=>['goods_data'=>$rs_data,'amount'=>number_format($amount,2)]];
+        return ['data'=>['goods_data'=>$rs_data,'buy_type'=>'fast_buy','amount'=>number_format($amount,2)]];
     }
     /**
      * 购物车购买
@@ -363,7 +363,7 @@ class carts
 
             $amount += $value['price'] * ($cart_data ? $cart_data['num'] : 1);
         }
-        return ['data'=>['goods_data'=>$rs_data,'amount'=>number_format($amount,2)]];
+        return ['data'=>['goods_data'=>$rs_data,'buy_type'=>'cart_buy','amount'=>number_format($amount,2)]];
     }
 	
 }
