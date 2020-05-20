@@ -110,7 +110,7 @@ class carts
         $product_store = $this->orderSalesMdl->query("select sum(free_num) as free_num from order_sales where product_id=".intval($params['product_id'].' and goods_id='.intval($params['goods_id']))); 
 
 
-        if($cart_data) {
+        if($check_cart_data) {
              $store = isset($params['cart_type']) && $params['cart_type']=='add' ? $check_cart_data['num'] + intval($params['num']) :  $check_cart_data['num'] - intval($params['num']);
          }else {
             $store = $params['num'];
