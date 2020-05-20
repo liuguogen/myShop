@@ -80,7 +80,7 @@ class carts
             'product_id.egt'=>'sku ID必填大于等于1',
             'num.require'=>'数量必填',
             'num.number'=>'数量必须是整数',
-            'num.egt'=>'数量必填大于等于1',
+            'num.egt'=>'数量必须大于等于1',
             'cart_type.require'=>'购物车类型必填',
             'cart_type.in'=>'购物车类型只能在add,cut之间',
         ]);
@@ -122,8 +122,15 @@ class carts
            
             $flag = $this->cartMdl->save($cart_data);
         }else {
+
+            $num = isset($params['cart_type']) && $params['cart_type']=='add' ? $check_cart_data['num'] + intval($params['num']) :  $check_cart_data['num'] - intval($params['num']);
+
+            if($num <= 0) {
+                
+                throw new HttpException(404,'最小数量为1！');
+            }
             $cart_data =[
-                'num'=>isset($params['cart_type']) && $params['cart_type']=='add' ? $check_cart_data['num'] + intval($params['num']) :  $check_cart_data['num'] - intval($params['num']),
+                'num'=>$num,
             ];
             $flag = $this->cartMdl->where($where)->update($cart_data);
         }
@@ -260,24 +267,28 @@ class carts
      */
     public function checkout(array $params) {
         
+
+
+
         $validate = new Validate([
             
             'accessToken' => 'require',
             'product_id'=>'require',
+            'buy_type'=>'require|in:fast_buy,cart_buy'
             
-        ],[
-            'accessToken.require'=>'accessToken必填',
-            'product_id.require'=>'sku ID必填',
         ]);
         $checkData = [
             'accessToken'=>$params['accessToken'],
             'product_id' => intval($params['product_id']),
+            'buy_type'=>$params['buy_type'],
             
         ];
 
         if (!$validate->check($checkData)) {
             throw new HttpException(404,$validate->getError());
         }
+
+
         $params['product_id'] = explode(',', $params['product_id']);
         $member_id = userMake::check(trim($params['accessToken']));
         unset($params['accessToken']);
@@ -303,6 +314,14 @@ class carts
         }
 
         return ['data'=>['goods_data'=>$rs_data,'amount'=>number_format($amount,2)]];
+    }
+
+    /**
+     * 快速购买
+     * @return [type] [description]
+     */
+    private function _fastBuy() {
+
     }
 	
 }
