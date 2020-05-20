@@ -172,7 +172,7 @@ class carts
             throw new HttpException(404,'解析用户ID错误！');
         }
 
-        $cart_data = $this->cartMdl->where(['member_id'=>intval($member_id)])->select();
+        $cart_data = $this->cartMdl->where(['member_id'=>intval($member_id)])->order('update_time desc')->select();
         if(!$cart_data) return ['data'=>[]];
         $cart_data = collection($cart_data)->toArray();
         foreach ($cart_data as $key => &$value) {
